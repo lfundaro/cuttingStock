@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include "FFD.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -34,7 +35,10 @@ int main(int argc, char *argv[]) {
     int **cgroups = new int*[npieces];
     for(int i = 0; i < npieces; i++) 
       cgroups[i] = new int[npieces];
-
+    
+    int f [] = {1,2,3,4,5,6,7,8};
+    FFD(45,lpiece,f, 8);
+    
     instance.close();
     delete[] lot_s;
     delete[] lpiece;
