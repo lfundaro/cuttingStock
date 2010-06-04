@@ -36,9 +36,6 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < npieces; i++) 
       cgroups[i] = new int[npieces];
     
-    int f [] = {1,2,3,4,5,6,7,8};
-    FFD(45,lpiece,f, 8);
-    
     instance.close();
     delete[] lot_s;
     delete[] lpiece;

@@ -1,5 +1,5 @@
 CXX	:= g++-4.4
-CXXFLAGS := 
+CXXFLAGS := -g
 OBJECTS := cuttingStock.o FFD.o utilities.o
 
 all: cuttingStock
@@ -18,4 +18,4 @@ utilities.o: utilities.cpp
 	$(CXX) $(CXXFLAGS) -c utilities.cpp		
 
 clean:
-	rm -rf cuttingStock *.o *.out semantic.cache *.gch *~ *.tex.backup
+	rm -rf cuttingStock *.o *.out semantic.cache *.gch *~ *.tex.backup test

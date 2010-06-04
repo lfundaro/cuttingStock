@@ -3,6 +3,6 @@
 #include <algorithm>
 #include <iostream>
 using namespace std;
-//pair <int, vector<vector<int> > >
-int FFD(int, int *,int *, int);
+
+pair <int, vector<vector<int>* > > FFD(int,vector<int>,vector<int>);
 
