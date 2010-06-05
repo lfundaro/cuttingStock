@@ -41,18 +41,23 @@ int main(int argc, char *argv[]) {
     vector<int> leftover(npieces);
     for(i = 0; i < npieces; i++) 
       leftover[i] = 0;
-
-    vector<int> f;
-    f.push_back(4);
-    f.push_back(2);
-    vector<int> a;
-    a.push_back(4);
-    a.push_back(2);
     
-    pair<int,vector<vector<int>*> > c = FFD(11,f,a);
-    cout << leftOver(c.second,11, f) << endl;
+    // Vector de Rolls usados por cada cutting group
+    vector<int> used_rolls(npieces);
+    for(i = 0; i < npieces; i++) 
+      used_rolls[i] = 0;
 
-    free_vector(c.second);
+    // vector<int> f;
+    // f.push_back(4);
+    // f.push_back(2);
+    // vector<int> a;
+    // a.push_back(4);
+    // a.push_back(2);
+    
+    // pair<int,vector<vector<int>*> > c = FFD(11,f,a);
+    // cout << leftOver(c.second,11, f) << endl;
+
+    // free_vector(c.second);
     free_vector(cgroups);
     free(line);
     instance.close();
