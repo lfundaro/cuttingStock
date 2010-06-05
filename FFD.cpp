@@ -66,9 +66,30 @@ pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<
   return output;
 } 
 
+
+// Libera los vectores que representan un roll 
+// con piezas en un determinado cutting group
 void free_vector(vector<vector<int>*> &a) {
   vector<vector<int>*>::iterator it;
   for(it = a.begin(); it != a.end(); it++) 
     delete (*it);
+}
+
+// Calcula el desperdicio (en espacio) que un 
+// cutting group puede tener.
+int leftOver(vector<vector<int>*> g, int rlength, vector<int> lpiece) {
+  vector<vector<int>*>::iterator it;
+  int rollIt;
+  int v;
+  int leftover = 0;
+  for(it = g.begin(); it != g.end(); it++) {
+    v = rlength;
+    for(rollIt = 0; rollIt < (**it).size(); rollIt++) {
+      if ((**it)[rollIt] != 0) 
+        v -= lpiece[rollIt] * (**it)[rollIt];
+    }
+    leftover += v;
+  }
+  return leftover;
 }
 
