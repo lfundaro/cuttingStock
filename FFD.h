@@ -6,3 +6,5 @@ using namespace std;
 
 pair <int, vector<vector<int>* > > FFD(int,vector<int>,vector<int>);
 
+void free_vector(vector<vector<int>*> &);
+

@@ -66,3 +66,9 @@ pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<
   return output;
 } 
 
+void free_vector(vector<vector<int>*> &a) {
+  vector<vector<int>*>::iterator it;
+  for(it = a.begin(); it != a.end(); it++) 
+    delete (*it);
+}
+

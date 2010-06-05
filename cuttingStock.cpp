@@ -36,6 +36,17 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < npieces; i++) 
       cgroups[i] = new int[npieces];
     
+    vector<int> f;
+    f.push_back(4);
+    f.push_back(2);
+    vector<int> a;
+    a.push_back(4);
+    a.push_back(2);
+    
+    pair<int,vector<vector<int>*> > c = FFD(9,f,a);
+
+    free_vector(c.second);
+    
     instance.close();
     delete[] lot_s;
     delete[] lpiece;
