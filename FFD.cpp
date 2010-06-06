@@ -8,7 +8,8 @@ using namespace std;
 // en orden decreciente. Luego asigna secuencialmente todas     
 // las piezas en dicho orden usando la menor cantidad de rolls  
 // posibles siempre y cuando exista espacio en el k-ésimo roll.
-pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
+pair <int, vector<vector<int>* > >
+FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
   pair <int, vector<vector<int>* > > output = make_pair(0, vector<vector<int>* >());
   if (pieceSet.size() == 0) // El Cutting group está vacío
     return output;
