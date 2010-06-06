@@ -51,11 +51,12 @@ int main(int argc, char *argv[]) {
     f.push_back(2);
     f.push_back(4);
      
-    //    pair <int, vector<vector<int>* > > c = FFD(10,a,f);
+    pair <int,int> c = FFD(10,a,f);
     
-    vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
-                                         dpiece, leftover,
-                                         used_rolls);
+    
+    // vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
+    //                                      dpiece, leftover,
+    //                                      used_rolls);
     // for(i = 0; i < ntpieces; i++) {
     //   if (used_rolls[i]) {
     //     cout << "Tipo " << i << endl;

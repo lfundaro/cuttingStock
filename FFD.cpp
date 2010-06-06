@@ -8,10 +8,12 @@ using namespace std;
 // en orden decreciente. Luego asigna secuencialmente todas     
 // las piezas en dicho orden usando la menor cantidad de rolls  
 // posibles siempre y cuando exista espacio en el k-ésimo roll.
-pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
-  pair <int, vector<vector<int>* > > output = make_pair(0, vector<vector<int>* >());
-  if (pieceSet.size() == 0) // El Cutting group está vacío
-    return output;
+// Se devuelve como resultado un par que tiene el número de rolls 
+// empleados y el desperdicio entre todos los roles.
+pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
+  vector<vector<int>*> output;
+  if (!emptyPieceSet(pieceSet)) // El Cutting group está vacío 
+    return make_pair(0,0);
   else {
     int i;
     int npieces = 0;
@@ -37,34 +39,35 @@ pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<
     int k;        // Número de roll actual
     int nroll = 1;   // Número de rolls usados
     int allocation; // Piezas a poner en roll 
-    output.second.push_back(new vector<int>(M, 0)); // Primer roll
+    output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3
       v = pieceSet[tl[r].first];
       k = -1;
       while(v > 0) {
         k++;
-        cout << "h" << endl;
         if (k >= nroll) { 
           nroll++;
-          output.second.push_back(new vector<int>(M, 0)); // Nuevo roll
+          output.push_back(new vector<int>(M, 0)); // Nuevo roll
         }
         int sum = 0; // Sumatoria acumulada
         for(i = 0; i <= r - 1; i++) {
-          sum += output.second[k]->at(i) * lpiece[tl[i].first];
+          sum += output[k]->at(i) * lpiece[tl[i].first];
         }
         allocation = (rollSize - sum)/lpiece[tl[i].first];
         if (v <= allocation) 
-          output.second[k]->at(r) = v;
+          output[k]->at(r) = v;
         else
-          output.second[k]->at(r) = allocation;
+          output[k]->at(r) = allocation;
 
         v -= allocation;
       }
       r += 1;
     }
-    output.first = nroll;
+    pair <int,int> result;
+    result.first = nroll;
+    result.second = leftOver(output, rollSize, lpiece);
+    return result;
   }
-  return output;
 } 
 
 
@@ -92,5 +95,17 @@ int leftOver(vector<vector<int>*> g, int rlength, vector<int> lpiece) {
     leftover += v;
   }
   return leftover;
+}
+
+// Chequea si un conjunto de piezas factibles 
+// está vació o no.
+int emptyPieceSet(vector<int> pieceSet) {
+  int k = 0;
+  for(int i = 0; i < pieceSet.size(); i++) 
+    k = k || pieceSet[i];
+  return k;
+
+    
+
 }
 
