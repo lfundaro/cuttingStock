@@ -43,6 +43,7 @@ pair <int, vector<vector<int>* > >  FFD(int rollSize, vector<int> lpiece,vector<
       k = -1;
       while(v > 0) {
         k++;
+        cout << "h" << endl;
         if (k >= nroll) { 
           nroll++;
           output.second.push_back(new vector<int>(M, 0)); // Nuevo roll

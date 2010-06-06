@@ -44,33 +44,43 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
   int i;
   int j;
   int k;
+  int target;
   pair <int, vector<vector<int>* > > ffdresult;
+  vector<pair <int, vector<vector<int>* > > > partial;
   vector<int>::iterator it;
   for(i = 0; i < ntpieces; i++) 
     cgroups.push_back(new vector<int>(ntpieces,0));
 
-  cout << cgroups.size() << endl;
-  for(i = 0; i < cgroups.size(); i++) {
+  for(i = 0; i < ntpieces; i++) {
     vector<int> pieceSet(ntpieces,0);
     pieceSet[i] = dpiece[i];
-    cout << endl;
-    ffdresult = FFD(rlenght[i], lpiece, pieceSet);
-    cout << endl;
-    used_rolls[i] = ffdresult.first;
+    target = MAX_INT;
+    for(j = 0; j < rlenght.size(); j++) {
+      partial.push_back(FFD(rlenght[j], lpiece, pieceSet));
+      target = min(target, partial[j].first);
+    }
+    used_rolls[i] = ;
     leftover[i] = leftOver(ffdresult.second, rlenght[i],
                            lpiece);
     
-    cout << ffdresult.first << endl;
     for(j = 0; j < ffdresult.first; j++) {
-      //      cout << ffdresult.second[j]->size() << endl;
-      // for(k = 0; k < ffdresult.second[j]->size(); k++) {
-      //   if (ffdresult.second[j]->at(k) != 0) {
-      //     cgroups[i]->at(k) = ffdresult.second[j]->at(k);
-      //     break;
-      //   }
-      // }
+      for(k = 0; k < ffdresult.second[j]->size(); k++) {
+        if (ffdresult.second[j]->at(k) != 0) {
+          cgroups[i]->at(k) = ffdresult.second[j]->at(k);
+          break;
+        }
+      }
     }
-    //    free_vector(ffdresult.second);
+    free_vector(ffdresult.second);
   }
   return cgroups;
 }
+
+// Función que Calcula mínimo
+inline int min(int a, int b) {
+  if (a < b) 
+    return a;
+  else
+    return b;
+}
+
