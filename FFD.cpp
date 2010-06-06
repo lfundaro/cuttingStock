@@ -25,7 +25,7 @@ FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     // Construcción de vector tl de par(tipo,longitud) 
     vector <pair <int,int> > tl(M);
     for(i = 0; i < M; i++) {
-      if (pieceSet[i] != -1)    // Sólo se toman nodos existentes
+      if (pieceSet[i] != 0)    // Sólo se toman nodos existentes
         tl[i] = make_pair(i, lpiece[i]);
     }
 
@@ -44,15 +44,16 @@ FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
       k = -1;
       while(v > 0) {
         k++;
+        cout << "h" << endl;
         if (k >= nroll) { 
           nroll++;
           output.second.push_back(new vector<int>(M, 0)); // Nuevo roll
         }
         int sum = 0; // Sumatoria acumulada
         for(i = 0; i <= r - 1; i++) {
-          sum += output.second[k]->at(i) * lpiece[i];
+          sum += output.second[k]->at(i) * lpiece[tl[i].first];
         }
-        allocation = (rollSize - sum)/lpiece[r];
+        allocation = (rollSize - sum)/lpiece[tl[i].first];
         if (v <= allocation) 
           output.second[k]->at(r) = v;
         else
