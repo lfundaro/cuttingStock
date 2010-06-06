@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
      
     pair <int,int> c = FFD(10,a,f);
     
-    
+   
     // vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
     //                                      dpiece, leftover,
     //                                      used_rolls);
@@ -64,8 +64,8 @@ int main(int argc, char *argv[]) {
     //   }
     // }
     //    free_vector(cg);
-    // free(line);
-    // instance.close();
+    free(line);
+    instance.close();
   }
   else 
     cout << "Error leyendo instancia" << endl;

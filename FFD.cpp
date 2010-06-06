@@ -66,6 +66,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     pair <int,int> result;
     result.first = nroll;
     result.second = leftOver(output, rollSize, lpiece);
+    free_vector(output);
     return result;
   }
 } 
