@@ -1,4 +1,5 @@
 #include "utilities.h"
+#include "FFD.h"
 using namespace std;
 
 
@@ -10,10 +11,10 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 // Mide la calidad de un cutting group contra
 // otro. Devuelve un booleano True si el cutting 
 // group A es mejor que el B, Falso sino..
-bool group_quality(vector<int> leftover, 
-                   vector<int> used_rolls, 
-                   pair<int, vector<int> > A, 
-                   pair<int, vector<int> > B) {
+bool group_quality(vector<int> &leftover, 
+                   vector<int> &used_rolls, 
+                   pair<int, vector<int> > &A, 
+                   pair<int, vector<int> > &B) {
   // Se mide criterio por número de rolls.
   if (used_rolls[A.first] < used_rolls[B.first])
     return true;
@@ -26,4 +27,50 @@ bool group_quality(vector<int> leftover,
     else  // Número de rolls en A es mayor que B
           // o leftover en A es más que en B
       return false;
+}
+
+// Generador de solución inicial.
+// Consiste en generar M cutting groups 
+// donde M es la cantidad de tipos de piezas.
+// En cada grupo se coloca un tipo de pieza sin 
+// importar la cantidad de rolls que estas ocupen
+vector<vector<int>*> genInitSol(vector<int> &rlenght, 
+                                vector<int> &lpiece,
+                                vector<int> &dpiece,
+                                vector<int> &leftover,
+                                vector<int> &used_rolls) {
+  int ntpieces = lpiece.size();
+  vector<vector<int>*> cgroups;
+  int i;
+  int j;
+  int k;
+  pair <int, vector<vector<int>* > > ffdresult;
+  vector<int>::iterator it;
+  for(i = 0; i < ntpieces; i++) 
+    cgroups.push_back(new vector<int>(ntpieces,0));
+
+  cout << cgroups.size() << endl;
+  for(i = 0; i < cgroups.size(); i++) {
+    vector<int> pieceSet(ntpieces,0);
+    pieceSet[i] = dpiece[i];
+    cout << endl;
+    ffdresult = FFD(rlenght[i], lpiece, pieceSet);
+    cout << endl;
+    used_rolls[i] = ffdresult.first;
+    leftover[i] = leftOver(ffdresult.second, rlenght[i],
+                           lpiece);
+    
+    cout << ffdresult.first << endl;
+    for(j = 0; j < ffdresult.first; j++) {
+      //      cout << ffdresult.second[j]->size() << endl;
+      // for(k = 0; k < ffdresult.second[j]->size(); k++) {
+      //   if (ffdresult.second[j]->at(k) != 0) {
+      //     cgroups[i]->at(k) = ffdresult.second[j]->at(k);
+      //     break;
+      //   }
+      // }
+    }
+    //    free_vector(ffdresult.second);
+  }
+  return cgroups;
 }

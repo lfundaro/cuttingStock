@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "FFD.h"
+#include "utilities.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -12,9 +13,9 @@ int main(int argc, char *argv[]) {
     int nroll_type; // Número de Stock Roll type
     instance.getline(line, 60);
     sscanf(line,"%*s %d", &nroll_type);
-    int npieces;  // Número de piezas 
+    int ntpieces;  // Número de tipo piezas 
     instance.getline(line, 60);
-    sscanf(line,"%*s %d", &npieces);
+    sscanf(line,"%*s %d", &ntpieces);
     // Se leen nroll_type líneas para almacenar 
     // las longitudes de cada tipo de roll.
     vector<int> rlenght(nroll_type);
@@ -22,30 +23,59 @@ int main(int argc, char *argv[]) {
       instance.getline(line, 60);
       sscanf(line,"%d", &rlenght[i]);
     }
-    vector<int> lot_s(npieces); // Tamaño de lote
-    vector<int> lpiece(npieces); // Longitud de pieza
-    vector<int> dpiece(npieces); // Demanda de pieza
-    // Se leen npieces líneas para almacenar 
+    vector<int> lot_s(ntpieces); // Tamaño de lote
+    vector<int> lpiece(ntpieces); // Longitud de pieza
+    vector<int> dpiece(ntpieces); // Demanda de pieza
+    // Se leen ntpieces líneas para almacenar 
     // la longitud de cada pieza, demanda y tamaño de 
     // lote
-    for(i = 0; i < npieces; i++) {
+    for(i = 0; i < ntpieces; i++) {
       instance.getline(line, 60);
       sscanf(line,"%d %d %d",&lpiece[i],&dpiece[i],&lot_s[i]);
     }
-    // Representación de la solución (cgroups)
-    vector<vector<int>*> cgroups(npieces);
-    for(i = 0; i < npieces; i++) 
-      cgroups[i] = new vector<int>(npieces);
 
     // Arreglo de desperdicios por cutting group
-    vector<int> leftover(npieces);
-    for(i = 0; i < npieces; i++) 
+    vector<int> leftover(ntpieces);
+    for(i = 0; i < ntpieces; i++) 
       leftover[i] = 0;
     
     // Vector de Rolls usados por cada cutting group
-    vector<int> used_rolls(npieces);
-    for(i = 0; i < npieces; i++) 
+    vector<int> used_rolls(ntpieces);
+    for(i = 0; i < ntpieces; i++) 
       used_rolls[i] = 0;
+    
+    vector<int> a;
+    a.push_back(5);
+    a.push_back(3);
+    vector<int> f;
+    f.push_back(2);
+    f.push_back(4);
+     
+    pair <int, vector<vector<int>* > > c = FFD(10,a,f);
+    
+    // vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
+    //                                      dpiece, leftover,
+    //                                      used_rolls);
+    // for(i = 0; i < ntpieces; i++) {
+    //   if (used_rolls[i]) {
+    //     cout << "Tipo " << i << endl;
+    //     cout << used_rolls[i] << endl;
+    //   }
+    // }
+    //    free_vector(cg);
+    free(line);
+    instance.close();
+  }
+  else 
+    cout << "Error leyendo instancia" << endl;
+
+}
+
+
+
+
+
+
 
     // vector<int> f;
     // f.push_back(4);
@@ -57,12 +87,3 @@ int main(int argc, char *argv[]) {
     // pair<int,vector<vector<int>*> > c = FFD(11,f,a);
     // cout << leftOver(c.second,11, f) << endl;
 
-    // free_vector(c.second);
-    free_vector(cgroups);
-    free(line);
-    instance.close();
-  }
-  else 
-    cout << "Error leyendo instancia" << endl;
-
-}
