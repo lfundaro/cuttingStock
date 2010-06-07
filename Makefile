@@ -1,6 +1,6 @@
 CXX	:= g++-4.4
 CXXFLAGS := -g
-OBJECTS := cuttingStock.o FFD.o utilities.o
+OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o
 
 all: cuttingStock
 
@@ -13,6 +13,9 @@ cuttingStock.o: cuttingStock.cpp
 
 FFD.o: FFD.cpp
 	$(CXX) $(CXXFLAGS) -c FFD.cpp		
+
+localSearchBB.o: localSearchBB.cpp
+	$(CXX) $(CXXFLAGS) -c localSearchBB.cpp		
 
 utilities.o: utilities.cpp
 	$(CXX) $(CXXFLAGS) -c utilities.cpp		

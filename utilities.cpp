@@ -8,25 +8,34 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
   return (a.second > b.second);
 }
 
-// Mide la calidad de un cutting group contra
-// otro. Devuelve un booleano True si el cutting 
-// group A es mejor que el B, Falso sino..
-bool group_quality(vector<int> &leftover, 
-                   vector<int> &used_rolls, 
-                   pair<int, vector<int> > &A, 
-                   pair<int, vector<int> > &B) {
-  // Se mide criterio por número de rolls.
-  if (used_rolls[A.first] < used_rolls[B.first])
+// Dado un movimiento evaluado por la función 
+// shiftNeighbourhood, esta función decide si el
+// movimiento permite minizar la cantidad de 
+// desperdicios generados.
+bool group_quality(int * info, vector<int> &leftover,
+                   vector<int> &used_rolls) {
+  if (info[3] < leftover[info[1]])
     return true;
-  else 
-    if (used_rolls[A.first] == used_rolls[B.first]) {
-      // Probar criterio de leftOver
-      if (leftover[A.first] <= leftover[B.first])
+  else {
+    // Se compara si leftovers son iguales
+    if (info[3] == leftover[info[1]]) {
+      // Se compara por numero de rolls usados
+      if (info[5] < used_rolls[info[1]])
         return true;
+      else {
+        if (info[5] == used_rolls[info[1]]) {
+          // Se comparan los orígenes
+          if (info[4] < used_rolls[info[0]])
+            return true;
+          else 
+            return false;
+        }
+        return false;
+      }
     }
-    else  // Número de rolls en A es mayor que B
-          // o leftover en A es más que en B
+    else 
       return false;
+  }
 }
 
 // Generador de solución inicial.
@@ -38,7 +47,8 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
                                 vector<int> &lpiece,
                                 vector<int> &dpiece,
                                 vector<int> &leftover,
-                                vector<int> &used_rolls) {
+                                vector<int> &used_rolls,
+                                vector<int> &rollType) {
   int M = lpiece.size();
   vector<vector<int>*> cgroups; // Solucion
   int i;
@@ -71,6 +81,7 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
     }
     used_rolls[i] = target.first;
     leftover[i] = left;
+    rollType[i] = target.second;
     
     cgroups[i]->at(i) = dpiece[i];
   }

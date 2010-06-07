@@ -44,26 +44,22 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < ntpieces; i++) 
       used_rolls[i] = 0;
     
-    // vector<int> a;
-    // a.push_back(5);
-    // a.push_back(0);
-    // vector<int> f;
-    // f.push_back(2);
-    // f.push_back(0);
-     
-    // pair <int,int> c = FFD(10,a,f);
+    // Vector que indica el tipo de roll que se usa 
+    // en la i-ésima posición de la solución
+    vector<int> rollType(ntpieces);
+    for(i = 0; i < ntpieces; i++) 
+      rollType[i] = -1;
     
-    // cout << "leftover " << c.second << endl;
-    // cout << "rolls " << c.first << endl;
-   
     vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
                                          dpiece, leftover,
-                                         used_rolls);
+                                         used_rolls,
+                                         rollType);
     for(i = 0; i < ntpieces; i++) {
       if (used_rolls[i]) {
         cout << "Tipo " << i << endl;
         cout << "rolls " << used_rolls[i] << endl;
         cout << "leftover " << leftover[i] << endl;
+        cout << "n_used_pieces " << cg[i]->at(i) << endl; 
         cout << "------------" << endl;
       }
     }
@@ -77,6 +73,18 @@ int main(int argc, char *argv[]) {
 }
 
 
+    // vector<int> a;
+    // a.push_back(5);
+    // a.push_back(0);
+    // vector<int> f;
+    // f.push_back(2);
+    // f.push_back(0);
+     
+    // pair <int,int> c = FFD(10,a,f);
+    
+    // cout << "leftover " << c.second << endl;
+    // cout << "rolls " << c.first << endl;
+   
 
 
 
