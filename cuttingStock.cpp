@@ -44,26 +44,30 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < ntpieces; i++) 
       used_rolls[i] = 0;
     
-    vector<int> a;
-    a.push_back(5);
-    a.push_back(3);
-    vector<int> f;
-    f.push_back(2);
-    f.push_back(4);
+    // vector<int> a;
+    // a.push_back(5);
+    // a.push_back(0);
+    // vector<int> f;
+    // f.push_back(2);
+    // f.push_back(0);
      
-    pair <int,int> c = FFD(10,a,f);
+    // pair <int,int> c = FFD(10,a,f);
     
+    // cout << "leftover " << c.second << endl;
+    // cout << "rolls " << c.first << endl;
    
-    // vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
-    //                                      dpiece, leftover,
-    //                                      used_rolls);
-    // for(i = 0; i < ntpieces; i++) {
-    //   if (used_rolls[i]) {
-    //     cout << "Tipo " << i << endl;
-    //     cout << used_rolls[i] << endl;
-    //   }
-    // }
-    //    free_vector(cg);
+    vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
+                                         dpiece, leftover,
+                                         used_rolls);
+    for(i = 0; i < ntpieces; i++) {
+      if (used_rolls[i]) {
+        cout << "Tipo " << i << endl;
+        cout << "rolls " << used_rolls[i] << endl;
+        cout << "leftover " << leftover[i] << endl;
+        cout << "------------" << endl;
+      }
+    }
+    free_vector(cg);
     free(line);
     instance.close();
   }

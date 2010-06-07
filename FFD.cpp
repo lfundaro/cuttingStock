@@ -26,7 +26,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     // Construcción de vector tl de par(tipo,longitud) 
     vector <pair <int,int> > tl(M);
     for(i = 0; i < M; i++) {
-      if (pieceSet[i] != 0)    // Sólo se toman nodos existentes
+      if (pieceSet[i] != 0)    // Sólo se toman piezas existentes
         tl[i] = make_pair(i, lpiece[i]);
     }
 
@@ -41,6 +41,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     int allocation; // Piezas a poner en roll 
     output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3
+      if (pieceSet[r] == 0) {r++; continue;}
       v = pieceSet[tl[r].first];
       k = -1;
       while(v > 0) {
@@ -93,7 +94,8 @@ int leftOver(vector<vector<int>*> g, int rlength, vector<int> lpiece) {
       if ((**it)[rollIt] != 0) 
         v -= lpiece[rollIt] * (**it)[rollIt];
     }
-    leftover += v;
+    if (v != rlength)
+      leftover += v;
   }
   return leftover;
 }

@@ -34,47 +34,49 @@ bool group_quality(vector<int> &leftover,
 // donde M es la cantidad de tipos de piezas.
 // En cada grupo se coloca un tipo de pieza sin 
 // importar la cantidad de rolls que estas ocupen
-// vector<vector<int>*> genInitSol(vector<int> &rlenght, 
-//                                 vector<int> &lpiece,
-//                                 vector<int> &dpiece,
-//                                 vector<int> &leftover,
-//                                 vector<int> &used_rolls) {
-//   int ntpieces = lpiece.size();
-//   vector<vector<int>*> cgroups;
-//   int i;
-//   int j;
-//   int k;
-//   int target;
-//   pair <int, vector<vector<int>* > > ffdresult;
-//   vector<pair <int, vector<vector<int>* > > > partial;
-//   vector<int>::iterator it;
-//   for(i = 0; i < ntpieces; i++) 
-//     cgroups.push_back(new vector<int>(ntpieces,0));
+vector<vector<int>*> genInitSol(vector<int> &rlenght, 
+                                vector<int> &lpiece,
+                                vector<int> &dpiece,
+                                vector<int> &leftover,
+                                vector<int> &used_rolls) {
+  int M = lpiece.size();
+  vector<vector<int>*> cgroups; // Solucion
+  int i;
+  int j;
+  int k;
+  pair <int,int> target;
+  pair <int,int> ffdresult;
+  int minimum;
+  int left = 0;
+  vector<int>::iterator it;
+  for(i = 0; i < M; i++) 
+    cgroups.push_back(new vector<int>(M,0));
 
-//   for(i = 0; i < ntpieces; i++) {
-//     vector<int> pieceSet(ntpieces,0);
-//     pieceSet[i] = dpiece[i];
-//     target = MAX_INT;
-//     for(j = 0; j < rlenght.size(); j++) {
-//       partial.push_back(FFD(rlenght[j], lpiece, pieceSet));
-//       target = min(target, partial[j].first);
-//     }
-//     used_rolls[i] = ;
-//     leftover[i] = leftOver(ffdresult.second, rlenght[i],
-//                            lpiece);
+  for(i = 0; i < M; i++) {
+    vector<int> pieceSet(M,0);
+    pieceSet[i] = dpiece[i];
+    target.first = MAX_INT;
+    target.second = -1;
+    // Se prueba con todos los tipos de rolls 
+    // para ver donde se acomoda mejor la n cantidad 
+    // de piezas del tipo i.
+    for(j = 0; j < rlenght.size(); j++) {
+      ffdresult = FFD(rlenght[j], lpiece, pieceSet);
+      minimum = min(target.first,ffdresult.first);
+      if (target.first != minimum) {
+        target.first = minimum;
+        target.second = j;
+        left = ffdresult.second;
+      }
+    }
+    used_rolls[i] = target.first;
+    leftover[i] = left;
     
-//     for(j = 0; j < ffdresult.first; j++) {
-//       for(k = 0; k < ffdresult.second[j]->size(); k++) {
-//         if (ffdresult.second[j]->at(k) != 0) {
-//           cgroups[i]->at(k) = ffdresult.second[j]->at(k);
-//           break;
-//         }
-//       }
-//     }
-//     free_vector(ffdresult.second);
-//   }
-//   return cgroups;
-// }
+    cgroups[i]->at(i) = dpiece[i];
+  }
+  return cgroups;
+}
+
 
 // Función que Calcula mínimo
 inline int min(int a, int b) {
