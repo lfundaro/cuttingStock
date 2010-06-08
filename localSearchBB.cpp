@@ -7,11 +7,17 @@ void localSearchBB(vector<vector<int>*> &cgroups,
                    vector<int> &rlenght, vector<int> &lot_s,
                    vector<int> &lpiece, vector<int> &dpiece,
                    vector<int> &leftover,vector<int> &used_rolls) {
+  int* origScores = new int[lpiece.size()];
+  int* dstScores = new int[lpiece.size()];
   int maxIt = LSBB_MAXIT;
   int info[6]; // arreglo con información sobre el
                // el cambio de vecindad.
+  initScoreArrays(cgroups, &used_rolls, &lpiece, &leftover, lpiece.size()
+		  origScores, dstScores);
   while (maxIt > 0) {
-    // info = ShiftN(cgroups, otras cosas...);
+    info = ShiftN(status, lpiece.size(), cgroups,
+		  /*variaety: cantidad de tipos de piezas por cada cutting group*/,
+		  &lpiece, 0, *rlenght, dstScores, origScores);
     if (group_quality(info, leftover, used_rolls)) {
       // Se ejecuta el movimiento
       // Se actualiza leftover destino
