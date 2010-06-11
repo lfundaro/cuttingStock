@@ -36,17 +36,9 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     // Se arregla pieceSet para que exista correspondencia
     // de índices con tl.
     vector<pair<int,int> >::iterator it;
-    i = 0;
-    int tmp;
     vector<int> npieceSet;
-    for(it = tl.begin(); it != tl.end(); it++) {
-      // Swap
+    for(it = tl.begin(); it != tl.end(); it++) 
       npieceSet.push_back(pieceSet[(*it).first]);
-      //      tmp = pieceSet[i];
-      //      pieceSet[i] = pieceSet[(*it).first];
-      //      pieceSet[(*it).first] = tmp;
-      i++;
-    }
     
     int r = 0;    // Tipo de pieza actual
     int v;        // Lleva la cuenta de cuántas piezas de un tipo 

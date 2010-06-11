@@ -54,18 +54,6 @@ int main(int argc, char *argv[]) {
                                          dpiece, leftover,
                                          used_rolls,
                                          rollType);
-    // vector<int> b;
-    // b.push_back(74);
-    // b.push_back(91);
-    // b.push_back(55);
-    // b.push_back(100);
-    // vector<int> c;
-    // c.push_back(15);
-    // c.push_back(8);
-    // c.push_back(0);
-    // c.push_back(10);
-    // pair<int,int> a = FFD(1000, b, c);
-    // cout << a.first << " " << a.second << endl;
     for(i = 0; i < ntpieces; i++) {
       if (used_rolls[i]) {
         cout << "Tipo " << i << endl;
@@ -83,6 +71,21 @@ int main(int argc, char *argv[]) {
     cout << "Error leyendo instancia" << endl;
 
 }
+
+
+    // vector<int> b;
+    // b.push_back(74);
+    // b.push_back(91);
+    // b.push_back(55);
+    // b.push_back(100);
+    // vector<int> c;
+    // c.push_back(15);
+    // c.push_back(8);
+    // c.push_back(0);
+    // c.push_back(10);
+    // pair<int,int> a = FFD(1000, b, c);
+    // cout << a.first << " " << a.second << endl;
+
 
 
     // vector<int> a;
