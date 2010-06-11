@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "FFD.h"
 #include "utilities.h"
+#include "localSearchBB.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -49,11 +50,17 @@ int main(int argc, char *argv[]) {
     vector<int> rollType(ntpieces);
     for(i = 0; i < ntpieces; i++) 
       rollType[i] = -1;
+
+    vector<int> variety(ntpieces,1);
     
     vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
                                          dpiece, leftover,
                                          used_rolls,
                                          rollType);
+
+    //FFD(1000,lpiece,*cg[cg.size()-2]);
+    //localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
+    //		  used_rolls, variety);
     for(i = 0; i < ntpieces; i++) {
       if (used_rolls[i]) {
         cout << "Tipo " << i << endl;

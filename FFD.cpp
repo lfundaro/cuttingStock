@@ -10,7 +10,8 @@ using namespace std;
 // posibles siempre y cuando exista espacio en el k-ésimo roll.
 // Se devuelve como resultado un par que tiene el número de rolls 
 // empleados y el desperdicio entre todos los roles.
-pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
+pair <int, int>  FFD(int rollSize, vector<int> lpiece,
+		     vector<int> pieceSet) {
   vector<vector<int>*> output;
   if (!emptyPieceSet(pieceSet)) // El Cutting group está vacío 
     return make_pair(0,0);
@@ -22,7 +23,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
       npieces += pieceSet[i];
       
     // Número de tipo de piezas
-      int M = lpiece.size();           
+    int M = lpiece.size();           
     // Construcción de vector tl de par(tipo,longitud) 
     vector <pair <int,int> > tl(M);
     for(i = 0; i < M; i++) {
@@ -37,7 +38,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     int v;        // Lleva la cuenta de cuántas piezas de un tipo 
                   // se ha usado.       
     int k;        // Número de roll actual
-    int nroll = 1;   // Número de rolls usados
+    int nroll = 1;  // Número de rolls usados
     int allocation; // Piezas a poner en roll 
     output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3

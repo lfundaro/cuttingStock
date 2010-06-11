@@ -11,7 +11,7 @@ bool compare(int* a, int* b){
 
 bool checkMove(int orig, int dst, int piece, int npiece,
 	       vector<vector<int>*>* cgroups, vector<int>* lpiece,
-	       vector<int>* bpiece, vector<int>* variety){
+	       vector<int>* variety){
   int i;
   int max = numeric_limits<int>::min();
   int min = numeric_limits<int>::max();
@@ -41,8 +41,8 @@ bool checkMove(int orig, int dst, int piece, int npiece,
   }
 }
 
-int initScoreArrays(vector<vector<int>*>* cgroups, vector<int>* used_rolls,
-		    vector<int>* lpiece, vector<int>* leftover, int npieces,
+int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
+		    vector<int> * lpiece, vector<int>* leftover, int npieces,
 		    vector<int*>* origScores, vector<int*>* dstScores){
   int i;
   int j;
@@ -54,6 +54,12 @@ int initScoreArrays(vector<vector<int>*>* cgroups, vector<int>* used_rolls,
 
   int* leftO_percentege = new int[npieces];
   
+  //init 2dim arrays in origScores and dstScores
+  for(i=0; i<npieces; ++i){
+    origScores->at(i) = new int[2];
+    dstScores->at(i) = new int[2];
+  }
+
   //left overs calc
   for(i=0; i<npieces; ++i)
     if (max < leftover->at(i))
@@ -75,8 +81,10 @@ int initScoreArrays(vector<vector<int>*>* cgroups, vector<int>* used_rolls,
 	  num_items += cgroups->at(i)->at(j);
 	sigma += lpiece->at(j);
       }
-      dstScores->at(i)[1] = ((num_items/used_rolls->at(i))+(sigma/num_items))*(1-leftO_percentege[i]);
-      origScores->at(i)[1] = ((num_items/used_rolls->at(i))+(sigma/num_items))*(leftO_percentege[i]);
+      dstScores->at(i)[0] = i;
+      origScores->at(i)[0] = i;
+      dstScores->at(i)[1] = 0;//((1-used_rolls->at(i)/num_items)+(sigma/num_items))*(1-leftO_percentege[i]);
+      origScores->at(i)[1] = 0;//((1-used_rolls->at(i)/num_items)+(sigma/num_items))*(leftO_percentege[i]);
     }
     else{
       //El roll estaba vacio
@@ -92,7 +100,7 @@ int initScoreArrays(vector<vector<int>*>* cgroups, vector<int>* used_rolls,
 //status: origPos,dstPos
 int* next_move(vector<int>* status, int npieces,
 	       vector<vector<int>*>* cgroups, vector<int>* variety,
-	       vector<int>* lpiece,vector<int>* bpiece,vector<int>* rlenght,
+	       vector<int>* lpiece,vector<int>* rlenght,
 	       vector<int*>* dstScores, vector<int*>* origScores){
   int j;
   int temp;
@@ -112,20 +120,23 @@ int* next_move(vector<int>* status, int npieces,
   move[4] = numeric_limits<int>::max(); 
 
   //Paro cuando se terminen los origenes
-  while (origScores->at(origPos)[1] != -1){
+  while (dstPos < npieces && origPos < npieces && origScores->at(origPos)[1] != -1){
     piece=0;
     orig = origScores->at(origPos)[0];
     dst = dstScores->at(dstPos)[0];
     //Mientras halla piezas en el origen acual
     while (piece < npieces){
       //Busco la siguiente pieza que tenga existencias
-      while (cgroups->at(orig)->at(piece) == 0)
+      while (piece < npieces && cgroups->at(orig)->at(piece) == 0)
 	piece += 1;
+
+      if (piece<npieces)
+	break;
       
       //Si el movimiento es permitido
       if (checkMove(orig,dst,piece,npieces,
-		    cgroups,lpiece,bpiece,
-		    variety)){
+		    cgroups,lpiece,
+		    variety)) {
 	
 	pieceSet = cgroups->at(dst);
 	for(j=0; j<rlenght->size(); ++j){
