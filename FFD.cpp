@@ -54,7 +54,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3
       if (pieceSet[r] == 0) {r++; continue;}
-      v = pieceSet[r];//pieceSet[tl[r].first];
+      v = pieceSet[r];
       k = -1;
       while(v > 0) {
         k++;
