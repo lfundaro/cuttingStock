@@ -26,7 +26,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     // Construcción de vector tl de par(tipo,longitud) 
     vector <pair <int,int> > tl;
     for(i = 0; i < M; i++) {
-      if (pieceSet[i] != 0)    // Sólo se toman piezas existentes
+      // if (pieceSet[i] != 0)    // Sólo se toman piezas existentes
         tl.push_back(make_pair(i, lpiece[i]));
     }
 
@@ -38,11 +38,14 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     vector<pair<int,int> >::iterator it;
     i = 0;
     int tmp;
+    vector<int> npieceSet;
     for(it = tl.begin(); it != tl.end(); it++) {
       // Swap
-      tmp = pieceSet[i];
-      pieceSet[i] = pieceSet[(*it).first];
-      pieceSet[(*it).first] = tmp;
+      npieceSet.push_back(pieceSet[(*it).first]);
+      //      tmp = pieceSet[i];
+      //      pieceSet[i] = pieceSet[(*it).first];
+      //      pieceSet[(*it).first] = tmp;
+      i++;
     }
     
     int r = 0;    // Tipo de pieza actual
@@ -53,8 +56,8 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,vector<int> pieceSet) {
     int allocation; // Piezas a poner en roll 
     output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3
-      if (pieceSet[r] == 0) {r++; continue;}
-      v = pieceSet[r];
+      if (npieceSet[r] == 0) {r++; continue;}
+      v = npieceSet[r];
       k = -1;
       while(v > 0) {
         k++;
