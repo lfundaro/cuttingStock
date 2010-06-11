@@ -100,3 +100,6 @@ inline int min(int a, int b) {
     return b;
 }
 
+// Swap de posiciones en vector pieceSet
+
+

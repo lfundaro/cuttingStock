@@ -25,14 +25,21 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
     // Número de tipo de piezas
     int M = lpiece.size();           
     // Construcción de vector tl de par(tipo,longitud) 
-    vector <pair <int,int> > tl(M);
+    vector <pair <int,int> > tl;
     for(i = 0; i < M; i++) {
-      if (pieceSet[i] != 0)    // Sólo se toman piezas existentes
-        tl[i] = make_pair(i, lpiece[i]);
+      // if (pieceSet[i] != 0)    // Sólo se toman piezas existentes
+        tl.push_back(make_pair(i, lpiece[i]));
     }
 
     // Ordenamiento del arreglo tl
     sort(tl.begin(), tl.end(), comparePair);
+
+    // Se arregla pieceSet para que exista correspondencia
+    // de índices con tl.
+    vector<pair<int,int> >::iterator it;
+    vector<int> npieceSet;
+    for(it = tl.begin(); it != tl.end(); it++) 
+      npieceSet.push_back(pieceSet[(*it).first]);
     
     int r = 0;    // Tipo de pieza actual
     int v;        // Lleva la cuenta de cuántas piezas de un tipo 
@@ -42,8 +49,8 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
     int allocation; // Piezas a poner en roll 
     output.push_back(new vector<int>(M, 0)); // Primer roll
     while(r < M) {    // Step 3
-      if (pieceSet[r] == 0) {r++; continue;}
-      v = pieceSet[tl[r].first];
+      if (npieceSet[r] == 0) {r++; continue;}
+      v = npieceSet[r];
       k = -1;
       while(v > 0) {
         k++;
@@ -53,18 +60,19 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
         }
         int sum = 0; // Sumatoria acumulada
         for(i = 0; i <= r - 1; i++) {
-          sum += output[k]->at(i) * lpiece[tl[i].first];
+          sum += output[k]->at(tl[i].first) * lpiece[tl[i].first];
         }
         allocation = (rollSize - sum)/lpiece[tl[i].first];
         if (v <= allocation) 
-          output[k]->at(r) = v;
+          output[k]->at(tl[r].first) = v;
         else
-          output[k]->at(r) = allocation;
+          output[k]->at(tl[r].first) = allocation;
 
         v -= allocation;
       }
       r += 1;
     }
+
     pair <int,int> result;
     result.first = nroll;
     result.second = leftOver(output, rollSize, lpiece);
