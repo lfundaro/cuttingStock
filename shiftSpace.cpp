@@ -1,11 +1,12 @@
 #include "shiftSpace.h"
 #include "utilities.h"
 #include "FFD.h"
-#define MAX_OS 4
-#define MIN_SD 100 
+#include <math.h>
+#define MAX_OS 10000
+#define MIN_SD 0
 using namespace std;
 
-bool compare(int* a, int* b){
+bool compare(double* a, double* b){
   return (a[1] > b[1]);
 }
 
@@ -39,11 +40,12 @@ bool checkMove(int orig, int dst, int piece, int npiece,
       if (lpiece->at(piece)-min > MIN_SD)
 	return false;
   }
+  return true;
 }
 
 int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
 		    vector<int> * lpiece, vector<int>* leftover, int npieces,
-		    vector<int*>* origScores, vector<int*>* dstScores){
+		    vector<double*>* origScores, vector<double*>* dstScores){
   int i;
   int j;
   int aux;
@@ -52,12 +54,12 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
   int num_items;
   int max = 0;
 
-  int* leftO_percentege = new int[npieces];
-  
+  double* leftO_percentege = new double[npieces];
+
   //init 2dim arrays in origScores and dstScores
   for(i=0; i<npieces; ++i){
-    origScores->at(i) = new int[2];
-    dstScores->at(i) = new int[2];
+    origScores->at(i) = new double[2];
+    dstScores->at(i) = new double[2];
   }
 
   //left overs calc
@@ -66,12 +68,14 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
       max = leftover->at(i);
 
   for(i=0; i<npieces; ++i)
-    leftO_percentege[i] = leftover->at(i)*100/max;
+    leftO_percentege[i] = (double)leftover->at(i)/(double)max;
 
   //frags calc
   //Ciclo sobre los grupos
   for(i=0; i<npieces; ++i){
     //Si el grupo tiene algo dentro
+    dstScores->at(i)[0] = i;
+    origScores->at(i)[0] = i;
     if (used_rolls->at(i) != 0){
       num_items = 0;
       sigma = 0;
@@ -81,10 +85,10 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
 	  num_items += cgroups->at(i)->at(j);
 	sigma += lpiece->at(j);
       }
-      dstScores->at(i)[0] = i;
-      origScores->at(i)[0] = i;
-      dstScores->at(i)[1] = 0;//((1-used_rolls->at(i)/num_items)+(sigma/num_items))*(1-leftO_percentege[i]);
-      origScores->at(i)[1] = 0;//((1-used_rolls->at(i)/num_items)+(sigma/num_items))*(leftO_percentege[i]);
+      double uRolls = used_rolls->at(i);
+      double nItems = num_items;
+      dstScores->at(i)[1] = sqrt( ((1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/)+(1-leftO_percentege[i]) );
+      origScores->at(i)[1] = sqrt( ((1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/)+(leftO_percentege[i]) );
     }
     else{
       //El roll estaba vacio
@@ -93,35 +97,56 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
     }
   }
 
+  delete [] leftO_percentege;
   sort(dstScores->begin(), dstScores->end(), compare);
   sort(origScores->begin(), origScores->end(), compare);
+
+  // for(i=0;i<npieces;++i){
+  //   cout << dstScores->at(i)[0] << ":" <<  (double)dstScores->at(i)[1] << "\n";
+  //   cout << origScores->at(i)[0] << ":" << (double)origScores->at(i)[1] << "\n";
+  //   cout << "===========\n";
+  // }
 }
 
 //status: origPos,dstPos
 int* next_move(vector<int>* status, int npieces,
 	       vector<vector<int>*>* cgroups, vector<int>* variety,
-	       vector<int>* lpiece,vector<int>* rlenght,
-	       vector<int*>* dstScores, vector<int*>* origScores){
-  int j;
-  int temp;
-  int best_stock_size;
-  vector<int>* pieceSet;
-
+	       vector<int>* lpiece,vector<int>* rlenght, vector<int>* lot_s,
+	       vector<double*>* dstScores, vector<double*>* origScores){
   int origPos = status->at(0);
   int dstPos = status->at(1);
+
+  if (origPos == dstPos)
+    if (dstPos+1 < npieces &&
+	dstScores->at(dstPos+1)[1] != -1){
+      status->at(0) = origPos;
+      status->at(1) = dstPos + 1;
+    }
+    else{
+      status->at(0) = origPos + 1;
+      status->at(1) = 0;
+    }
+  
+
+  int j;
+  pair <int,int> temp_result;
+  pair <int,int> orig_state;
+  int best_stock_size;
+  vector<int>* pieceSet;
 
   int orig;
   int dst;
   int piece;
   int used_rolls = numeric_limits<int>::max();
 
-  int* move = new int[6];
+  int* move = new int[7];
   //Aca va el minimo numero de rolls usados
   move[4] = numeric_limits<int>::max(); 
 
   //Paro cuando se terminen los origenes
-  while (dstPos < npieces && origPos < npieces && origScores->at(origPos)[1] != -1){
-    piece=0;
+  while (origPos < npieces &&
+	 origScores->at(origPos)[1] != -1) {
+    piece = 0;
     orig = origScores->at(origPos)[0];
     dst = dstScores->at(dstPos)[0];
     //Mientras halla piezas en el origen acual
@@ -130,35 +155,57 @@ int* next_move(vector<int>* status, int npieces,
       while (piece < npieces && cgroups->at(orig)->at(piece) == 0)
 	piece += 1;
 
-      if (piece<npieces)
+      if (piece >= npieces)
 	break;
       
       //Si el movimiento es permitido
       if (checkMove(orig,dst,piece,npieces,
-		    cgroups,lpiece,
-		    variety)) {
+		    cgroups,lpiece,variety)) {
 	
 	pieceSet = cgroups->at(dst);
+	pieceSet->at(piece) += lot_s->at(piece);
 	for(j=0; j<rlenght->size(); ++j){
-	  temp = FFD(rlenght->at(j),*lpiece,*pieceSet).first;
-	  if (temp<move[4]){
-	    move[4] = temp;
-	    best_stock_size = j;
+	  temp_result = FFD(rlenght->at(j),*lpiece,*pieceSet);
+	  if (temp_result.first < move[4]){
+	    move[6] = temp_result.first; //rolls usados en dst
+	    move[4] = temp_result.second;//leftofer en dst
 	  }
 	}
+	pieceSet->at(piece) -= lot_s->at(piece);
+
+	used_rolls = numeric_limits<int>::max();
+	pieceSet = cgroups->at(orig);
+	pieceSet->at(piece) -= lot_s->at(piece);
+	for(j=0; j<rlenght->size(); ++j){
+	  temp_result = FFD(rlenght->at(j),*lpiece,*pieceSet);
+	  if (temp_result.first < move[4]){
+	    move[5] = temp_result.first; //rolls usados en orig
+	    move[3] = temp_result.second;//leftofer en orig
+	  }
+	}
+	pieceSet->at(piece) += lot_s->at(piece);
 	
-	move[5] = FFD(best_stock_size,*lpiece,*cgroups->at(orig)).first;
+	// //Si le paso la exp directamente FFD se come la ram.
+	// //Por alguna razon pasa 0 en vez de el tamano.
+	// cgroups->at(orig)->at(piece) -= lot_s->at(piece);
+	// int rollsize = rlenght->at(best_stock_size);
+	// temp_result = FFD(rollsize,*lpiece,*cgroups->at(orig));
+	// move[3] = temp_result.second; //leftover en origen
+	// move[5] = temp_result.first;//rolls usados en orig
+	// cgroups->at(orig)->at(piece) += lot_s->at(piece);
 	    
-	//Construyo solucion
+	//Construyo el resto solucion
 	move[0] = orig;
 	move[1] = dst;
 	move[2] = piece;
-	move[3] = 0; //leftover(cgroups->at(dst))
 	
 	//Acualizo status, tiene el siguiente
         //origen y destino a revisar
-	if (dstScores->at(dstPos+1)[1] != -1)
+	if (dstPos+1 < npieces &&
+	    dstScores->at(dstPos+1)[1] != -1){
+	  status->at(0) = origPos;
 	  status->at(1) = dstPos + 1;
+	}
 	else{
 	  status->at(0) = origPos + 1;
 	  status->at(1) = 0;
@@ -175,13 +222,15 @@ int* next_move(vector<int>* status, int npieces,
     //piezas para este origen y destino, calculo
     //un siguiente destino y si era el ultimo
     //un siguiente origen
-    if (dstScores->at(origPos+1)[1] != -1)
+    if (dstPos+1 < npieces &&
+	dstScores->at(dstPos+1)[1] != -1)
       dstPos += 1;
     else{
       origPos += 1;
       dstPos = 0;
     }
   } 
+  //cout << origScores->at(origPos)[1] <<"\n";
 
   move[0] = -1;
   move[1] = -1;

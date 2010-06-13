@@ -14,18 +14,18 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 // desperdicios generados.
 bool group_quality(int * info, vector<int> &leftover,
                    vector<int> &used_rolls) {
-  if (info[3] < leftover[info[1]])
+  if (info[4] < leftover[info[1]])
     return true;
   else {
     // Se compara si leftovers son iguales
-    if (info[3] == leftover[info[1]]) {
+    if (info[4] == leftover[info[1]]) {
       // Se compara por numero de rolls usados
-      if (info[5] < used_rolls[info[1]])
+      if (info[6] < used_rolls[info[1]])
         return true;
       else {
-        if (info[5] == used_rolls[info[1]]) {
+        if (info[6] == used_rolls[info[1]]) {
           // Se comparan los orígenes
-          if (info[4] < used_rolls[info[0]])
+          if (info[5] < used_rolls[info[0]])
             return true;
           else 
             return false;

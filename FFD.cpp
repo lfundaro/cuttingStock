@@ -47,7 +47,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
     int k;        // Número de roll actual
     int nroll = 1;  // Número de rolls usados
     int allocation; // Piezas a poner en roll 
-    output.push_back(new vector<int>(M, 0)); // Primer roll
+    output.push_back(new vector<int>(M,0)); // Primer roll
     while(r < M) {    // Step 3
       if (npieceSet[r] == 0) {r++; continue;}
       v = npieceSet[r];

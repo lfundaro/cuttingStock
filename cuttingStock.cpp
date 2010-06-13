@@ -59,8 +59,6 @@ int main(int argc, char *argv[]) {
                                          rollType);
 
     //FFD(1000,lpiece,*cg[cg.size()-2]);
-    //localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
-    //		  used_rolls, variety);
     for(i = 0; i < ntpieces; i++) {
       if (used_rolls[i]) {
         cout << "Tipo " << i << endl;
@@ -70,6 +68,10 @@ int main(int argc, char *argv[]) {
         cout << "------------" << endl;
       }
     }
+    cout << "======================\n";
+    localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
+    		  used_rolls, variety);
+ 
     free_vector(cg);
     free(line);
     instance.close();
