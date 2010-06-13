@@ -28,6 +28,11 @@ void ILS(vector<vector<int>*> &cgroups,
     localSearchBB(S_pert, rlenght, lot_s,
                   lpiece, dpiece, pert.first);
 
+    // Ojo leftoverS1 es el leftover de S_start
+    // leftoverS2 es el leftover de S_pert
+    // los nombres de esa variable se deben cambiar 
+    // porque ahora no coinciden.
+
     int tleft1 = 0;
     int leftoverS1_size = leftoverS1.size();
     for(int i = 0; i < leftoverS1_size; i++) 
