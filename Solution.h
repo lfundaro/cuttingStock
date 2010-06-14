@@ -1,3 +1,6 @@
+#include <vector>
+using namespace std;
+
 class Solution {
  public:
   vector<int> leftover;
@@ -5,6 +8,8 @@ class Solution {
   vector<int> rollType;
   vector<vector<int>*> cgs; // cutting group set
 
-  ~Solution
-  
+  Solution(vector<int> &rlength, vector<int> &lpiece,
+           vector<int> &dpiece);
+
+  ~Solution();
 };
