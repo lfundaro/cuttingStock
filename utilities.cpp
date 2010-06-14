@@ -14,18 +14,18 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 // desperdicios generados.
 bool group_quality(int * info, vector<int> &leftover,
                    vector<int> &used_rolls) {
-  if (info[3] < leftover[info[1]])
+  if (info[4] < leftover[info[1]])
     return true;
   else {
     // Se compara si leftovers son iguales
-    if (info[3] == leftover[info[1]]) {
+    if (info[4] == leftover[info[1]]) {
       // Se compara por numero de rolls usados
-      if (info[5] < used_rolls[info[1]])
+      if (info[6] < used_rolls[info[1]])
         return true;
       else {
-        if (info[5] == used_rolls[info[1]]) {
+        if (info[6] == used_rolls[info[1]]) {
           // Se comparan los orígenes
-          if (info[4] < used_rolls[info[0]])
+          if (info[5] < used_rolls[info[0]])
             return true;
           else 
             return false;
@@ -59,7 +59,8 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
   int minimum;
   int left = 0;
   vector<int>::iterator it;
-  for(i = 0; i < M; i++) 
+
+  for(i = 0; i < M; i++)
     cgroups.push_back(new vector<int>(M,0));
 
   for(i = 0; i < M; i++) {
@@ -73,7 +74,7 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
     for(j = 0; j < rlenght.size(); j++) {
       ffdresult = FFD(rlenght[j], lpiece, pieceSet);
       minimum = min(target.first,ffdresult.first);
-      if (target.first != minimum) {
+      if (target.first != minimum){
         target.first = minimum;
         target.second = j;
         left = ffdresult.second;
@@ -83,6 +84,8 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
     leftover[i] = left;
     rollType[i] = target.second;
     
+    //cgroups[i] = &pieceSet;
+    //cout << dpiece[i] <<"\n";
     cgroups[i]->at(i) = dpiece[i];
   }
   return cgroups;
