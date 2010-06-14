@@ -6,7 +6,7 @@ Solution::Solution(vector<int> &rlength,
                    vector<int> &lpiece,
                    vector<int> &dpiece) {
   int M = lpiece.size();
-  vector<vector<int>*> cgroups; // Solucion
+  size = M;
   int i;
   int j;
   int k;
@@ -17,7 +17,7 @@ Solution::Solution(vector<int> &rlength,
   vector<int>::iterator it;
   
   for(i = 0; i < M; i++)
-    cgroups.push_back(new vector<int>(M,0));
+    cgs.push_back(new vector<int>(M,0));
   
   for(i = 0; i < M; i++) {
     vector<int> pieceSet(M,0);
@@ -27,8 +27,8 @@ Solution::Solution(vector<int> &rlength,
     // Se prueba con todos los tipos de rolls 
     // para ver donde se acomoda mejor la n cantidad 
     // de piezas del tipo i.
-    for(j = 0; j < rlenght.size(); j++) {
-      ffdresult = FFD(rlenght[j], lpiece, pieceSet);
+    for(j = 0; j < rlength.size(); j++) {
+      ffdresult = FFD(rlength[j], lpiece, pieceSet);
       minimum = min(target.first,ffdresult.first);
       if (target.first != minimum){
         target.first = minimum;
@@ -36,14 +36,11 @@ Solution::Solution(vector<int> &rlength,
         left = ffdresult.second;
       }
     }
-    used_rolls[i] = target.first;
-    leftover[i] = left;
-    rollType[i] = target.second;
+    used_rolls.push_back(target.first);
+    leftover.push_back(left);
+    rollType.push_back(target.second);
     
-    //cgroups[i] = &pieceSet;
-    //cout << dpiece[i] <<"\n";
-    cgroups[i]->at(i) = dpiece[i];
+    cgs[i]->at(i) = dpiece[i];
   }
-  return cgroups;
 }
 
