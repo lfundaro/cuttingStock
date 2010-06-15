@@ -17,7 +17,7 @@ Solution::Solution(vector<int> &rlength,
   vector<int>::iterator it;
   
   for(i = 0; i < M; i++)
-    cgs.push_back(new vector<int>(M,0));
+    cgs.push_back(vector<int>(M,0));
   
   for(i = 0; i < M; i++) {
     vector<int> pieceSet(M,0);
@@ -40,7 +40,28 @@ Solution::Solution(vector<int> &rlength,
     leftover.push_back(left);
     rollType.push_back(target.second);
     
-    cgs[i]->at(i) = dpiece[i];
+    cgs[i][i] = dpiece[i];
   }
 }
+
+// Solution::~Solution() {
+//   free_vector(cgs);
+// }
+
+Solution::Solution(const Solution& a, int M) {
+  leftover = a.leftover;
+  used_rolls = a.used_rolls;
+  rollType = a.rollType;
+  size = a.size;
+  cgs = a.cgs;
+  // for(int i = 0; i < size; i++) {
+  //   cgs.push_back(new vector<int>(M,0)); 
+  // }
+  // for(int i = 0; i < size; i++) {
+  //   //    for(int j = 0; j < M; j++) {
+  //   cgs[i] = a.cgs[i];
+  //     // }
+  // }
+}
+
 

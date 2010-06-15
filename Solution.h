@@ -1,3 +1,5 @@
+#ifndef SOLUTION
+#define SOLUTION
 #include <vector>
 #include "utilities.h"
 #include "FFD.h"
@@ -8,11 +10,15 @@ class Solution {
   vector<int> leftover;
   vector<int> used_rolls;
   vector<int> rollType;
-  vector<vector<int>*> cgs; // cutting group set
+  vector<vector<int> > cgs; // cutting group set
   int size;
 
   Solution(vector<int> &rlength, vector<int> &lpiece,
            vector<int> &dpiece);
+  
+  Solution(const Solution& a, int M);
 
-  ~Solution();
+  // ~Solution();
 };
+
+#endif

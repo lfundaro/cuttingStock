@@ -100,6 +100,13 @@ inline int min(int a, int b) {
     return b;
 }
 
-// Swap de posiciones en vector pieceSet
+// Libera los vectores que representan un roll 
+// con piezas en un determinado cutting group
+void free_vector(vector<vector<int>*> &a) {
+  vector<vector<int>*>::iterator it;
+  for(it = a.begin(); it != a.end(); it++) 
+    delete (*it);
+}
+
 
 
