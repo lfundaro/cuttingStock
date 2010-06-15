@@ -11,7 +11,7 @@ using namespace std;
 // Se devuelve como resultado un par que tiene el número de rolls 
 // empleados y el desperdicio entre todos los roles.
 pair <int, int>  FFD(int rollSize, vector<int> lpiece,
-		     vector<int> pieceSet) {
+                     vector<int> pieceSet) {
   vector<vector<int>*> output;
   if (!emptyPieceSet(pieceSet)) // El Cutting group está vacío 
     return make_pair(0,0);

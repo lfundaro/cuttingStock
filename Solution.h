@@ -18,7 +18,11 @@ class Solution {
   
   Solution(const Solution& a, int M);
 
-  // ~Solution();
+  void printSolution();
+
+  void update(int where, vector<int> &lpiece,
+              vector<int> &rlength);
+
 };
 
 #endif

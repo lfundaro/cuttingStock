@@ -1,7 +1,8 @@
 #include "genetic.h"
 using namespace std;
 
-Solution* randomSol(Solution &initial, vector<int> &lpiece) {
+Solution* randomSol(Solution &initial, vector<int> &lpiece,
+                    vector<int> &rlength) {
   Solution* new_solution = new Solution(initial);
   int n = NUM_PERTURBATIONS;
   int origin;
@@ -9,27 +10,31 @@ Solution* randomSol(Solution &initial, vector<int> &lpiece) {
   int npieces;
   int take;
   int space;
+  int rep=0;
+  srand(time(NULL));
   for(int i = 0; i < n; i++) {
-    srand(time(NULL));
     while (true) {
       origin = rand() % initial.size;
-      npieces = initial.cgs[origin][origin];
+      npieces = new_solution->cgs[origin][origin];
       take = (MOVE_PERCENTAGE*npieces) / 100;
       if (take) { // Hay suficientes piezas para mover
         while (true) {
-          destiny = rand() % initial.size;
+          destiny = rand() % new_solution->size;
           if (destiny != origin) { 
+            if (rlength[new_solution->rollType[destiny]] 
+                < lpiece[origin]) 
+              continue;
             space = take*lpiece[origin];
-            cout << destiny << endl;
-            cout << origin << endl;
             // Se ejecuta movimiento
-            if (initial.leftover[destiny] >= space) {
+            if (new_solution->leftover[destiny] >= space) {
               new_solution->cgs[origin][origin] -= take;
+              new_solution->update(origin,lpiece,rlength);
               new_solution->cgs[destiny][origin]  += take;
+              new_solution->update(destiny,lpiece,rlength);
               break;
             }
           }
-          else continue; 
+          else continue;
         }
         break; // Se logro hacer perturbación
       }

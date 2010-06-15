@@ -21,10 +21,10 @@ int main(int argc, char *argv[]) {
     sscanf(line,"%*s %d", &ntpieces);
     // Se leen nroll_type líneas para almacenar 
     // las longitudes de cada tipo de roll.
-    vector<int> rlenght(nroll_type);
+    vector<int> rlength(nroll_type);
     for(i = 0; i < nroll_type; i++) {
       instance.getline(line, 60);
-      sscanf(line,"%d", &rlenght[i]);
+      sscanf(line,"%d", &rlength[i]);
     }
     vector<int> lot_s(ntpieces); // Tamaño de lote
     vector<int> lpiece(ntpieces); // Longitud de pieza
@@ -55,10 +55,14 @@ int main(int argc, char *argv[]) {
 
     vector<int> variety(ntpieces,1);
     
-    Solution a(rlenght, lpiece, dpiece);
-    Solution* b = randomSol(a, lpiece);
-    cout << a.cgs[0][0] << endl;
-    // vector<vector<int>*> cg = genInitSol(rlenght,lpiece,
+    Solution a(rlength, lpiece, dpiece);
+    a.printSolution();
+    cout << "Nueva Solution " << endl;
+    Solution* b = randomSol(a, lpiece,rlength);
+    b->printSolution();
+    delete b;
+    //    cout << a.cgs[0][0] << endl;
+    // vector<vector<int>*> cg = genInitSol(rlength,lpiece,
     //                                      dpiece, leftover,
     //                                      used_rolls,
     //                                      rollType);
@@ -74,7 +78,7 @@ int main(int argc, char *argv[]) {
     //   }
     // }
     // cout << "======================\n";
-    // localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
+    // localSearchBB(cg, rlength, lot_s, lpiece, dpiece, leftover,
     // 		  used_rolls, variety);
  
     //    free_vector(cg);
