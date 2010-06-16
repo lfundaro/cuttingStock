@@ -1,10 +1,6 @@
 CXX	:= g++-4.4
 CXXFLAGS := -g
-<<<<<<< HEAD
 OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o shiftSpace.o Perturb.o ILS.o
-=======
-OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o 
->>>>>>> 671730711e66a739dbf2aaf5dd7d6417da9af1f4
 
 all: cuttingStock
 
