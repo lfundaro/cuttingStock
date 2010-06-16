@@ -2,6 +2,34 @@
 #include "FFD.h"
 using namespace std;
 
+vector<vector<int>*> duplicate(vector<vector<int>*> &solution,
+			       int items){
+  int i;
+  int j;
+  vector<vector<int>*> dup;
+
+  for (i=0; i<items; ++i){
+    dup.push_back(new vector<int>);
+    for (j=0; j<items; ++j){
+      dup.at(i)->push_back(solution.at(i)->at(j));
+    }
+  }
+  
+  return dup;
+}
+
+void overwrite(vector<vector<int>*> &orig,
+	       vector<vector<int>*> &dst,
+	       int items){
+  int i;
+  int j;
+
+  for (i=0; i<items; ++i){
+    for (j=0; j<items; ++j){
+      dst.at(i)->at(j) = orig.at(i)->at(j);
+    }
+  }
+}
 
 // Comparación de pares de la forma p(id_pieza, longitud).
 bool comparePair(pair<int,int> a, pair<int,int> b) {
@@ -88,12 +116,13 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
     //cout << dpiece[i] <<"\n";
     cgroups[i]->at(i) = dpiece[i];
   }
+
   return cgroups;
 }
 
 
 // Función que Calcula mínimo
-inline int min(int a, int b) {
+int min(int a, int b) {
   if (a < b) 
     return a;
   else

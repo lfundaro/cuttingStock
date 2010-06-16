@@ -4,6 +4,7 @@
 #include "FFD.h"
 #include "utilities.h"
 #include "localSearchBB.h"
+#include "ILS.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -59,19 +60,22 @@ int main(int argc, char *argv[]) {
                                          rollType);
 
     //FFD(1000,lpiece,*cg[cg.size()-2]);
-    for(i = 0; i < ntpieces; i++) {
-      if (used_rolls[i]) {
-        cout << "Tipo " << i << endl;
-        cout << "rolls " << used_rolls[i] << endl;
-        cout << "leftover " << leftover[i] << endl;
-        cout << "n_used_pieces " << cg[i]->at(i) << endl; 
-        cout << "------------" << endl;
-      }
-    }
-    cout << "======================\n";
-    localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
-    		  used_rolls, variety);
+    // for(i = 0; i < ntpieces; i++) {
+    //   if (used_rolls[i]) {
+    //     cout << "Tipo " << i << endl;
+    //     cout << "rolls " << used_rolls[i] << endl;
+    //     cout << "leftover " << leftover[i] << endl;
+    //     cout << "n_used_pieces " << cg[i]->at(i) << endl; 
+    //     cout << "------------" << endl;
+    //   }
+    // }
+    // cout << "======================\n";
+    // localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
+    // 		  used_rolls, variety);
  
+    ILS(cg,rlenght,lot_s,lpiece,dpiece,leftover,
+	used_rolls,rollType,variety);
+    
     free_vector(cg);
     free(line);
     instance.close();

@@ -13,9 +13,7 @@ using namespace std;
 pair <int, int>  FFD(int rollSize, vector<int> lpiece,
 		     vector<int> pieceSet) {
   vector<vector<int>*> output;
-  if (!emptyPieceSet(pieceSet)) // El Cutting group está vacío 
-    return make_pair(0,0);
-  else {
+  if (emptyPieceSet(pieceSet)){
     int i;
     int npieces = 0;
     // Número de piezas en conjunto factible
@@ -48,6 +46,7 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
     int nroll = 1;  // Número de rolls usados
     int allocation; // Piezas a poner en roll 
     output.push_back(new vector<int>(M,0)); // Primer roll
+
     while(r < M) {    // Step 3
       if (npieceSet[r] == 0) {r++; continue;}
       v = npieceSet[r];
@@ -58,15 +57,17 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
           nroll++;
           output.push_back(new vector<int>(M, 0)); // Nuevo roll
         }
+
+	vector<int>* current_cg = output[k];
         int sum = 0; // Sumatoria acumulada
         for(i = 0; i <= r - 1; i++) {
-          sum += output[k]->at(tl[i].first) * lpiece[tl[i].first];
+          sum += (*current_cg)[tl[i].first] * lpiece[tl[i].first];
         }
         allocation = (rollSize - sum)/lpiece[tl[i].first];
-        if (v <= allocation) 
-          output[k]->at(tl[r].first) = v;
+        if (v > allocation) 
+          (*(current_cg))[tl[r].first] = allocation;
         else
-          output[k]->at(tl[r].first) = allocation;
+          (*(current_cg))[tl[r].first] = v;
 
         v -= allocation;
       }
@@ -78,6 +79,9 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
     result.second = leftOver(output, rollSize, lpiece);
     free_vector(output);
     return result;
+  }
+  else { // El Cutting group está vacío 
+    return make_pair(0,0);
   }
 } 
 

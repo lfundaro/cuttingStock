@@ -1,6 +1,5 @@
 #include "utilities.h"
 #include "localSearchBB.h"
-#include "shiftSpace.cpp"
 using namespace std;
 
 // Algoritmo de búsqueda local mejor mejor.
@@ -36,10 +35,11 @@ void localSearchBB(vector<vector<int>*> &cgroups,
       if (cgroups[info[1]]->at(info[2]) == 0)
 	variety[info[1]]++;
 
+      int nitems_orig = cgroups[info[0]]->at(info[2]);
       // Se actualiza cgroups destino
-      cgroups[info[1]]->at(info[2]) += lot_s[info[2]];
+      cgroups[info[1]]->at(info[2]) += min(nitems_orig,lot_s[info[2]]);
       // Se actualiza cgroups origen
-      cgroups[info[0]]->at(info[2]) -= lot_s[info[2]];
+      cgroups[info[0]]->at(info[2]) -= min(nitems_orig,lot_s[info[2]]);
 
       // Se actualiza estructura variety para origen
       if (cgroups[info[0]]->at(info[2]) == 0) 
@@ -57,20 +57,20 @@ void localSearchBB(vector<vector<int>*> &cgroups,
     maxIt--;
     delete [] info;
   }
-  int i;
-  int j;
-  int sum;
-  for(i = 0; i < lpiece.size(); i++) {
-    sum = 0;
-    if (used_rolls[i]) {
-      cout << "Tipo " << i << endl;
-      cout << "rolls " << used_rolls[i] << endl;
-      cout << "leftover " << leftover[i] << endl;
-      for(j=0;j<lpiece.size();++j)
-      	sum += cgroups[i]->at(j);
-      cout << "n_used_pieces " << sum << endl; 
-      cout << "------------" << endl;
-      }
-  }
+  // int i;
+  // int j;
+  // int sum;
+  // for(i = 0; i < lpiece.size(); i++) {
+  //   sum = 0;
+  //   if (used_rolls[i]) {
+  //     cout << "Tipo " << i << endl;
+  //     cout << "rolls " << used_rolls[i] << endl;
+  //     cout << "leftover " << leftover[i] << endl;
+  //     for(j=0;j<lpiece.size();++j)
+  //     	sum += cgroups[i]->at(j);
+  //     cout << "n_used_pieces " << sum << endl; 
+  //     cout << "------------" << endl;
+  //     }
+  // }
 }
               
