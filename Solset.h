@@ -1,0 +1,4 @@
+class solSet {
+ public:
+  
+};
