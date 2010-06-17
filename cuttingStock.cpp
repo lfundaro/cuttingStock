@@ -58,12 +58,23 @@ int main(int argc, char *argv[]) {
     Solution a(rlength, lpiece, dpiece);
     srand(time(NULL));
 
-    for(int i = 0; i < 10; i++) {
-      Solution* b = randomSol(a,lpiece,rlength);
-      b->printSolution();
-      cout << "=======" << endl;
-      delete b;
+    vector<Solution*> set = genPeople(ntpieces, rlength, 
+                                      lpiece,dpiece);
+    
+    Solution children = Cross(set[0], set[1]);
+    cout << "Padre" << endl; 
+    set[0]->printSolution();
+    // cout << "Madre" << endl;
+    // set[1]->printSolution();
+    cout << "Primer hijo" << endl;
+    children.printSolution();
+    // cout << "Segundo hijo" << endl;
+    // children.second.printSolution();
+
+    for(int i = 0; i < set.size(); i++) {
+      delete set[i];
     }
+    
     //    cout << a.cgs[0][0] << endl;
     // vector<vector<int>*> cg = genInitSol(rlength,lpiece,
     //                                      dpiece, leftover,

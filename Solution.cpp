@@ -18,7 +18,7 @@ Solution::Solution(vector<int> &rlength,
   
   for(i = 0; i < M; i++)
     cgs.push_back(vector<int>(M,0));
-  
+
   for(i = 0; i < M; i++) {
     vector<int> pieceSet(M,0);
     pieceSet[i] = dpiece[i];
@@ -53,6 +53,23 @@ Solution::Solution(const Solution& a, int M) {
   size = a.size;
   cgs = a.cgs;
 }
+
+Solution::Solution(vector<int> leftover, 
+                   vector<int> used_rolls,
+                   vector<int> rollType, 
+                   vector<vector<int> > p, int size) {
+  leftover = leftover;
+  used_rolls = used_rolls;
+  rollType = rollType;
+  cgs = p;
+ // for(int i = 0; i < size; i++) {
+  //   cgs.push_back(p[i]);
+  // }
+  size = size;
+}
+
+Solution::Solution() {};
+
 
 void Solution::printSolution() {
   int i = 0;

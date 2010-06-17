@@ -17,4 +17,11 @@ using namespace std;
 Solution* randomSol(Solution &initial, vector<int> &lpiece,
                     vector<int> &rlength);
 
+vector<Solution*> genPeople(int tam, vector<int> &rlength,
+                            vector<int> &lpiece,
+                            vector<int> &dpiece);
+
+Solution Cross(Solution* mother, Solution* father);
+
+
 #endif

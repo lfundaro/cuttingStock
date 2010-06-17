@@ -18,6 +18,11 @@ class Solution {
   
   Solution(const Solution& a, int M);
 
+  Solution(vector<int> leftover, vector<int> used_rolls,
+           vector<int> rollType, vector<vector<int> > cgs,
+           int size);
+
+  Solution();
   void printSolution();
 
   void update(int where, vector<int> &lpiece,
