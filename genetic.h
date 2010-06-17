@@ -23,5 +23,12 @@ vector<Solution*> genPeople(int tam, vector<int> &rlength,
 
 pair<Solution,Solution> Cross(Solution* mother, Solution* father);
 
+void fixSolution(Solution &son, vector<int> &dpiece, 
+                 vector<int> &rlength,vector<int> &lpiece);
+
+bool checkConstraints(vector<int> &lpiece,
+                      Solution &sol, int destiny);
+
+int notEmptyColumn(vector<int> column);
 
 #endif

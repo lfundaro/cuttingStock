@@ -66,11 +66,19 @@ int main(int argc, char *argv[]) {
     set[0]->printSolution();
     cout << "Madre" << endl;
     set[1]->printSolution();
-    cout << "Primer hijo" << endl;
-    children.first.printSolution();
-    cout << "Segundo hijo" << endl;
-    children.second.printSolution();
-    
+    // cout << "Primer hijo" << endl;
+    // children.first.printSolution();
+    // cout << "Segundo hijo" << endl;
+    // children.second.printSolution();
+
+    Solution k = children.first;
+    cout << "ANTES " << endl; 
+    k.printSolution();
+    fixSolution(k, dpiece, rlength, lpiece);
+    cout << "=========== " << endl;
+    cout << "DESPUES " << endl; 
+    k.printSolution();
+
     for(int i = 0; i < set.size(); i++) {
       delete set[i];
     }
