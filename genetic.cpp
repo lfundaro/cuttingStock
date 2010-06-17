@@ -83,8 +83,9 @@ vector<Solution*> genPeople(int tam, vector<int> &rlength,
   return solutionSet;
 }
 
-// Cruce de un punto
-Solution Cross(Solution* mother, Solution* father) {
+// Cruce de un punto. Genera dos soluciones 
+// infactible.
+pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   // Se generan dos hijos
   vector<vector<int> > acgs;
   vector<vector<int> > bcgs;
@@ -97,6 +98,13 @@ Solution Cross(Solution* mother, Solution* father) {
     break;
   }
   vector<vector<int> >::iterator it;
+  vector<int>::iterator vit;
+  vector<int> aleftover;
+  vector<int> aused_rolls;
+  vector<int> arollType;
+  vector<int> bleftover;
+  vector<int> bused_rolls;
+  vector<int> brollType;
   // Primer Hijo. Construcción de genes
   for(it = mother->cgs.begin(); it < mother->cgs.begin() + point; it++) {
     acgs.push_back(*it);
@@ -105,25 +113,61 @@ Solution Cross(Solution* mother, Solution* father) {
     acgs.push_back(*it);
   }
   // Primer Hijo copia de arreglo leftover;
+  for(vit = mother->leftover.begin(); vit < mother->leftover.begin() + point; vit++) {
+    aleftover.push_back(*vit);
+  }
+  for(vit = father->leftover.begin() + point; vit != father->leftover.end(); vit++) {
+    aleftover.push_back(*vit);
+  }
+  // Primer Hijo. Copia de arreglo used_rolls
+  for(vit = mother->used_rolls.begin(); vit < mother->used_rolls.begin() + point; vit++) {
+    aused_rolls.push_back(*vit);
+  }
+  for(vit = father->used_rolls.begin() + point; vit != father->used_rolls.end(); vit++) {
+    aused_rolls.push_back(*vit);
+  }
+  // Primer Hijo. Copia de arreglo rollType
+  for(vit = mother->rollType.begin(); vit < mother->rollType.begin() + point; vit++) {
+    arollType.push_back(*vit);
+  }
+  for(vit = father->rollType.begin() + point; vit != father->rollType.end(); vit++) {
+    arollType.push_back(*vit);
+  }
+  // Segundo hijo. Construcción de genes
   for(it = mother->cgs.begin() + point; it != mother->cgs.end(); it++) {
     bcgs.push_back(*it);
   }
   for(it = father->cgs.begin(); it < father->cgs.begin() + point; it++) {
     bcgs.push_back(*it);
   }
+  // Segundo hijo. Copia de arreglo leftover
+  for(vit = mother->leftover.begin() + point; vit != mother->leftover.end(); vit++) {
+    bleftover.push_back(*vit);
+  }
+  for(vit = father->leftover.begin(); vit < father->leftover.begin() + point; vit++) {
+    bleftover.push_back(*vit);
+  }
+  // Segundo hijo. Copia de arreglo used_rolls
+  for(vit = mother->used_rolls.begin() + point; vit != mother->used_rolls.end(); vit++) {
+    bused_rolls.push_back(*vit);
+  }
+  for(vit = father->used_rolls.begin(); vit < father->used_rolls.begin() + point; vit++) {
+    bused_rolls.push_back(*vit);
+  }
+  // Segundo hijo. Copia de arreglo rollType
+  for(vit = mother->rollType.begin() + point; vit != mother->rollType.end(); vit++) {
+    brollType.push_back(*vit);
+  }
+  for(vit = father->rollType.begin(); vit < father->rollType.begin() + point; vit++) {
+    brollType.push_back(*vit);
+  }
   pair<Solution,Solution> result;
-  vector<int> aleftover = vector<int>(4,0);
-  vector<int> aused_rolls = vector<int>(4,0);
-  vector<int> arollType = vector<int>(4,0);
-  vector<int> bleftover = vector<int>(4,0);
-  vector<int> bused_rolls = vector<int>(4,0);
-  vector<int> brollType = vector<int>(4,0);
   Solution a(aleftover, aused_rolls, arollType, acgs, mother->size);
   Solution b(bleftover, bused_rolls, brollType, bcgs, mother->size);
   result.first = a;
   result.second = b;
   
-  return a;
+  return result;
   
   
 } 

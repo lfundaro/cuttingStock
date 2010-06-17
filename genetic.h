@@ -21,7 +21,7 @@ vector<Solution*> genPeople(int tam, vector<int> &rlength,
                             vector<int> &lpiece,
                             vector<int> &dpiece);
 
-Solution Cross(Solution* mother, Solution* father);
+pair<Solution,Solution> Cross(Solution* mother, Solution* father);
 
 
 #endif

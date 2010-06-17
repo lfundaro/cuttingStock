@@ -61,16 +61,16 @@ int main(int argc, char *argv[]) {
     vector<Solution*> set = genPeople(ntpieces, rlength, 
                                       lpiece,dpiece);
     
-    Solution children = Cross(set[0], set[1]);
+    pair<Solution,Solution> children = Cross(set[0], set[1]);
     cout << "Padre" << endl; 
     set[0]->printSolution();
-    // cout << "Madre" << endl;
-    // set[1]->printSolution();
+    cout << "Madre" << endl;
+    set[1]->printSolution();
     cout << "Primer hijo" << endl;
-    children.printSolution();
-    // cout << "Segundo hijo" << endl;
-    // children.second.printSolution();
-
+    children.first.printSolution();
+    cout << "Segundo hijo" << endl;
+    children.second.printSolution();
+    
     for(int i = 0; i < set.size(); i++) {
       delete set[i];
     }

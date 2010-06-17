@@ -54,18 +54,18 @@ Solution::Solution(const Solution& a, int M) {
   cgs = a.cgs;
 }
 
-Solution::Solution(vector<int> leftover, 
-                   vector<int> used_rolls,
-                   vector<int> rollType, 
-                   vector<vector<int> > p, int size) {
-  leftover = leftover;
-  used_rolls = used_rolls;
-  rollType = rollType;
+Solution::Solution(vector<int> left, 
+                   vector<int> urolls,
+                   vector<int> rType, 
+                   vector<vector<int> > p, int sz) {
+  leftover = left;
+  used_rolls = urolls;
+  rollType = rType;
   cgs = p;
  // for(int i = 0; i < size; i++) {
   //   cgs.push_back(p[i]);
   // }
-  size = size;
+  size = sz;
 }
 
 Solution::Solution() {};
