@@ -2,11 +2,16 @@
 #define GENETIC
 #include "utilities.h"
 #include "Solution.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define NUM_PERTURBATIONS 8  // No poner mas de diez !
+#include <limits>
+#define NUM_PERTURBATIONS 15  // No poner mas de diez !
 #define MOVE_PERCENTAGE 30
+#define DIFF 10
+#define RO 100
+#define MAX_INT numeric_limits<int>::max()
 using namespace std;
 
 Solution* randomSol(Solution &initial, vector<int> &lpiece,

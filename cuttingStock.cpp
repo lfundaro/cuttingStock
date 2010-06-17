@@ -56,11 +56,14 @@ int main(int argc, char *argv[]) {
     vector<int> variety(ntpieces,1);
     
     Solution a(rlength, lpiece, dpiece);
-    a.printSolution();
-    cout << "Nueva Solution " << endl;
-    Solution* b = randomSol(a, lpiece,rlength);
-    b->printSolution();
-    delete b;
+    srand(time(NULL));
+
+    for(int i = 0; i < 10; i++) {
+      Solution* b = randomSol(a,lpiece,rlength);
+      b->printSolution();
+      cout << "=======" << endl;
+      delete b;
+    }
     //    cout << a.cgs[0][0] << endl;
     // vector<vector<int>*> cg = genInitSol(rlength,lpiece,
     //                                      dpiece, leftover,
