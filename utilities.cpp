@@ -1,5 +1,4 @@
 #include "utilities.h"
-#include "FFD.h"
 using namespace std;
 
 vector<vector<int>*> duplicate(vector<vector<int>*> &solution,
@@ -27,6 +26,24 @@ void overwrite(vector<vector<int>*> &orig,
   for (i=0; i<items; ++i){
     for (j=0; j<items; ++j){
       dst.at(i)->at(j) = orig.at(i)->at(j);
+    }
+  }
+}
+
+void substitute(vector<vector<int>*> &orig,
+		vector<vector<int>*> &dst,
+		int items){
+  int i;
+  int j;
+  
+  int norig = orig.size();
+
+  dst.clear();
+
+  for (i=0; i<norig; ++i){
+    dst.push_back(new vector<int>(0));
+    for (j=0; j<items; ++j){
+      dst.at(i)->push_back(orig.at(i)->at(j));
     }
   }
 }
@@ -88,6 +105,9 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
   int left = 0;
   vector<int>::iterator it;
 
+  bool safe_move;
+  int npieces = lpiece.size();
+
   for(i = 0; i < M; i++)
     cgroups.push_back(new vector<int>(M,0));
 
@@ -100,14 +120,27 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
     // para ver donde se acomoda mejor la n cantidad 
     // de piezas del tipo i.
     for(j = 0; j < rlenght.size(); j++) {
-      ffdresult = FFD(rlenght[j], lpiece, pieceSet);
-      minimum = min(target.first,ffdresult.first);
-      if (target.first != minimum){
-        target.first = minimum;
-        target.second = j;
-        left = ffdresult.second;
+      safe_move = true;
+      //Recorro las piezas del pieceSet
+      for(k=0; k<M; k++){
+	if (pieceSet[k] > 0)//Si hay piezas
+	  if (lpiece[k] > rlenght[j]){//Si el largo de esa pieza es muy grande
+	    safe_move = false;
+	    break;
+	  }
+      }
+
+      if (safe_move){
+	ffdresult = FFD(rlenght[j], lpiece, pieceSet);
+	minimum = min(target.first,ffdresult.first);
+	if (target.first != minimum){
+	  target.first = minimum;
+	  target.second = j;
+	  left = ffdresult.second;
+	}
       }
     }
+    cout << left << " "<< i <<" left\n";
     used_rolls[i] = target.first;
     leftover[i] = left;
     rollType[i] = target.second;
@@ -129,6 +162,18 @@ int min(int a, int b) {
     return b;
 }
 
+int max_item(vector<int>& vect) {
+
+  int i;
+  int vect_size = vect.size();
+  int max = MIN_INT;
+  
+  for (i=0; i<vect_size; ++i){
+    if (vect[i] > max)
+      max = vect[i];
+  }
+
+  return max;
+}
+
 // Swap de posiciones en vector pieceSet
-
-

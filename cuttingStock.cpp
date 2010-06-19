@@ -5,6 +5,7 @@
 #include "utilities.h"
 #include "localSearchBB.h"
 #include "ILS.h"
+#include "GRASP.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -73,8 +74,8 @@ int main(int argc, char *argv[]) {
     // localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
     // 		  used_rolls, variety);
  
-    ILS(cg,rlenght,lot_s,lpiece,dpiece,leftover,
-	used_rolls,rollType,variety);
+    GRASP(cg,rlenght,lot_s,lpiece,dpiece,leftover,
+	  used_rolls,rollType,variety);
     
     free_vector(cg);
     free(line);

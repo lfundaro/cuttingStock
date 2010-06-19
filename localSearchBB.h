@@ -5,7 +5,7 @@
 
 #include "shiftSpace.h"
 
-#define LSBB_MAXIT 1000 // Criterio de parada
+#define LSBB_MAXIT 2000 // Criterio de parada
 
 using namespace std;
 

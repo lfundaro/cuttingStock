@@ -22,13 +22,13 @@ void ILS(vector<vector<int>*> &cgroups,
   int max_pert = MAX_PERTURB;
   double T = INIT_TEMP;
 
-  vector<vector<int>*> initSol = genInitSol(rlenght,lpiece,
-                                            dpiece,leftover,
-                                            used_rolls,rollType);
+  vector<vector<int>*> initSol;
 
-  localSearchBB(initSol,rlenght,lot_s,
-		lpiece,dpiece,leftover,
-		used_rolls,variety);
+  localSearchBB(cgroups,rlenght,lot_s,
+  		lpiece,dpiece,leftover,
+  		used_rolls,variety);
+
+  initSol = duplicate(cgroups,nitems);
   
   S_star = initSol;//Para este punto, initSol a sido procesada
 
@@ -39,7 +39,7 @@ void ILS(vector<vector<int>*> &cgroups,
   srand(time(NULL));
 
   while (maxit > 0) {
-    cout << maxit <<"\n";
+    //cout << maxit <<"\n";
     leftover_pert = leftover_star;
     used_rolls_pert = used_rolls_star;
     variety_pert = variety_star;
@@ -47,19 +47,19 @@ void ILS(vector<vector<int>*> &cgroups,
     S_pert = duplicate(S_star,nitems);
     
     Perturb(S_pert,
-	    leftover_pert,
-	    used_rolls_pert,
-	    variety_pert,
-	    rlenght,
-	    lpiece,
-	    lot_s,
-	    MAX_PERTURB);
+    	    leftover_pert,
+    	    used_rolls_pert,
+    	    variety_pert,
+    	    rlenght,
+    	    lpiece,
+    	    lot_s,
+    	    MAX_PERTURB);
     
     localSearchBB(S_pert, 
-		  rlenght, lot_s,
+    		  rlenght, lot_s,
                   lpiece, dpiece,
-		  leftover_pert,used_rolls_pert,
-		  variety_pert);
+    		  leftover_pert,used_rolls_pert,
+    		  variety_pert);
 
     sum = 0;
     int tleft1 = 0;
@@ -83,7 +83,7 @@ void ILS(vector<vector<int>*> &cgroups,
     tleft_best = sum;
 
     if (tleft_best > tleft2) {
-      //cout << tleft2 << "\n";
+      cout << maxit <<":"<< tleft2 << "<-Mejora\n";
       leftover = leftover_pert;
       used_rolls = used_rolls_pert;
       variety = variety_pert;
@@ -91,7 +91,6 @@ void ILS(vector<vector<int>*> &cgroups,
     }
 
     if (tleft1 > tleft2) {
-      //cout << tleft2 << "\n";
       leftover_star = leftover_pert;
       used_rolls_star = used_rolls_pert;
       variety_star = variety_pert;
@@ -100,13 +99,6 @@ void ILS(vector<vector<int>*> &cgroups,
     else { // Se elige con probabilidad Simulated Annealing
       double p = exp(((double)(tleft1 - tleft2)) / T);
       double r = (double)random()/(double)RAND_MAX;
-      // cout << "==\n";
-      // cout << tleft1 << "<-tleft1\n";
-      // cout << tleft2 << "<-tleft2\n";
-      // cout << T << "<-T\n";
-      // cout << (double)p <<"<-p\n";
-      // cout << (double)r <<"<-r\n";
-      // cout << "==\n";
       if (r < p) {
 	leftover_star = leftover_pert;
 	used_rolls_star = used_rolls_pert;
@@ -121,22 +113,68 @@ void ILS(vector<vector<int>*> &cgroups,
 
   int i;
   int j;
+  int k;
   int totalLO = 0;
-  for(i = 0; i < lpiece.size(); i++) {
+  int totalRollLenght = 0;
+  bool safe_move;
+  vector<int>* pieceSet; 
+  int minLO;
+  int minLG;
+  int minRollType;
+  pair <int,int> ffdresult;
+
+  for(i = 0; i < cgroups.size(); i++) {
     sum = 0;
     if (used_rolls[i]) {
-      // cout << "Tipo " << i << endl;
+      cout << "Tipo " << i << endl;
       // cout << "rolls " << used_rolls[i] << endl;
-      // cout << "leftover " << leftover[i] << endl;
+      cout << "leftover " << leftover[i] << endl;
       totalLO += leftover[i];
-      // for(j=0;j<lpiece.size();++j)
-      // 	sum += (*cgroups[i])[j];
+      for(j=0;j<nitems;++j)
+      	sum += (*cgroups[i])[j];
+      //cout << (*cgroups[i])[j] << " map\n";
       // cout << "n_used_pieces " << sum << endl; 
       // cout << "------------" << endl;
     }
   }
-  cout << totalLO<<"\n";
 
+  totalLO = 0;
+  totalRollLenght = 0;
+  for(i=0; i<cgroups.size(); ++i){
+    if (used_rolls[i]) {
+      minLO = MAX_INT;
+      minLG = MAX_INT;
+      pieceSet = cgroups[i];
+      
+      for(j = 0; j < rlenght.size(); j++) {
+	safe_move = true;
+	//Recorro las piezas del pieceSet
+	for(k=0; k<nitems; k++){
+	  if ((*pieceSet)[k] > 0)//Si hay piezas
+	    if (lpiece[k] > rlenght[j]){//Si el largo de esa pieza es muy grande
+	      safe_move = false;
+	      break;
+	    }
+	}
+	
+	if (safe_move){
+	  ffdresult = FFD(rlenght[j], lpiece, *pieceSet);
+	  if (ffdresult.first < minLG){
+	    minLO = ffdresult.second;
+	    minLG = ffdresult.first;
+	    minRollType = j;
+	  }
+	}
+      }
+      cout << minLO << " " << i << " minlo\n";
+      totalLO += minLO;
+      totalRollLenght += minLG*rlenght[minRollType];
+    }
+  }
+
+  cout << totalLO << "\n";
+  cout << totalRollLenght << "\n";
+  cout << (100.0*(double)totalLO)/(double)totalRollLenght << "\n";
 }
 
 

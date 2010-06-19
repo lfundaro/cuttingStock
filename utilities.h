@@ -3,15 +3,26 @@
 
 #include <utility>
 #include <vector>
+#include <list>
 #include <limits>
+
+#include "FFD.h"
+
 #define MAX_INT numeric_limits<int>::max()
+#define MIN_INT numeric_limits<int>::min()
 using namespace std;
 
 int min(int,int);
 
+int max_item(vector<int>&);
+
+int* nth(list<int*>*, int);
+
 vector<vector<int>*> duplicate(vector<vector<int>*> &,int);
 
 void overwrite(vector<vector<int>*>&,vector<vector<int>*>&,int);
+
+void substitute(vector<vector<int>*>&,vector<vector<int>*>&,int);
 
 bool comparePair(pair<int,int>, pair<int,int>);
 

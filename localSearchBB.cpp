@@ -8,12 +8,18 @@ void localSearchBB(vector<vector<int>*> &cgroups,
                    vector<int> &lpiece, vector<int> &dpiece,
                    vector<int> &leftover,vector<int> &used_rolls,
 		   vector<int> &variety) {
-  vector<double*> origScores(lpiece.size());
-  vector<double*> dstScores(lpiece.size());
+  vector<double*> origScores(cgroups.size());
+  vector<double*> dstScores(cgroups.size());
   vector<int> status(2,0);
   int maxIt = LSBB_MAXIT;
   int *info; // arreglo con información sobre el
                // el cambio de vecindad.
+  //init 2dim arrays in origScores and dstScores
+  for(int i=0; i<cgroups.size(); ++i){
+    origScores[i] = new double[2];
+    dstScores[i] = new double[2];
+  }
+
   initScoreArrays(&cgroups, &used_rolls, &lpiece, &leftover, lpiece.size(),
 		  &origScores, &dstScores);
   while (maxIt > 0 && status[0] < lpiece.size()) {
@@ -45,10 +51,10 @@ void localSearchBB(vector<vector<int>*> &cgroups,
       if (cgroups[info[0]]->at(info[2]) == 0) 
 	variety[info[0]]--; 
 
-      origScores.clear();
-      origScores.resize(lpiece.size());
-      dstScores.clear();
-      dstScores.resize(lpiece.size());
+      //origScores.clear();
+      //origScores.resize(cgroups.size());
+      //dstScores.clear();
+      //dstScores.resize(cgroups.size());
       status[0]=0;
       status[1]=0;
       initScoreArrays(&cgroups, &used_rolls, &lpiece, &leftover, lpiece.size(),
@@ -67,7 +73,8 @@ void localSearchBB(vector<vector<int>*> &cgroups,
   //     cout << "rolls " << used_rolls[i] << endl;
   //     cout << "leftover " << leftover[i] << endl;
   //     for(j=0;j<lpiece.size();++j)
-  //     	sum += cgroups[i]->at(j);
+  // 	sum += cgroups[i]->at(j);
+  // 	cout << (*cgroups[i])[j] << " map\n";
   //     cout << "n_used_pieces " << sum << endl; 
   //     cout << "------------" << endl;
   //     }

@@ -17,7 +17,8 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
   int nrolls = rlenght.size();
   int uRolls = numeric_limits<int>::max();
   int bestLeftO;
-  int bestRolls;
+  int bestRolls = numeric_limits<int>::max();
+  bool safe_move;
 
   vector<vector<int>*> S_pert = duplicate(S_star, npieces);
   vector<int> leftover_pert = leftover;
@@ -31,8 +32,11 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
     dst = (int)round(random()) % npieces;
     piece = (int)round(random()) % npieces;    
 
+    if (orig == dst){
+      continue;
+    }
     //Si el movimiento es permitido
-    if (checkMove(orig,dst,piece,npieces,
+    if (checkMove(dst,piece,npieces,
 		  &S_pert,&lpiece,&variety)) {
       int nitems_orig = (*S_pert[orig])[piece]; 
 
@@ -43,10 +47,21 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
       pieceSet = S_pert[dst];
       (*pieceSet)[piece] += min(lot_s[piece],nitems_orig);
       for(j=0; j<nrolls; ++j){
-	temp_result = FFD(rlenght[j],lpiece,*pieceSet);
-	if (temp_result.first < uRolls){
-	  bestRolls = temp_result.first; //rolls usados en dst
-	  bestLeftO = temp_result.second;//leftofer en dst
+	safe_move = true;
+	//Recorro las piezas del pieceSet
+	for(i=0; i<npieces; i++){
+	  if ((*pieceSet)[i] > 0)//Si hay piezas
+	    if (lpiece[i] > rlenght[j]){//Si el largo de esa pieza es muy grande
+	      safe_move = false;
+	      break;
+	    }
+	}
+	if (safe_move){
+	  temp_result = FFD(rlenght[j],lpiece,*pieceSet);
+	  if (temp_result.first < bestRolls){
+	    bestRolls = temp_result.first; //rolls usados en dst
+	    bestLeftO = temp_result.second;//leftofer en dst
+	  }
 	}
       }
       leftover[dst] = bestLeftO;
@@ -55,13 +70,25 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
 
       //======Origen
       uRolls = numeric_limits<int>::max();
+      bestRolls = numeric_limits<int>::max();
       pieceSet = S_pert[orig];
       (*pieceSet)[piece] -=  min(lot_s[piece],nitems_orig);
       for(j=0; j<nrolls; ++j){
-	temp_result = FFD(rlenght[j],lpiece,*pieceSet);
-	if (temp_result.first < uRolls){
-	  bestRolls = temp_result.first; //rolls usados en orig
-	  bestLeftO = temp_result.second;//leftofer en orig
+	safe_move = true;
+	//Recorro las piezas del pieceSet
+	for(i=0; i<npieces; i++){
+	  if ((*pieceSet)[i] > 0)//Si hay piezas
+	    if (lpiece[i] > rlenght[j]){//Si el largo de esa pieza es muy grande
+	      safe_move = false;
+	      break;
+	    }
+	}
+	if (safe_move){
+	  temp_result = FFD(rlenght[j],lpiece,*pieceSet);
+	  if (temp_result.first < bestRolls){
+	    bestRolls = temp_result.first; //rolls usados en orig
+	    bestLeftO = temp_result.second;//leftofer en orig
+	  }
 	}
       }
       leftover[orig] = bestLeftO;
@@ -73,6 +100,5 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
       i++;
     }
   }
-  //return S_pert;
 }
 
