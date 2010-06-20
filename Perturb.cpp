@@ -16,8 +16,8 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
   int npieces = lpiece.size();
   int nrolls = rlenght.size();
   int uRolls = numeric_limits<int>::max();
-  int bestLeftO;
-  int bestRolls = numeric_limits<int>::max();
+  int bestLeftO = numeric_limits<int>::max();
+  int bestRolls;// = numeric_limits<int>::max();
   bool safe_move;
 
   vector<vector<int>*> S_pert = duplicate(S_star, npieces);
@@ -58,7 +58,7 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
 	}
 	if (safe_move){
 	  temp_result = FFD(rlenght[j],lpiece,*pieceSet);
-	  if (temp_result.first < bestRolls){
+	  if (temp_result.second < bestLeftO){
 	    bestRolls = temp_result.first; //rolls usados en dst
 	    bestLeftO = temp_result.second;//leftofer en dst
 	  }
@@ -70,7 +70,7 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
 
       //======Origen
       uRolls = numeric_limits<int>::max();
-      bestRolls = numeric_limits<int>::max();
+      bestLeftO = numeric_limits<int>::max();
       pieceSet = S_pert[orig];
       (*pieceSet)[piece] -=  min(lot_s[piece],nitems_orig);
       for(j=0; j<nrolls; ++j){
@@ -85,7 +85,7 @@ Perturb(vector<vector<int>*> &S_star,vector<int> &leftover,
 	}
 	if (safe_move){
 	  temp_result = FFD(rlenght[j],lpiece,*pieceSet);
-	  if (temp_result.first < bestRolls){
+	  if (temp_result.second < bestLeftO){
 	    bestRolls = temp_result.first; //rolls usados en orig
 	    bestLeftO = temp_result.second;//leftofer en orig
 	  }

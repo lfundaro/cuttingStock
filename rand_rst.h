@@ -19,7 +19,7 @@ vector<vector<int>*> rand_rst(vector<int>,
 			      vector<int>&,
 			      vector<int>&);
 
-int* pick(int,vector<int>&,vector<int>&,vector<int>&,int);
+int* pick(int&,vector<int>&,vector<int>&,vector<int>&,int,int);
 
 bool space_left(int,vector<int>&,vector<int>&,vector<int>&,int);
 

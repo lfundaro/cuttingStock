@@ -111,7 +111,7 @@ void GRASP(vector<vector<int>*> &cgroups,
 	
 	if (safe_move){
 	  ffdresult = FFD(rlenght[j], lpiece, *pieceSet);
-	  if (ffdresult.first < minLG){
+	  if (ffdresult.second < minLO){
 	    minLO = ffdresult.second;
 	    minLG = ffdresult.first;
 	    minRollType = j;

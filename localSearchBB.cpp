@@ -63,6 +63,8 @@ void localSearchBB(vector<vector<int>*> &cgroups,
     maxIt--;
     delete [] info;
   }
+  origScores.clear();
+  dstScores.clear();
   // int i;
   // int j;
   // int sum;

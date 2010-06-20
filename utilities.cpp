@@ -102,7 +102,7 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
   pair <int,int> target;
   pair <int,int> ffdresult;
   int minimum;
-  int left = 0;
+  int left =  MAX_INT;
   vector<int>::iterator it;
 
   bool safe_move;
@@ -132,8 +132,8 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
 
       if (safe_move){
 	ffdresult = FFD(rlenght[j], lpiece, pieceSet);
-	minimum = min(target.first,ffdresult.first);
-	if (target.first != minimum){
+	minimum = min(left,ffdresult.second);
+	if (left != minimum){
 	  target.first = minimum;
 	  target.second = j;
 	  left = ffdresult.second;
@@ -176,4 +176,37 @@ int max_item(vector<int>& vect) {
   return max;
 }
 
-// Swap de posiciones en vector pieceSet
+pair<int,int> bestCutting(vector<int>& pieceSet, vector<int>& rlength,
+			  vector<int>& lpiece){
+  int i;
+  int j;
+  int nrolls = rlength.size();
+  int npieces = lpiece.size();
+  bool safe_move;
+  pair<int,int> temp_result;
+  pair<int,int> result;
+  result.second = MIN_INT;
+
+  //Recorro los rolls posibles
+  for(j=0; j<nrolls; ++j){
+    safe_move = true;
+    //Recorro las piezas del pieceSet
+    for(i=0; i<npieces; i++){
+      if (pieceSet[i] > 0)//Si hay piezas
+	if (lpiece[i] > rlength[j]){//Si el largo de esa pieza es muy grande
+	  safe_move = false;
+	  break;
+	}
+    }
+    if (safe_move){
+      temp_result = FFD(rlength[j],lpiece,pieceSet);
+      if (temp_result.second < result.second){
+	result.first = temp_result.first;  //rolls
+	result.second = temp_result.second;//leftover
+      }
+    }
+  }
+
+  return result;
+}
+

@@ -140,9 +140,9 @@ int* next_move(vector<int>* status, int npieces,
 
   int* move = new int[7];
 
-  //Aca va el minimo numero de rolls usados
-  move[5] = numeric_limits<int>::max(); 
-  move[6] = numeric_limits<int>::max(); 
+  //Aca va el minimo leftover logrado
+  move[4] = numeric_limits<int>::max(); 
+  move[3] = numeric_limits<int>::max(); 
 
   //Paro cuando se terminen los origenes
   while (origPos < ngroups &&
@@ -192,7 +192,7 @@ int* next_move(vector<int>* status, int npieces,
 	  }
 	  if (safe_move){
 	    temp_result = FFD((*rlenght)[j],*lpiece,*pieceSet);
-	    if (temp_result.first < move[6]){
+	    if (temp_result.second < move[4]){
 	      move[6] = temp_result.first; //rolls usados en dst
 	      move[4] = temp_result.second;//leftover en dst
 	    }
@@ -216,7 +216,7 @@ int* next_move(vector<int>* status, int npieces,
 	  }
 	  if (safe_move){
 	    temp_result = FFD((*rlenght)[j],*lpiece,*pieceSet);
-	    if (temp_result.first < move[5]){
+	    if (temp_result.second < move[3]){
 	      move[5] = temp_result.first; //rolls usados en orig
 	      move[3] = temp_result.second;//leftofer en orig
 	    }
