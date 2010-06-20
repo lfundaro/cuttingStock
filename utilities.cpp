@@ -176,16 +176,19 @@ int max_item(vector<int>& vect) {
   return max;
 }
 
-pair<int,int> bestCutting(vector<int>& pieceSet, vector<int>& rlength,
-			  vector<int>& lpiece){
+int* bestCutting(vector<int>& pieceSet, vector<int>& rlength,
+		 vector<int>& lpiece){
   int i;
   int j;
   int nrolls = rlength.size();
   int npieces = lpiece.size();
   bool safe_move;
   pair<int,int> temp_result;
-  pair<int,int> result;
-  result.second = MIN_INT;
+  int* result = new int[3];
+  //result[0]: leftover
+  //result[1]: rollos
+  //result[2]: tipo de rollo
+  result[0] = MAX_INT;
 
   //Recorro los rolls posibles
   for(j=0; j<nrolls; ++j){
@@ -200,9 +203,10 @@ pair<int,int> bestCutting(vector<int>& pieceSet, vector<int>& rlength,
     }
     if (safe_move){
       temp_result = FFD(rlength[j],lpiece,pieceSet);
-      if (temp_result.second < result.second){
-	result.first = temp_result.first;  //rolls
-	result.second = temp_result.second;//leftover
+      if (result[0] > temp_result.second){
+	result[0] = temp_result.second; //leftover
+	result[1] = temp_result.first;  //rollos
+	result[2] = j; //tipo de rollo
       }
     }
   }
