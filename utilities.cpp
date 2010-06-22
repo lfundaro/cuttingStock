@@ -59,6 +59,12 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 // desperdicios generados.
 bool group_quality(int * info, vector<int> &leftover,
                    vector<int> &used_rolls) {
+  if (info[0] == -1)
+    return false; //No se consiguio un movimiento
+                  //valido o se acabaron los origenes
+                  //y destinos (lo ultimo no se deberia
+                  //detectar aca0
+
   if (info[4] < leftover[info[1]])
     return true;
   else {
@@ -113,34 +119,20 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
 
   for(i = 0; i < M; i++) {
     vector<int> pieceSet(M,0);
+    int* bestCut;
     pieceSet[i] = dpiece[i];
-    target.first = MAX_INT;
-    target.second = -1;
     // Se prueba con todos los tipos de rolls 
     // para ver donde se acomoda mejor la n cantidad 
-    // de piezas del tipo i.
-    for(j = 0; j < rlenght.size(); j++) {
-      safe_move = true;
-      //Recorro las piezas del pieceSet
-      for(k=0; k<M; k++){
-	if (pieceSet[k] > 0)//Si hay piezas
-	  if (lpiece[k] > rlenght[j]){//Si el largo de esa pieza es muy grande
-	    safe_move = false;
-	    break;
-	  }
-      }
+    // de piezas del tipo i.    
+    bestCut = bestCutting(pieceSet,rlenght,lpiece);
 
-      if (safe_move){
-	ffdresult = FFD(rlenght[j], lpiece, pieceSet);
-	minimum = min(left,ffdresult.second);
-	if (left != minimum){
-	  target.first = minimum;
-	  target.second = j;
-	  left = ffdresult.second;
-	}
-      }
-    }
-    cout << left << " "<< i <<" left\n";
+    left = bestCut[0];
+    target.first = bestCut[1];
+    target.second = bestCut[2];
+    
+    delete [] bestCut;
+
+    //cout << left << " "<< i <<" left\n";
     used_rolls[i] = target.first;
     leftover[i] = left;
     rollType[i] = target.second;
@@ -214,3 +206,20 @@ int* bestCutting(vector<int>& pieceSet, vector<int>& rlength,
   return result;
 }
 
+void printCG(vector<vector<int>*> &cg){
+  for (int i=0; i<cg.size(); ++i){
+    cout << "cg "<< i << ":";
+      for (int j=0; j<cg[i]->size(); ++j){
+      cout << cg[i]->at(j) <<" ";
+    }
+    cout << "\n";
+  }
+}
+
+void printVect(vector<int> &v){
+  cout << "vec "<< ":";
+  for (int i=0; i<v.size(); ++i){
+    cout << i<<":"<<v[i] <<" ";
+  }
+  cout << "\n";
+}

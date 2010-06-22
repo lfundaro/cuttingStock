@@ -17,6 +17,7 @@ vector<vector<int>*> rand_rst(vector<int>  dpiece,
   int roll_type = max_item(rlength);
 
   int current_leftover = roll_type;
+  int old_leftover;// = current_leftover;
   int current_cg = 0;
   int newRolls = 1;
 
@@ -33,9 +34,9 @@ vector<vector<int>*> rand_rst(vector<int>  dpiece,
   int* elements;
 
   sol.push_back(new vector<int>(npieces,0));
-  leftover.push_back(0);
+  leftover.push_back(roll_type);
   variety.push_back(0);
-  used_rolls.push_back(0);
+  used_rolls.push_back(1);
   while(pieces_left(dpiece)){
     // //Si no queda espacio, 'introduzco' un nuevo roll
     // if (! space_left(current_leftover, lpiece, lot_s, dpiece, npieces)){
@@ -52,6 +53,8 @@ vector<vector<int>*> rand_rst(vector<int>  dpiece,
     elements = pick(current_leftover, lpiece, lot_s,
 		    dpiece, roll_type,npieces);
     
+    old_leftover = current_leftover;
+
     //Si no puedo introducir las piezas y mantener
     //el cutting group, abro uno nuevo
     if (! checkMove(current_cg,
@@ -66,17 +69,19 @@ vector<vector<int>*> rand_rst(vector<int>  dpiece,
       variety.push_back(0);
       used_rolls.push_back(1);
       current_cg++;
-      // leftover[current_cg] = roll_type - old_leftover;
+      leftover[current_cg] = roll_type;
       // if (newRolls == 0)
       // 	newRolls = 1;
     }
 
     /*****Actualizo la solucion******/
-    // leftover[current_cg] -= old_leftover;
-    // leftover[current_cg] += elements[2];      //Actualizo leftover
+    leftover[current_cg] -= old_leftover;    /*Quito el leftover anterior
+					       que puede estar repetido
+					       en element[2]*/
+    leftover[current_cg] += elements[2];     //Actualizo leftover
     if ((*sol[current_cg])[elements[0]] == 0)//Actualizo variety
       variety[current_cg] += 1;
-    // used_rolls[current_cg] += elements[4];/*newRolls*/;           //Actualizo used_rolls
+    used_rolls[current_cg] += elements[4];           //Actualizo used_rolls
     // //newRolls = 0;
     (*sol[current_cg])[elements[0]] += elements[1];//Actualizo cutting groups
 
@@ -140,7 +145,7 @@ int* pick(int& current_leftover,
 	elements[1] = k + k3;
 	elements[2] =  current_leftover - k*lpiece[i]\
         	     + roll_size - k3*lpiece[i]+k*lpiece[i];
-	elements[3] = roll_size - k3*lpiece[i]+k*lpiece[i];
+	elements[3] = roll_size - k3*lpiece[i]-k*lpiece[i];
 	elements[4] = 1;
       }
       else{

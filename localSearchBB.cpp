@@ -60,8 +60,8 @@ void localSearchBB(vector<vector<int>*> &cgroups,
       initScoreArrays(&cgroups, &used_rolls, &lpiece, &leftover, lpiece.size(),
 		      &origScores, &dstScores);
     }
-    maxIt--;
     delete [] info;
+    maxIt--;
   }
   origScores.clear();
   dstScores.clear();

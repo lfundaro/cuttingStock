@@ -1,5 +1,5 @@
 CXX	:= g++-4.4
-CXXFLAGS := -g
+CXXFLAGS := -O3
 OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o shiftSpace.o Perturb.o ILS.o rand_rst.o GRASP.o
 
 all: cuttingStock

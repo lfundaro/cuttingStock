@@ -5,6 +5,15 @@ bool compareScores(double* a, double* b){
   return (a[1] > b[1]);
 }
 
+bool compareScoresInverse(double* a, double* b){
+  if ((a[1] == -1) && (b[1] != -1))
+    return false;
+  else if((b[1] == -1) && (a[1] != -1))
+    return true;
+  else
+    return (a[1] < b[1]);
+}
+
 bool compareVectors(int a, int b){
   return (a < b);
 }
@@ -27,7 +36,7 @@ bool checkMove(int dst, int piece, int npiece,
   }
 
   //Constrain de open stacks
-  if ( (*((*cgroups)[dst]))[piece] == 0){
+  if ( (*((*cgroups)[dst]))[piece] == 0 ){
     sizes_dst[piece] = (*lpiece)[piece];
     if ((*variety)[dst]+1 > MAX_OS)
       return false;
@@ -90,8 +99,8 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
       }
       double uRolls = (*used_rolls)[i];
       double nItems = num_items;
-      (*dstScores)[i][1] = OUTSIDE_FUNC( ((1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/) COMB_OP (1-leftO_percentege[i]) );
-      (*origScores)[i][1] = OUTSIDE_FUNC( ((1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/) COMB_OP (leftO_percentege[i]) );
+      (*dstScores)[i][1] = OUTSIDE_FUNC((  DST_FRG_MOD*(1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/) COMB_OP (DST_LO_MOD *(1-leftO_percentege[i])));
+      (*origScores)[i][1] = OUTSIDE_FUNC((ORIG_FRG_MOD*(1.0-uRolls/nItems)/*+(1.0-nItems/sigma)*/) COMB_OP (ORIG_LO_MOD*(leftO_percentege[i])));
     }
     else{
       //El roll estaba vacio
@@ -101,8 +110,17 @@ int initScoreArrays(vector<vector<int>*> *cgroups, vector<int> *used_rolls,
   }
 
   delete [] leftO_percentege;
-  sort(dstScores->begin(), dstScores->end(), compareScores);
+  sort(dstScores->begin(), dstScores->end(), compareScoresInverse);
   sort(origScores->begin(), origScores->end(), compareScores);
+  
+  // for (i=0; i<dstScores->size(); ++i){
+  //   cout << dstScores->at(i)[1] <<" dst\n";
+  // }
+  // cout << "--------------\n";
+  // for (i=0; i<dstScores->size(); ++i){
+  //   cout << origScores->at(i)[1] <<" orig\n";
+  // }
+  // cout << "===============\n";
 }
 
 //status: origPos,dstPos
@@ -140,10 +158,6 @@ int* next_move(vector<int>* status, int npieces,
 
   int* move = new int[7];
 
-  //Aca va el minimo leftover logrado
-  move[4] = numeric_limits<int>::max(); 
-  move[3] = numeric_limits<int>::max(); 
-
   //Paro cuando se terminen los origenes
   while (origPos < ngroups &&
 	 (*origScores)[origPos][1] != -1) {
@@ -175,55 +189,32 @@ int* next_move(vector<int>* status, int npieces,
       if (checkMove(dst,piece,npieces,
 		    cgroups,lpiece,variety)) {
 	int nitems_orig = (*((*cgroups)[orig]))[piece];
+	int items_to_move = min((*lot_s)[piece],nitems_orig);;
+	int* bestCut;
 
 	//Proceso destino
 	pieceSet = (*cgroups)[dst];
-	(*pieceSet)[piece] += min((*lot_s)[piece],nitems_orig);
-	//Recorro los rolls posibles
-	for(j=0; j<rlenght->size(); ++j){
-	  safe_move = true;
-	  //Recorro las piezas del pieceSet
-	  for(i=0; i<npieces; i++){
-	    if ((*pieceSet)[i] > 0)//Si hay piezas
-	      if ((*lpiece)[i] > (*rlenght)[j]){//Si el largo de esa pieza es muy grande
-		safe_move = false;
-		break;
-	      }
-	  }
-	  if (safe_move){
-	    temp_result = FFD((*rlenght)[j],*lpiece,*pieceSet);
-	    if (temp_result.second < move[4]){
-	      move[6] = temp_result.first; //rolls usados en dst
-	      move[4] = temp_result.second;//leftover en dst
-	    }
-	  }	  
-	}
-	(*pieceSet)[piece] -= min((*lot_s)[piece],nitems_orig);
+	(*pieceSet)[piece] += items_to_move;
+
+	bestCut = bestCutting(*pieceSet,*rlenght,*lpiece);
+	move[4] = bestCut[0]; //leftover
+	move[6] = bestCut[1]; //rollos usados
+	delete [] bestCut;
+
+	(*pieceSet)[piece] -= items_to_move;
 
 	//Proceso origen
 	pieceSet = (*cgroups)[orig];
-	(*pieceSet)[piece] -= min((*lot_s)[piece],nitems_orig);
-	//Recorro los rolls posibles
-	for(j=0; j<rlenght->size(); ++j){
-	  safe_move = true;
-	  //Recorro las piezas del pieceSet
-	  for(i=0; i<npieces; i++){
-	    if ((*pieceSet)[i] > 0)//Si hay piezas
-	      if ((*lpiece)[i] > (*rlenght)[j]){//Si el largo de esa pieza es muy grande
-		safe_move = false;
-		break;
-	      }
-	  }
-	  if (safe_move){
-	    temp_result = FFD((*rlenght)[j],*lpiece,*pieceSet);
-	    if (temp_result.second < move[3]){
-	      move[5] = temp_result.first; //rolls usados en orig
-	      move[3] = temp_result.second;//leftofer en orig
-	    }
-	  }
-	}
-	(*pieceSet)[piece] += min((*lot_s)[piece],nitems_orig);
+	(*pieceSet)[piece] -= items_to_move;
 
+	bestCut = bestCutting(*pieceSet,*rlenght,*lpiece);
+	move[3] = bestCut[0]; //leftover
+	move[5] = bestCut[1]; //rollos usados
+	delete [] bestCut;
+
+	(*pieceSet)[piece] += items_to_move;
+
+	//Termino de construir la solucion
 	move[0] = orig;
 	move[1] = dst;
 	move[2] = piece;

@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     // localSearchBB(cg, rlenght, lot_s, lpiece, dpiece, leftover,
     // 		  used_rolls, variety);
  
-    GRASP(cg,rlenght,lot_s,lpiece,dpiece,leftover,
+    ILS(cg,rlenght,lot_s,lpiece,dpiece,leftover,
 	  used_rolls,rollType,variety);
     
     free_vector(cg);

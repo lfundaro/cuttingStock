@@ -6,8 +6,7 @@
 
 #include "utilities.h"
 #include "shiftSpace.h"
-
-#define RCL_SIZE 3
+#include "tunning.h"
 
 using namespace std;
 

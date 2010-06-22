@@ -28,6 +28,30 @@ void GRASP(vector<vector<int>*> &cgroups,
 		      used_rolls_rand,
 		      variety_rand);
 
+    /*Los leftovers que da rand_rst para la configuracion
+    que calcula es una cota superior para los mejores leftovers
+    posibles de esa misma configuracion. Aca se calculan
+    los mejores posibles antes de llamar a localSearch
+    */
+    for(int i=0; i<S_rand.size(); ++i){
+      if (used_rolls_rand[i]) {
+	vector<int>* pieceSet;
+	int* bestCut;
+
+	pieceSet = S_rand[i];
+	
+	bestCut = bestCutting(*pieceSet, rlenght, lpiece);
+	
+	leftover_rand[i] = bestCut[0];
+	used_rolls_rand[i] = bestCut[1];
+	
+	delete [] bestCut;
+	
+      }
+      else
+	leftover_rand[i] = 0;
+    }
+
     localSearchBB(S_rand, 
     		  rlenght,
     		  lot_s,
@@ -36,12 +60,12 @@ void GRASP(vector<vector<int>*> &cgroups,
     		  leftover_rand,
     		  used_rolls_rand,
     		  variety_rand);
-
+    
     sum = 0;
     int tleft_rand;
     int leftover_rand_size = leftover_rand.size();
-    for(int i = 0; i < leftover_rand_size; i++)
-      if (used_rolls_rand[i]) 
+    for(int i = 0; i < leftover_rand_size; i++) 
+      if (used_rolls_rand[i])
 	sum += leftover_rand[i];
     tleft_rand = sum;
 
@@ -65,15 +89,15 @@ void GRASP(vector<vector<int>*> &cgroups,
 
   int i;
   int j;
-  int k;
   int totalLO = 0;
   int totalRollLenght = 0;
-  bool safe_move;
   vector<int>* pieceSet; 
   int minLO;
   int minLG;
   int minRollType;
-  pair <int,int> ffdresult;
+
+  cout << "Mejor grupo\n";
+  printCG(cgroups);
 
   for(i = 0; i < cgroups.size(); i++) {
     sum = 0;
@@ -81,7 +105,7 @@ void GRASP(vector<vector<int>*> &cgroups,
       // cout << "Tipo " << i << endl;
       // cout << "rolls " << used_rolls[i] << endl;
       // cout << "leftover " << leftover[i] << endl;
-      cout << leftover[i] << " " << i << " origlo\n";
+      // cout << leftover[i] << " " << i << " origlo\n";
       totalLO += leftover[i];
       // for(j=0;j<nitems;++j)
       // 	sum += (*cgroups[i])[j];
@@ -89,44 +113,27 @@ void GRASP(vector<vector<int>*> &cgroups,
       // cout << "------------" << endl;
     }
   }
-  cout << totalLO <<" original\n";
-  totalLO = 0;
+
   totalRollLenght = 0;
   for(i=0; i<cgroups.size(); ++i){
     if (used_rolls[i]) {
-      minLO = MAX_INT;
-      minLG = MAX_INT;
       pieceSet = cgroups[i];
       
-      for(j = 0; j < rlenght.size(); j++) {
-	safe_move = true;
-	//Recorro las piezas del pieceSet
-	for(k=0; k<nitems; k++){
-	  if ((*pieceSet)[k] > 0)//Si hay piezas
-	    if (lpiece[k] > rlenght[j]){//Si el largo de esa pieza es muy grande
-	      safe_move = false;
-	      break;
-	    }
-	}
-	
-	if (safe_move){
-	  ffdresult = FFD(rlenght[j], lpiece, *pieceSet);
-	  if (ffdresult.second < minLO){
-	    minLO = ffdresult.second;
-	    minLG = ffdresult.first;
-	    minRollType = j;
-	  }
-	}
-      }
-      cout << minLO << " " << i << " minlo\n";
-      totalLO += minLO;
+      int* bestCut;
+      bestCut = bestCutting(*pieceSet, rlenght, lpiece);
+
+      minLG = bestCut[1];
+      minRollType = bestCut[2];
+
+      delete [] bestCut;
+
       totalRollLenght += minLG*rlenght[minRollType];
     }
   }
+
   cout << totalLO << "\n";
   cout << totalRollLenght << "\n";
   cout << (100.0*(double)totalLO)/(double)totalRollLenght << "\n";
-
 }
 
   

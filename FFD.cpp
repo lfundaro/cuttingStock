@@ -103,9 +103,11 @@ int leftOver(vector<vector<int>*> g, int rlength, vector<int> lpiece) {
   int leftover = 0;
   for(it = g.begin(); it != g.end(); it++) {
     v = rlength;
-    for(rollIt = 0; rollIt < (**it).size(); rollIt++) {
-      if ((**it)[rollIt] != 0) 
-        v -= lpiece[rollIt] * (**it)[rollIt];
+    int it_size = (**it).size();
+    vector<int>* the_it = (*it);
+    for(rollIt = 0; rollIt < it_size; rollIt++) {
+      if ((*the_it)[rollIt] != 0) 
+        v -= lpiece[rollIt] * (*the_it)[rollIt];
     }
     if (v != rlength)
       leftover += v;
