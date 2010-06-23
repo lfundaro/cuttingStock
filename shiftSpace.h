@@ -10,15 +10,7 @@
 
 #include "utilities.h"
 #include "FFD.h"
-
-#define MAX_OS 4
-#define MIN_SD 50
-#define COMB_OP +
-#define OUTSIDE_FUNC
-#define DST_LO_MOD 1
-#define DST_FRG_MOD 1
-#define ORIG_LO_MOD 1
-#define ORIG_FRG_MOD 1
+#include "tunning.h"
 
 using namespace std;
 

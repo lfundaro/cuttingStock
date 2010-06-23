@@ -1,0 +1,184 @@
+\documentclass[letter,10pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{bookman}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage[pdftex=true,colorlinks=true,linkcolor=black,urlcolor=blue,plainpages=false]{hyperref}
+
+
+%opening
+\title{Proyecto II}
+\title{GRASP \& ILS}
+\author{Lorenzo Fundar\'o - 0639559 \& Germán Jaber - 0639749}
+
+\begin{document}
+\begin{figure}[t]
+\begin{center}
+ \includegraphics[scale = 0.75]{usb.png}
+\end{center}
+
+\begin{center}
+  \large Universidad Simón Bolívar
+\end{center}
+\begin{center}
+  \large Diseño de Algoritmos II
+\end{center}
+\end{figure}
+\maketitle
+
+\thispagestyle{empty}
+\newpage
+
+
+\tableofcontents{}
+\newpage
+
+\section{Breve descripción del problema}
+
+En teoría de complejidad computacional, el ``Bin Packing Problem'' es un problema combinatorio de dificultad NP-HARD. Se tienen objetos que
+tienen asignados un costo C e infinitos contenedores idénticos con capacidad V, el problema consiste en colocar los objetos dentro de la
+mínima cantidad posible.\\
+\indent Existen muchas variaciones de este problema, éstas difieren, básicamente, en las dimensiones con las que se trabaja.
+Entre las versiones existentes tenemos 1D, 2D, Strip Packing, Cutting Stock y 3D. Estas tienen muchas aplicaciones, como por ejemplo llenar
+containers con fines de exportación, llenar camión es con una capacidad determinada de peso, crear respaldos de archivos en medios portátiles
+(pendrives, disco duro portátil, etc), encontrar el orden de ejecución que menos tarde para programas que comparten memoria. Nosotros,
+particularmente, abordaremos la variación 2D.\\
+\indent La variaci\'on cutting stock 1-D consiste en colocar rectangulos
+de altura fija y ancho variable dentro de contenedores de ancho fijo y
+altura infinita. Los rect\'angulos deben estar posicionados a lo largo del
+fondo del contenedor y pueden ser apilados; tambi\'en deben estar
+colocados de manera ortogonal a los lados del contenedor. El objetivo es
+reducir lo m\'as posible hasta que altura se usan los contenedores, o
+visto de otra forma, reducir lo m\'as posible el desperdicio que se
+genera a causa de los espacios que son muy peque\~nos para contener
+alg\'un rect\'angulo.
+
+\section{Descripción del problema espec\'ifico tratado}
+
+En nuestro caso particular, tratamos el problema de cutting stock aplicado a la industria de
+la fabricaci\'on de rollos de papel. En este caso particular se tienen \texttt{tipos de corte} de un rollo
+que tienen asociada una demanda y un taman\~o de lote; tambi\'en se tienen varios \texttt{tipos de rollos} sobre los cuales se 
+pueden hacer cortes.\\
+\indent La demanda es la cantidad de cortes de ese tipo que se requieren. El tama\~no de lote es la cantidad que
+\texttt{cortes} que van en un solo lote de ese tipo de corte. Cuando los rollos son cortados en una f\'abrica, las piezas resultantes
+se empacan en lotes cuyo tama\~no depende de la pieza que se empaque en ese lote.\\
+\indent En este caso, los cortes son los rect\'angulos que se colocan en los contenedores; los contendores son
+varios rollos de un mismo tipo.\\
+\indent Para resolver el problema, presentamos la soluci\'on como un conjunto de \texttt{cutting groups}, que son
+conjuntos de \texttt{cortes} que se hacen sobre un mismo \texttt{tipo de rollo}. Se pueden tener varios cutting
+groups que utilizen el mismo \texttt{tipo de rollo}, los \texttt{cortes} se distribuyen sobre los cutting group.\\
+\indent Para nuestra formulaci\'on existen otras dos limitantes extra que consideramos y que se deben cumplir para
+todos los cutting group que sean parte de la soluci\'on:
+\begin{itemize}
+  \item No puede haber m\'as de N \texttt{tipos de corte} en un mismo cutting group, siendo N definido por el usuario.
+  \item La diferencia de longitud cualquier par de \texttt{tipo de corte} en un mismo cutting group no puede ser
+    menor a M, siendo M definido por el usuario.
+\end{itemize}
+\indent Estas restricciones nacen de un inter\'es comercial debido a que ciertas partes de el proceso de fabricaci\'on
+de rollos de papel son ejecutadas por operadores humanos.\\
+\indent Un plan de corte es un conjunto de cutting groups que satisfacen de manera exacta la demanda de cada \texttt{tipo de corte}.\\
+\indent Recomendamos leer el paper del cual extrajimos esta abstracci\'on particular,
+particularmente las p\'aginas 2,3,4 y la figura 2 en la p\'agina 5.\\
+
+\subsection{Especificación formal}
+
+Dado un contenedor de capacidad V y una lista $a_1, ..., a_n$ de elementos de capacidad variable, se busca encontrar un entero
+B junto con una B-partición $S_1 \cup S_B$ de $\{1,...,n\}$ tal que $\sum_{i \in S_k}^{} {a_i \le V}$ para todo $k = 1,..,B$.
+Una solución es óptima si posee un B mínimo.
+
+\section{Descripción de las heurísticas empleadas}
+
+\subsection{Representación de la solución}
+Los cutting group, los tipos de corte y los tipos de rollo se numeran todos desde el cero.\\
+\indent La soluci\'on se representa como una matriz donde las columnas representan cutting groups. Las filas representan cantidad de tipos
+de corte. As\'i, si la posici\'on [2,3] contiene un 7, quiere decir que en el cutting 3 hay 7 cortes del tipo 2.
+
+\subsection{Función Objetivo}
+Se trata de minizar el desperdicio total del plan de corte. Cuando en un cutting group un rollo se corta de tal manera que no se utiliza
+completamente, y el resto que sobra es inutilizable porque no existe ning\'un corte:
+\begin{itemize}
+\item lo suficientemente pequen\~no para utilizarlo.
+\item que pueda incluirse en el cutting group cumpliendo las restricciones.
+\item cuya demanda no halla sido cubierta.
+\end{itemize}
+Decimos que ese resto es desperdicio.
+
+\subsection{Operadores}
+La vecindad de una soluci\'on son todos aquellos planes de corte donde se halla movido un tipo de pieza de un cuttin group a otro manteniendo
+las restricciones. La cantidad de piezas que se mueven es igual al tama\~no de lote de esa pieza.\\
+\indent Este operador se monta sobre una busqueda local primer mejor.\\
+\indent Cuando se pasa una pieza de un cutting group a otro, ambos grupos son procesados por el algoritmo FFD, algoritmo greedy que busca una
+forma de organizar las piezas de tal forma que usen la menor cantidad de rollos posible.\\
+\indent Para decidir de que cutting group a que cutting group se mover\'a una pieza, se le asignan dos puntajes a cada cutting group, uno como
+origen y otro como destino. Estos puntajes miden que tan bueno y deseable es que un cutting group dado rinda piezas (para el puntaje como origen)
+y que tan bueno es como receptor de piezas (para el puntaje como destino).\\
+\indent Los puntajes se calculan de la siguiente forma:
+
+\begin{center}
+Como origen
+
+$FUNC(\alpha(1-Fragmentacion) OP \beta(1-Leftover))$
+\end{center}
+
+\begin{center}
+Como destino
+
+$FUNC(\omega(1-Fragmentacion) OP \gamma(Leftover))$
+\end{center}
+
+donde
+
+\begin{center}
+$Fragmentacion = \frac{U\_Rolls}{N\_Cuts}$
+\end{center}
+
+\begin{center}
+$Leftover = \frac{CG\_LO}{Max\_LO}$
+\end{center}
+
+$\alpha$,$\beta$,$\omega$ y $\gamma$ son par\'ametros definidos por el usuario para calibrar la calidad de la funci\'on. $OP$ es un operador aritm\'etico
+b\'asico que se usa para combinar las dos partes de la funci\'on, actualmente es el $+$. $FUNC$ es una funci\'on que se le aplica a todo el resultado,
+actualmente no se aplica nada.\\
+\indent $U\_Rolls$ denota la cantidad de rollos usados por ese cutting group y $N\_Cuts$ es el numero total de cortes en ese mismo cutting group;
+$CG\_LO$ es el leftover de ese cutting group y $Max\_LO$ denota el leftover m\'as grande de entre todos los cutting group.\\
+\indent La idea que un buen origen es aquel cuyas piezas estan muy fragmentadas (brinda flexibilidad) y al cual le queda poco espacio usado
+(ya casi esta vac\'io). Un buen destino es aquel que esta muy fragmentado (brinda flexibilidad) y el cual esta casi lleno (se busca lo compacto).\\
+\indent El algoritmo para cuando encuentra una soluci\'on que reduce el leftover total de la soluci\'on.\\
+\indent La flexibilidad en este caso es importante para facilitar el trabajo de FFD.\\
+\indent Luego, se prueban los mejores origenes contra todos los destinos, empezando con los peores. La idea es que un buen origen puede llenar f\'acilmente
+un mal destino. Cuando un origen a sido probado contra todos los destinos, se prueban todos los destinos en el mismo orden con un origen peor.\\
+\indent La idea es que se retrase lo m\'as posible el momento donde se prueban malos origenes con malos destinos.
+
+\section{ILS}
+La funci\'on de perturbaci\'on es consiste en mover de manera aleatoria piezas de un entre los cutting groups manteniendo las restricciones.
+Es un cambio de vecindad aleatorio. La fuerza de la perturbaci\'on viene dada por la cantidad de cambios de vecindad que se hacen.\\
+\indent Adicionalmente, cuando se genera una soluci\'on peor, se acepta con usando la f\'ormula para la probabilidad de recocido simulado.
+
+\section{GRASP}
+La construcci\'on de la soluci\'on inicial de GRASP se hace de manera muy simple. Dado un rollo actual que puede tener cortes ya asignados, 
+se buscan los \texttt{k} cortes que al ser introducidos al rollo minimizen el desperdicio y se elige uno al azar. En este caso \texttt{k} es el
+tama\~no de la lista RCL.\\
+\indent En caso de que no se pueda introducir el corte en ese rollo, se introduce en un nuevo rollo y ese rollo pasa a ser el rollo actual. En caso
+de que no se pueda introducir el corte manteniendo las restricciones sobre el cutting group, se abre un nuevo cutting group.
+
+\section{Instancias}
+Se usaron 6 instancias aleatorias generadas por una modificaci\'on de CUTGEN (Gau and Wascher, 1995).
+Estas instancias, junto con muchas otras, se encuentran en http://www-sys.ist.osaka-u.ac.jp/~umetani/index-e.html.
+
+\section{Valores iniciales}
+El valor inicial utilizado fu\'e todos los cortes de un mismo tipo en un cutting group separado.
+
+\newpage
+\section{Bibliograf\'ia}
+\begin{itemize}
+ \item K. Matsumoto, S. Umetani, H. Nagamochi. One-dimensinal cutting stock problem for a paper tube industry, 2008
+ \item F. Glover, G. Kochenberger. Handbook of Metaheuristics, Kluwer Academic Publishers, 2003
+ \item http://www-sys.ist.osaka-u.ac.jp/~umetani/index-e.html - Visitada el 22/06/10
+ \item http://en.wikipedia.org/wiki/Cutting\_stock\_problem - Visitada el 22/06/10
+ \item http://www.cplusplus.com/reference/ - Visitada el 22/06/10
+ \item http://www.delorie.com/gnu/docs/gdb/gdb\_toc.html\#SEC\_Contents - Visitada el 22/06/10
+\end{itemize}
+\end{document}
+
