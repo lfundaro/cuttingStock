@@ -58,21 +58,23 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     // Solution a = geneticAlgorithm(ntpieces, rlength, 
-    //                                dpiece,lpiece, 100);
+    //                                dpiece,lpiece, 1000);
     
     // a.printSolution();
     Solution a = Solution(rlength, lpiece, dpiece);
     Solution ram = randomSol(a,lpiece,rlength);
     Solution ram2 = randomSol(a,lpiece,rlength);
+    a.printSolution();
+    ram.printSolution();
     ram2.printSolution();
     pair<Solution,Solution> children = Cross(&ram,&ram2);
-    // children.first.printSolution();
-    // children.second.printSolution();
-    // fixSolution(children.first,dpiece,rlength,lpiece);
-    // fixSolution(children.second,dpiece,rlength,lpiece);
-    // cout << "DESPUES" << endl;
-    // children.first.printSolution();
-    // children.second.printSolution();
+    children.first.printSolution();
+    children.second.printSolution();
+    fixSolution(children.first,dpiece,rlength,lpiece);
+    fixSolution(children.second,dpiece,rlength,lpiece);
+    cout << "DESPUES" << endl;
+    children.first.printSolution();
+    children.second.printSolution();
     
 
     free(line);

@@ -96,7 +96,14 @@ void Solution::printSolution() {
     cout << "===========" << endl;
     i++;
   }
+  int totLeft = 0;
+  vector<int>::iterator itl;
+  for(itl = leftover.begin(); itl != leftover.end(); itl++)
+    totLeft += *itl;
   cout << "Total pieces = " << totalpieces << endl;
+  cout << "Total leftover = " << totLeft << endl;
+  cout << "Penalty = " << penalty << endl;
+  cout << "Fitness = " << fitness << endl;
 }
 
 void Solution::update(int where, vector<int> &lpiece,

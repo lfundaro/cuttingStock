@@ -12,6 +12,7 @@
 #define DIFF 1
 #define RO 100
 #define MAX_INT numeric_limits<int>::max()
+#define MAX_DOUBLE numeric_limits<double>::max()
 #define MIN_DOUBLE numeric_limits<double>::min()
 #define CROSS_PROB 0.2  // Para valores [0.4,1] hay cruce
 #define MUTATION_FACT 0.09   // Factor de mutación

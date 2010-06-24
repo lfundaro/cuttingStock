@@ -70,7 +70,6 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   // Punto de cruce
   int point;
   while(true) {
-    cout << "here" << endl;
     point = (int) round(rand()) % mother->size;
     if (point == 0) continue;
     if (point >= mother->size - 1) continue;
@@ -145,7 +144,6 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0);
   result.first = a;
   result.second = b;
-  cout << "no prob" << endl;
   return result;
 }
 
@@ -191,7 +189,7 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       int destiny;
       penalty += dpiece[i];
       while (true) {
-        cout << "No piece found";
+        cout << "No piece found" << endl;
         destiny = (int) round(random()) % son.size;
         if (notEmptyColumn(son.cgs[destiny]) && 
             checkConstraints(lpiece, son, destiny,i)) {
@@ -291,19 +289,15 @@ void replace(vector<Solution> &people,
       maximum.second = i;
     }
   }
-  //delete people[maximum.second];
-  //  vector<Solution*>::iterator it;
-  //it = people.begin();
   people.erase(people.begin() + maximum.second);
-  //people[maximum.second] = son;
   people.insert(people.begin() + maximum.second, son);
   return;
 }
 
 Solution get_best(vector<Solution> &people) {
-  double control = MAX_INT;
+  double control = MAX_DOUBLE;
   pair<double,int> minimum;
-  minimum.first = MAX_INT;
+  minimum.first = MAX_DOUBLE;
   for(int i = 0; i < people.size(); i++) {
     control = min(control,people[i].fitness);
     if (control != minimum.first) {
@@ -334,24 +328,16 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
   double crossFactor;
   double mutationFactor;
   while (z < genNum) {
-    bestFound = get_best(people);
     prob = roulette(people);
     parents = getParents(people, prob);
     crossFactor = (double) random() / RAND_MAX; 
     if (crossFactor >= CROSS_PROB) {
-      cout << "bye" << endl;
       children = Cross(&parents.first, &parents.second);
       // Arreglamos las soluciones
       fixSolution(children.first, dpiece, rlength,lpiece);
       fixSolution(children.second, dpiece, rlength,lpiece);
-      children.first.printSolution();
-      children.second.printSolution();
-      int a;
-      cin >> a;
-      cout << "after fix" << endl;
       mutationFactor = (double) random() / RAND_MAX;
       if (mutationFactor <= MUTATION_FACT) {
-        cout << "mutati" << endl;
         toMutate = (int) random() % 2;
         if (toMutate) 
           mutate(children.second, rlength, lpiece);
@@ -362,8 +348,8 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
       replace(people, children.first);
       replace(people, children.second);
     }
+    bestFound = get_best(people);
     z++;
-    cout << "hello" << endl;
   }
   return bestFound;
 }
@@ -375,18 +361,15 @@ void mutate(Solution &child, vector<int> &rlength,
   int piece;
   int space;
   int M = child.size;
-  while (true) {  // Seleccionamos origen
+  while (true) {
     origin = (int) round(random()) % M;
-    cout << "mutati origin " << endl;
     piece = (int) round(random()) % M;
+    destiny = (int) round(random()) % M;
     // Se puede tomar pieza
     if (child.cgs[origin][piece]) {
-      destiny = (int) round(random()) % M;
-      cout << "mutati destiny " << endl;
-      if (destiny != origin && 
-          rlength[child.rollType[destiny]] >= lpiece[piece]) {
+      if (destiny != origin && rlength[child.rollType[destiny]] >= lpiece[piece]) {
         space = lpiece[piece];
-        if (checkConstraints(lpiece, child, destiny,origin)) {
+        if (checkConstraints(lpiece, child, destiny,piece)) {
           // Se puede hacer movimiento de pieza
           child.cgs[origin][piece]--;
           child.update(origin,lpiece,rlength);
@@ -396,14 +379,15 @@ void mutate(Solution &child, vector<int> &rlength,
           child.fitnessEval();
           break;
         }
-        else continue;
+        else continue; //No se cumplen constraints
       }
       else continue;
     }
-    else continue;
+    else continue; //No hay pieza de tipo piece
   }
   return;
 }
+
 
 pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &prob) {
   double chance = random() % people.size();
@@ -411,6 +395,7 @@ pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &pro
   for(int i = 0; i < prob.size(); i++) 
     probSelect.push_back(make_pair(i, prob[i]));
   sort(probSelect.begin(), probSelect.end(), comparePairDouble);
+  int mother = ((int) round(random()) % (people.size()-1)) + 1;
   pair<Solution,Solution> result = make_pair(people[probSelect[0].first], people[probSelect[1].first]);
   return result;
 }
@@ -420,9 +405,9 @@ void addPiece(vector<int> & targetIndex, Solution &son,
               vector<int> &lpiece, int pieceType) {
   int candidate;
   pair<int,int> newConfig;
-  while (true) { 
+  while (true) {
+    cout << "pieceType " << pieceType << endl;
     candidate = (int) round(random()) % targetIndex.size();
-    cout << "candidateFIX " << endl;
     if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
       son.cgs[targetIndex[candidate]][pieceType] += udiff;
       // Se elimina el candidato si la columna se queda 
