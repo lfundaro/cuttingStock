@@ -1,9 +1,9 @@
 #include "genetic.h"
 using namespace std;
 
-Solution* randomSol(Solution &initial, vector<int> &lpiece,
+Solution randomSol(Solution &initial, vector<int> &lpiece,
                     vector<int> &rlength) {
-  Solution* new_solution = new Solution(initial);
+  Solution new_solution = Solution(initial);
   int n = NUM_PERTURBATIONS;
   int origin;
   int destiny;
@@ -16,25 +16,25 @@ Solution* randomSol(Solution &initial, vector<int> &lpiece,
   int minimum;
   for(int i = 0; i < n; i++) {
     while (true) {
-      origin = (int) round(random()) % new_solution->size;
-      npieces = new_solution->cgs[origin][origin];
+      origin = (int) round(random()) % new_solution.size;
+      npieces = new_solution.cgs[origin][origin];
       take = (MOVE_PERCENTAGE*npieces) / 100;
       if (take) { // Hay suficientes piezas para mover
         while (true) {
-          destiny = (int) round(random()) % new_solution->size;
+          destiny = (int) round(random()) % new_solution.size;
           if (destiny != origin) { 
-            if (rlength[new_solution->rollType[destiny]] 
+            if (rlength[new_solution.rollType[destiny]] 
                 < lpiece[origin]) 
               continue;
             space = take*lpiece[origin];
             //if (new_solution->leftover[destiny] >= space) {
               // Verificación de RO y Diferencia entre piezas
-              vector<int> tmp = new_solution->cgs[destiny];
+              vector<int> tmp = new_solution.cgs[destiny];
               ro_count = 0;
               for(int i = 0; i < tmp.size(); i++) {
                 if (tmp[i]) 
                   ro_count += 1;
-                if (i == destiny) 
+                if (i == origin) 
                   ro_count += 1;
               }
               minimum = MAX_INT;
@@ -45,7 +45,7 @@ Solution* randomSol(Solution &initial, vector<int> &lpiece,
                       minimum = min(minimum, abs(lpiece[i] - lpiece[j]));
                     }
                     else {
-                      if (destiny == j) {
+                      if (origin == j) {
                         minimum = min(minimum, abs(lpiece[i] - lpiece[destiny]));
                       }
                     }
@@ -53,10 +53,10 @@ Solution* randomSol(Solution &initial, vector<int> &lpiece,
                 }
               }
               if (ro_count > RO || minimum < DIFF) break; 
-              new_solution->cgs[origin][origin] -= take;
-              new_solution->update(origin,lpiece,rlength);
-              new_solution->cgs[destiny][origin]  += take;
-              new_solution->update(destiny,lpiece,rlength);
+              new_solution.cgs[origin][origin] -= take;
+              new_solution.update(origin,lpiece,rlength);
+              new_solution.cgs[destiny][origin]  += take;
+              new_solution.update(destiny,lpiece,rlength);
               break;
               //            }
             // else continue; // No hay espacio en destino 
@@ -68,13 +68,14 @@ Solution* randomSol(Solution &initial, vector<int> &lpiece,
       else continue; //No hay suficientes piezas para mover
     }
   }
+  new_solution.penalty = 0;
   return new_solution;
 }
 
-vector<Solution*> genPeople(int tam, vector<int> &rlength,
+vector<Solution> genPeople(int tam, vector<int> &rlength,
                             vector<int> &lpiece,
                             vector<int> &dpiece) {
-  vector<Solution*> solutionSet;
+  vector<Solution> solutionSet;
   Solution initial = Solution(rlength, lpiece, dpiece);
   for(int i = 0; i < tam; i++) {
     solutionSet.push_back(randomSol(initial, lpiece, 
@@ -92,6 +93,7 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   // Punto de cruce
   int point;
   while(true) {
+    cout << "here" << endl;
     point = (int) round(rand()) % mother->size;
     if (point == 0) continue;
     if (point >= mother->size - 1) continue;
@@ -162,18 +164,18 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
     brollType.push_back(*vit);
   }
   pair<Solution,Solution> result;
-  Solution a(aleftover, aused_rolls, arollType, acgs, mother->size);
-  Solution b(bleftover, bused_rolls, brollType, bcgs, mother->size);
+  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0);
+  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0);
   result.first = a;
   result.second = b;
-  
+  cout << "no prob" << endl;
   return result;
 }
 
 void fixSolution(Solution &son, vector<int> &dpiece, 
                  vector<int> &rlength,vector<int> &lpiece) {
   int M = son.size;
-  int penalty;
+  int penalty = 0;
   vector<int> targetIndex;
   int howMuch;
   int pAmount;
@@ -194,27 +196,27 @@ void fixSolution(Solution &son, vector<int> &dpiece,
     }
     if (howMuch) {
       diff = dpiece[i] - howMuch;
-      // Si se consigue un candidato cuyas piezas es 
-      // menor de lo que se quita, se debe buscar otro.
-      while (true) { 
-        candidate = (int) round(random()) % targetIndex.size();
-        if (son.cgs[targetIndex[candidate]][i] + diff > 0) {
-          son.cgs[targetIndex[candidate]][i] += diff;
-          // Se ejecuta FFD con nuevo estado de piezas 
-          int index = targetIndex[candidate];
-          newConfig = FFD(rlength[son.rollType[index]],lpiece,son.cgs[index]);
-          son.used_rolls[index] = newConfig.first;
-          son.leftover[index] = newConfig.second;
-          break;
+      if (diff) {  // Diferencia es distinta de cero
+        penalty += abs(dpiece[i] - howMuch);
+        // Si se consigue un candidato cuyas piezas es 
+        // menor de lo que se quita, se debe buscar otro.
+        if (diff > 0) { // Agrego piezas 
+          for(int i = 0; i < diff; i++) 
+            addPiece(targetIndex,son,1,rlength, lpiece,i);
         }
-        else continue;
+        else {   // Quito piezas 
+          for(int i = 0; i < abs(diff); i++)
+            addPiece(targetIndex,son,-1, rlength, lpiece,i);
+        }
       }
     }
     else {     // No se consiguió la pieza en la solución
       int destiny;
+      penalty += dpiece[i];
       while (true) {
+        cout << "No piece found";
         destiny = (int) round(random()) % son.size;
-        if (checkConstraints(lpiece, son, destiny)
+        if (checkConstraints(lpiece, son, destiny,i)
             && notEmptyColumn(son.cgs[destiny])) {
           son.cgs[destiny][i] += dpiece[i];
           newConfig = FFD(rlength[son.rollType[destiny]],
@@ -227,8 +229,9 @@ void fixSolution(Solution &son, vector<int> &dpiece,
     }
     targetIndex.clear();
   }
+  son.penalty = penalty;
+  son.fitnessEval();
 }
-
 
 int notEmptyColumn(vector<int> column) {
   int decision = 0;
@@ -240,7 +243,8 @@ int notEmptyColumn(vector<int> column) {
 
   
 bool checkConstraints(vector<int> &lpiece,
-                      Solution &sol, int destiny) 
+                      Solution &sol, int destiny,
+                      int pieceType) 
 {
   // Verificación de RO y Diferencia entre piezas
   vector<int> tmp = sol.cgs[destiny];
@@ -249,26 +253,217 @@ bool checkConstraints(vector<int> &lpiece,
   for(int i = 0; i < tmp.size(); i++) {
     if (tmp[i]) 
       ro_count += 1;
-    if (i == destiny) 
-      ro_count += 1;
+    else { 
+       // Esta es la pieza que iría en el cutting group
+      if (i == pieceType) 
+        ro_count += 1; 
+    }
   }
   minimum = MAX_INT;
+  // Busco tipos de piezas en el cutting group actual 
+  // y si no consigo pieceType se la Agrego.
+  vector<int> pieces;
   for(int i = 0; i < tmp.size(); i++) {
-    for(int j = 0; j < tmp.size(); j++) {
+    if (tmp[i]) 
+      pieces.push_back(i);
+    else {
+      if (i == pieceType)
+        pieces.push_back(i);
+    }
+  }
+  // Para un tipo de pieza i verifico su diferencia 
+  // con el resto
+  for(int i = 0; i < pieces.size(); i++) {
+    for(int j = 0; j < pieces.size(); j++) {
       if (i != j) {
-        if (tmp[j]) {
-          minimum = min(minimum, abs(lpiece[i] - lpiece[j]));
-        }
-        else {
-          if (destiny == j) {
-            minimum = min(minimum, abs(lpiece[i] - lpiece[destiny]));
-          }
-        }
+        minimum = min(minimum, abs(lpiece[i] - lpiece[j]));
       }
     }
   }
-  if (ro_count > RO || minimum < DIFF) 
-    return false;
+  if (ro_count <= RO && minimum >= DIFF) 
+    return true;   // Cumple los contraints.
   else 
-    return true;
+    return false;  // No cumple constraints.
 }
+
+// Computa la probabilidad de elección de cada individuo
+// en la población
+vector<double> roulette(vector<Solution> &people) {
+  vector<double> prob;
+  double sum;
+  for(int i = 0; i < people.size(); i++) {
+    sum = 0.0;
+    for(int j = 0; j < people.size(); j++) {
+      sum += people[j].fitness;
+    }
+    prob.push_back((people[i].fitness)/sum);
+  }
+  return prob;
+}
+
+// Se reemplaza al peor de la población
+void replace(vector<Solution> &people,
+             Solution &son) {
+  pair<double,int> maximum;
+  maximum.first = MIN_DOUBLE;
+  double control = MIN_DOUBLE;
+  for(int i = 0; i < people.size(); i++) {
+    control = max(control,people[i].fitness);
+    if (control != maximum.first) {
+      maximum.first = control;
+      maximum.second = i;
+      }
+  }
+  //delete people[maximum.second];
+  //  vector<Solution*>::iterator it;
+  //it = people.begin();
+  people.erase(people.begin() + maximum.second);
+  //people[maximum.second] = son;
+  people.insert(people.begin() + maximum.second, son);
+  return;
+}
+
+Solution get_best(vector<Solution> &people) {
+  double control = MAX_INT;
+  pair<double,int> minimum;
+  minimum.first = MAX_INT;
+  for(int i = 0; i < people.size(); i++) {
+    control = min(control,people[i].fitness);
+      if (control != minimum.first) {
+        minimum.first = control;
+        minimum.second = i;
+      }
+  }
+  return people[minimum.second];
+}
+
+Solution geneticAlgorithm(int tam, vector<int> &rlength,
+                           vector<int> &dpiece,
+                           vector<int> &lpiece,
+                           int genNum) {
+  Solution bestFound; 
+  // Generación de la población inicial
+  vector<Solution> people = genPeople(tam, rlength, lpiece,
+                                      dpiece);
+  // Se calcula fitness de cada una de las soluciones 
+  // aleatorias iniciales
+  for(int i = 0; i < people.size(); i++) 
+    people[i].fitnessEval();
+  vector<double> prob; // Vector de probabilidades
+  pair<Solution,Solution> parents;
+  pair<Solution,Solution> children;
+  int z = 0;
+  int toMutate;
+  double crossFactor;
+  double mutationFactor;
+  while (z < genNum) {
+    bestFound = get_best(people);
+    prob = roulette(people);
+    parents = getParents(people, prob);
+    crossFactor = (double) random() / RAND_MAX; 
+    if (crossFactor >= CROSS_PROB) {
+      cout << "bye" << endl;
+      children = Cross(&parents.first, &parents.second);
+      // Arreglamos las soluciones
+      fixSolution(children.first, dpiece, rlength,lpiece);
+      fixSolution(children.second, dpiece, rlength,lpiece);
+      children.first.printSolution();
+      children.second.printSolution();
+      int a;
+      cin >> a;
+      cout << "after fix" << endl;
+      mutationFactor = (double) random() / RAND_MAX;
+      if (mutationFactor <= MUTATION_FACT) {
+        cout << "mutati" << endl;
+        toMutate = (int) random() % 2;
+        if (toMutate) 
+          mutate(children.second, rlength, lpiece);
+        else
+          mutate(children.first, rlength, lpiece);
+      }
+      // Remplazo en la población
+      replace(people, children.first);
+      replace(people, children.second);
+    }
+    z++;
+    cout << "hello" << endl;
+  }
+  return bestFound;
+}
+
+void mutate(Solution &child, vector<int> &rlength,
+            vector<int> &lpiece) {
+  int origin;
+  int destiny;
+  int piece;
+  int space;
+  int M = child.size;
+  while (true) {  // Seleccionamos origen
+    origin = (int) round(random()) % M;
+    cout << "mutati origin " << endl;
+    piece = (int) round(random()) % M;
+    // Se puede tomar pieza
+    if (child.cgs[origin][piece]) {
+      destiny = (int) round(random()) % M;
+      cout << "mutati destiny " << endl;
+      if (destiny != origin && 
+          rlength[child.rollType[destiny]] >= lpiece[piece]) {
+        space = lpiece[piece];
+        if (checkConstraints(lpiece, child, destiny,origin)) {
+          // Se puede hacer movimiento de pieza
+          child.cgs[origin][piece]--;
+          child.update(origin,lpiece,rlength);
+          child.cgs[destiny][piece]++;
+          child.update(destiny, lpiece, rlength);
+          // Actualización de fitness
+          child.fitnessEval();
+          break;
+        }
+        else continue;
+      }
+      else continue;
+    }
+    else continue;
+  }
+  return;
+}
+
+pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &prob) {
+  double chance = random() % people.size();
+  vector<pair<int,double> > probSelect;
+  for(int i = 0; i < prob.size(); i++) 
+    probSelect.push_back(make_pair(i, prob[i]));
+  sort(probSelect.begin(), probSelect.end(), comparePairDouble);
+  pair<Solution,Solution> result = make_pair(people[probSelect[0].first], people[probSelect[1].first]);
+  return result;
+}
+
+void addPiece(vector<int> & targetIndex, Solution &son,
+              int udiff, vector<int> &rlength, 
+              vector<int> &lpiece, int pieceType) {
+  int candidate;
+  pair<int,int> newConfig;
+  while (true) { 
+    candidate = (int) round(random()) % targetIndex.size();
+    cout << "candidateFIX " << endl;
+    if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
+      son.cgs[targetIndex[candidate]][pieceType] += udiff;
+      // Se ejecuta FFD con nuevo estado de piezas 
+      int index = targetIndex[candidate];
+      newConfig = FFD(rlength[son.rollType[index]],lpiece,son.cgs[index]);
+      son.used_rolls[index] = newConfig.first;
+      son.leftover[index] = newConfig.second;
+      break;
+    }
+    else continue;
+  }
+  return;
+}
+
+
+
+
+  
+
+
+

@@ -8,6 +8,11 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
   return (a.second > b.second);
 }
 
+// Ordena de manera decreciente.
+bool comparePairDouble(pair<int,double> a, pair<int,double> b) {
+  return (a.second < b.second);
+}
+
 // Dado un movimiento evaluado por la función 
 // shiftNeighbourhood, esta función decide si el
 // movimiento permite minizar la cantidad de 
@@ -95,6 +100,14 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
 // Función que Calcula mínimo
 inline int min(int a, int b) {
   if (a < b) 
+    return a;
+  else
+    return b;
+}
+
+// Función que Calcula máximo
+inline int max(int a, int b) {
+  if (a > b) 
     return a;
   else
     return b;

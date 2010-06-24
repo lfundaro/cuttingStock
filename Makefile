@@ -8,7 +8,7 @@ cuttingStock: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o cuttingStock
 	#rm -rf *.o *.out semantic.cache *.gch *~ *.tex.backup
 
-cuttingStock.o: cuttingStock.cpp
+cuttinggStock.o: cuttingStock.cpp
 	$(CXX) $(CXXFLAGS) -c cuttingStock.cpp		
 
 FFD.o: FFD.cpp
