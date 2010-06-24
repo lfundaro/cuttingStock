@@ -2,7 +2,7 @@
 using namespace std;
 
 Solution randomSol(Solution &initial, vector<int> &lpiece,
-                    vector<int> &rlength) {
+                   vector<int> &rlength) {
   Solution new_solution = Solution(initial);
   int n = NUM_PERTURBATIONS;
   int origin;
@@ -25,43 +25,19 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
           if (destiny != origin) { 
             if (rlength[new_solution.rollType[destiny]] 
                 < lpiece[origin]) 
-              continue;
+              continue;  // La pieza no cabe en el roll
             space = take*lpiece[origin];
-            //if (new_solution->leftover[destiny] >= space) {
-              // Verificación de RO y Diferencia entre piezas
-              vector<int> tmp = new_solution.cgs[destiny];
-              ro_count = 0;
-              for(int i = 0; i < tmp.size(); i++) {
-                if (tmp[i]) 
-                  ro_count += 1;
-                if (i == origin) 
-                  ro_count += 1;
-              }
-              minimum = MAX_INT;
-              for(int i = 0; i < tmp.size(); i++) {
-                for(int j = 0; j < tmp.size(); j++) {
-                  if (i != j) {
-                    if (tmp[j]) {
-                      minimum = min(minimum, abs(lpiece[i] - lpiece[j]));
-                    }
-                    else {
-                      if (origin == j) {
-                        minimum = min(minimum, abs(lpiece[i] - lpiece[destiny]));
-                      }
-                    }
-                  }
-                }
-              }
-              if (ro_count > RO || minimum < DIFF) break; 
+            // Verificación de RO y Diferencia entre piezas
+            if (checkConstraints(lpiece,new_solution,
+                                 destiny,i)) {
               new_solution.cgs[origin][origin] -= take;
               new_solution.update(origin,lpiece,rlength);
               new_solution.cgs[destiny][origin]  += take;
               new_solution.update(destiny,lpiece,rlength);
               break;
-              //            }
-            // else continue; // No hay espacio en destino 
-            //                // Se intenta con otro destino
+            }
           }
+          else continue; // Origen igual a destino
         }
         break; // Se logro hacer perturbación
       }
@@ -72,9 +48,10 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   return new_solution;
 }
 
+  
 vector<Solution> genPeople(int tam, vector<int> &rlength,
-                            vector<int> &lpiece,
-                            vector<int> &dpiece) {
+                           vector<int> &lpiece,
+                           vector<int> &dpiece) {
   vector<Solution> solutionSet;
   Solution initial = Solution(rlength, lpiece, dpiece);
   for(int i = 0; i < tam; i++) {
@@ -201,11 +178,11 @@ void fixSolution(Solution &son, vector<int> &dpiece,
         // Si se consigue un candidato cuyas piezas es 
         // menor de lo que se quita, se debe buscar otro.
         if (diff > 0) { // Agrego piezas 
-          for(int i = 0; i < diff; i++) 
+          for(int p = 0; p < diff; p++) 
             addPiece(targetIndex,son,1,rlength, lpiece,i);
         }
         else {   // Quito piezas 
-          for(int i = 0; i < abs(diff); i++)
+          for(int q = 0; q < abs(diff); q++)
             addPiece(targetIndex,son,-1, rlength, lpiece,i);
         }
       }
@@ -216,8 +193,8 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       while (true) {
         cout << "No piece found";
         destiny = (int) round(random()) % son.size;
-        if (checkConstraints(lpiece, son, destiny,i)
-            && notEmptyColumn(son.cgs[destiny])) {
+        if (notEmptyColumn(son.cgs[destiny]) && 
+            checkConstraints(lpiece, son, destiny,i)) {
           son.cgs[destiny][i] += dpiece[i];
           newConfig = FFD(rlength[son.rollType[destiny]],
                           lpiece, son.cgs[destiny]);
@@ -254,7 +231,7 @@ bool checkConstraints(vector<int> &lpiece,
     if (tmp[i]) 
       ro_count += 1;
     else { 
-       // Esta es la pieza que iría en el cutting group
+      // Esta es la pieza que iría en el cutting group
       if (i == pieceType) 
         ro_count += 1; 
     }
@@ -312,7 +289,7 @@ void replace(vector<Solution> &people,
     if (control != maximum.first) {
       maximum.first = control;
       maximum.second = i;
-      }
+    }
   }
   //delete people[maximum.second];
   //  vector<Solution*>::iterator it;
@@ -329,18 +306,18 @@ Solution get_best(vector<Solution> &people) {
   minimum.first = MAX_INT;
   for(int i = 0; i < people.size(); i++) {
     control = min(control,people[i].fitness);
-      if (control != minimum.first) {
-        minimum.first = control;
-        minimum.second = i;
-      }
+    if (control != minimum.first) {
+      minimum.first = control;
+      minimum.second = i;
+    }
   }
   return people[minimum.second];
 }
 
 Solution geneticAlgorithm(int tam, vector<int> &rlength,
-                           vector<int> &dpiece,
-                           vector<int> &lpiece,
-                           int genNum) {
+                          vector<int> &dpiece,
+                          vector<int> &lpiece,
+                          int genNum) {
   Solution bestFound; 
   // Generación de la población inicial
   vector<Solution> people = genPeople(tam, rlength, lpiece,
@@ -448,6 +425,10 @@ void addPiece(vector<int> & targetIndex, Solution &son,
     cout << "candidateFIX " << endl;
     if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
       son.cgs[targetIndex[candidate]][pieceType] += udiff;
+      // Se elimina el candidato si la columna se queda 
+      // sin piezas del tipo
+      if (!son.cgs[targetIndex[candidate]][pieceType]) 
+        targetIndex.erase(targetIndex.begin() + candidate);
       // Se ejecuta FFD con nuevo estado de piezas 
       int index = targetIndex[candidate];
       newConfig = FFD(rlength[son.rollType[index]],lpiece,son.cgs[index]);
@@ -455,7 +436,11 @@ void addPiece(vector<int> & targetIndex, Solution &son,
       son.leftover[index] = newConfig.second;
       break;
     }
-    else continue;
+    else {
+      // Se elimina el índice que falló 
+      targetIndex.erase(targetIndex.begin() + candidate);
+      continue;
+    }
   }
   return;
 }
