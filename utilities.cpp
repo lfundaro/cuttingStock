@@ -120,6 +120,3 @@ void free_vector(vector<vector<int>*> &a) {
   for(it = a.begin(); it != a.end(); it++) 
     delete (*it);
 }
-
-
-

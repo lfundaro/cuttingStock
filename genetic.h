@@ -17,6 +17,7 @@
 #define CROSS_PROB 0.1  // Para valores [0.4,1] hay cruce
 #define MUTATION_FACT 0.1   // Factor de mutación
 #define FRACC 1.0
+#define MAX_IT 30000
 using namespace std;
 
 Solution randomSol(Solution &initial, vector<int> &lpiece,

@@ -1,7 +1,10 @@
 #include "Solution.h"
 using namespace std;
 
-// Construye una solución inicial
+// Construye una solución inicial. 
+// La solución inicial consiste en colocar todas las 
+// piezas del tipo i en el grupo de corte i utilizando 
+// el tipo de rollo que minimice el desperdicio.
 Solution::Solution(vector<int> &rlength, 
                    vector<int> &lpiece,
                    vector<int> &dpiece) {
@@ -86,7 +89,7 @@ void Solution::printSolution() {
   vector<vector<int> >::iterator it;
   vector<int>::iterator iv;
   for(it = cgs.begin(); it != cgs.end() ; it++) {
-    cout << "Tipo " << i << endl;
+    cout << "Cutting group " << i << endl;
     for(iv = (*it).begin(); iv != (*it).end(); iv++) {
       if ((*iv) != 0) {
         cout << (*iv) << endl;
@@ -106,6 +109,10 @@ void Solution::printSolution() {
   cout << "Fitness = " << fitness << endl;
 }
 
+// Actualización de la solución. Cuando se quita o se pone 
+// una pieza de un grupo de corte se deben actualizar 
+// la cantidad de desperdicio y rollos que se usó 
+// para ese grupo de corte.
 void Solution::update(int where, vector<int> &lpiece,
                       vector<int> &rlength) {
   pair<int,int> new_values;
@@ -115,6 +122,16 @@ void Solution::update(int where, vector<int> &lpiece,
   leftover[where]   = new_values.second;
 }
 
+// Función que dada una solución calcula su Fitness.
+// El fitness se calcula en base a la variable penalty 
+// la cual indica cuantas veces hubo que arrelar la 
+// solución para hacerla válida despues de un cruce. 
+// También se calcula en base a la sumatoria de leftover.
+// De cada cifra se toma un porcentage. Como queremos 
+// minimizar el desperdicio entonces tomamos el mayor 
+// porcentage de desperdicio y junto con el porcentage 
+// de penalty se suman ambas cifras y se obtiene el atributo
+// fitness.
 void Solution::fitnessEval() {
   int sum = 0;
   for(int i = 0; i < leftover.size(); i++) 
@@ -123,11 +140,3 @@ void Solution::fitnessEval() {
   double y = (LEFTOVER * sum) / 100;
   fitness = x + y;
 }
-
-// int Solution::isValid() {
-//   vector<vector<int> >::iterator val;
-//   int decision = 1;
-//   for(val = cgs.begin(); val != cgs.end(); val++) {
-    
-//   }
-// }

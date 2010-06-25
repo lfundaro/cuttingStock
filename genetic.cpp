@@ -1,6 +1,16 @@
 #include "genetic.h"
 using namespace std;
 
+// Función que genera una solución aleatoria. 
+// Parte de una solución inicial válida y realiza 
+// perturbaciones que se traducen en mover una pieza 
+// de un grupo de corte a otro siempre y cuando se respeten 
+// las restricciones del problema.
+// La cantidad de permutaciones se puede controlar con la 
+// constante NUM_PERTURBATIONS que se encuentra en el 
+// encabezado de este archivo. Igualmente, el porcentage 
+// de piezas que se mueven de un grupo a otro se puede
+// cambiar con la constante MOVE_PERCENTAGE
 Solution randomSol(Solution &initial, vector<int> &lpiece,
                    vector<int> &rlength) {
   Solution new_solution = Solution(initial);
@@ -16,13 +26,11 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   int minimum;
   for(int i = 0; i < n; i++) {
     while (true) {
-      cout << "origin RandomSol " << endl;
       origin = (int) round(random()) % new_solution.size;
       npieces = new_solution.cgs[origin][origin];
       take = (MOVE_PERCENTAGE*npieces) / 100;
       if (take) { // Hay suficientes piezas para mover
         while (true) {
-          cout << "destiny RandomSol" << endl;
           destiny = (int) round(random()) % new_solution.size;
           if (destiny != origin) { 
             if (rlength[new_solution.rollType[destiny]] 
@@ -50,7 +58,10 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   return new_solution;
 }
 
-  
+// Genera la población inicial del algoritmo genético.
+// Utiliza repetidamente la función randomSol para 
+// generar un individuo en la población que esté 
+// perturbado aleatoriamente.
 vector<Solution> genPeople(int tam, vector<int> &rlength,
                            vector<int> &lpiece,
                            vector<int> &dpiece) {
@@ -63,8 +74,10 @@ vector<Solution> genPeople(int tam, vector<int> &rlength,
   return solutionSet;
 }
 
-// Cruce de un punto. Genera dos soluciones 
-// infactible.
+// Cruce de un punto. Este cruce puede generar soluciones
+// factibles y no factibles. La práctica demostró que la 
+// mayoría de las soluciones son no factibles por lo tanto 
+// deben ser arregladas con la función fixSolution.
 pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   // Se generan dos hijos
   vector<vector<int> > acgs;
@@ -149,6 +162,12 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   return result;
 }
 
+// Arregla una solución que se genera del cruce entre 
+// otras dos soluciones. Por cada tipo de pieza demandada 
+// se hace una vuelta de reconocimiento para ver 
+// si hay un déficit o superávit. Según sea el caso 
+// se quitan o se ponen piezas para así arreglar la 
+// solución.
 void fixSolution(Solution &son, vector<int> &dpiece, 
                  vector<int> &rlength,vector<int> &lpiece) {
   int M = son.size;
@@ -191,7 +210,6 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       int destiny;
       penalty += dpiece[i];
       while (true) {
-        cout << "Nopiecefound FIXSOL" << endl;
         destiny = (int) round(random()) % son.size;
         if (notEmptyColumn(son.cgs[destiny]) && 
             checkConstraints(lpiece, son, destiny,i,rlength)) {
@@ -210,6 +228,7 @@ void fixSolution(Solution &son, vector<int> &dpiece,
   son.fitnessEval();
 }
 
+// Chequea si un grupo de corte está vacío.
 int notEmptyColumn(vector<int> column) {
   int decision = 0;
   for(int i = 0; i < column.size(); i++) {
@@ -218,7 +237,9 @@ int notEmptyColumn(vector<int> column) {
   return decision;
 }
 
-  
+// Chequea que se cumplan las restricciones de 
+// Open Stacks y mínima diferencia de longitud 
+// entre piezas que se cortan.
 bool checkConstraints(vector<int> &lpiece,
                       Solution &sol, int destiny,
                       int pieceType, vector<int> &rlength) 
@@ -279,7 +300,12 @@ vector<double> roulette(vector<Solution> &people) {
   return prob;
 }
 
-// Se reemplaza al peor de la población
+// Se reemplaza al peor de la población.
+// El peor de la población se mide en base 
+// al valor de fitness. Mientras mayor se dicho 
+// valor significa que la solución desperdicia 
+// mucho el espacio por lo tanto se elimina de 
+// la población.
 void replace(vector<Solution> &people,
              Solution &son) {
   pair<double,int> maximum;
@@ -287,7 +313,6 @@ void replace(vector<Solution> &people,
   double control = MIN_DOUBLE;
   for(int i = 0; i < people.size(); i++) {
     control = max(control,people[i].fitness);
-    //    control = max(control,(double)people[i].penalty);
     if (control != maximum.first) {
       maximum.first = control;
       maximum.second = i;
@@ -298,6 +323,10 @@ void replace(vector<Solution> &people,
   return;
 }
 
+// Toma el mejor individuo de la población
+// en base a su valor de fitness. El mejor 
+// será aquel que tenga el mínimo fitness 
+// de entre todos.
 Solution get_best(vector<Solution> &people) {
   double control = MAX_DOUBLE;
   pair<double,int> minimum;
@@ -312,12 +341,15 @@ Solution get_best(vector<Solution> &people) {
   return people[minimum.second];
 }
 
+// Algoritmo genético que genera una población inicial
+// aleatoria, realiza cruces de un punto, tiene un 
+// criterio de selección de ruleta y su estrategia 
+// de remplazo es estacionaria reemplazando al peor.
 Solution geneticAlgorithm(int tam, vector<int> &rlength,
                           vector<int> &dpiece,
                           vector<int> &lpiece,
                           int genNum) {
   Solution optimum = Solution(rlength, lpiece, dpiece);
-  int mutAmount = 0;
   Solution bestFound;
   // Generación de la población inicial
   vector<Solution> people = genPeople(tam, rlength, lpiece,
@@ -344,7 +376,6 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
       fixSolution(children.second, dpiece, rlength,lpiece);
       mutationFactor = (double) random() / RAND_MAX;
       if (mutationFactor <= MUTATION_FACT) {
-        mutAmount++;
         toMutate = (int) random() % 2;
         if (toMutate) 
           mutate(children.second, rlength, lpiece);
@@ -359,21 +390,25 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
     optimum = opt(optimum,bestFound);
     z++;
   }
-  cout << "Mutate amount = " <<  mutAmount << endl;
   return optimum;
 }
 
+// Función que toma la mejor solución entre dos soluciones.
 Solution opt(Solution a, Solution b) {
   if (a.fitness < b.fitness) { 
-    cout << b.fitness << " --> " << a.fitness << endl; 
+    //cout << b.fitness << " --> " << a.fitness << endl; 
     return a; 
   }
   else { 
-    cout << a.fitness << " --> " << b.fitness << endl; 
+    //cout << a.fitness << " --> " << b.fitness << endl; 
     return b; 
   }
 }
 
+// Función que sirve para mutar un hijo. Esta función se 
+// invoca dependiendo de la probabilidad de mutación. 
+// Para mutar se toma una pieza aleatoria de un grupo 
+// de corta y se pone en otro grupo de corte.
 void mutate(Solution &child, vector<int> &rlength,
             vector<int> &lpiece) {
   int origin;
@@ -382,7 +417,6 @@ void mutate(Solution &child, vector<int> &rlength,
   int space;
   int M = child.size;
   while (true) {
-    cout << "mutati originpiecedestiny" << endl;
     origin = (int) round(random()) % M;
     piece = (int) round(random()) % M;
     destiny = (int) round(random()) % M;
@@ -409,7 +443,11 @@ void mutate(Solution &child, vector<int> &rlength,
   return;
 }
 
-
+// Selecciona los padres para un cruce. El primer componente 
+// que se toma es aquel que tiene la probabilidad más pequeña
+// que indica el método de la ruleta. Luego el segundo 
+// componente se elige de manera aleatoria de entre el resto 
+// de los padres que quedan como candidatos.
 pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &prob) {
   double chance = random() % people.size();
   vector<pair<int,double> > probSelect;
@@ -421,13 +459,13 @@ pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &pro
   return result;
 }
 
+// Agrega o quita un pieza a un grupo de corte
 void addPiece(vector<int> & targetIndex, Solution &son,
               int udiff, vector<int> &rlength, 
               vector<int> &lpiece, int pieceType) {
   int candidate;
   pair<int,int> newConfig;
   while (true) {
-    cout << "candidate addPiece" << endl;
     candidate = (int) round(random()) % targetIndex.size();
     if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
       son.cgs[targetIndex[candidate]][pieceType] += udiff;
@@ -450,11 +488,3 @@ void addPiece(vector<int> & targetIndex, Solution &son,
   }
   return;
 }
-
-
-
-
-  
-
-
-
