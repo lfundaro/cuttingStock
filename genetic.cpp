@@ -16,6 +16,7 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   int minimum;
   for(int i = 0; i < n; i++) {
     while (true) {
+      
       origin = (int) round(random()) % new_solution.size;
       npieces = new_solution.cgs[origin][origin];
       take = (MOVE_PERCENTAGE*npieces) / 100;

@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
     
     srand(time(NULL));
 
+
     // Solution a = geneticAlgorithm(ntpieces, rlength, 
     //                                dpiece,lpiece, 1000);
     
