@@ -14,8 +14,9 @@
 #define MAX_INT numeric_limits<int>::max()
 #define MAX_DOUBLE numeric_limits<double>::max()
 #define MIN_DOUBLE numeric_limits<double>::min()
-#define CROSS_PROB 0.2  // Para valores [0.4,1] hay cruce
-#define MUTATION_FACT 0.09   // Factor de mutación
+#define CROSS_PROB 0.1  // Para valores [0.4,1] hay cruce
+#define MUTATION_FACT 0.1   // Factor de mutación
+#define FRACC 1.0
 using namespace std;
 
 Solution randomSol(Solution &initial, vector<int> &lpiece,
@@ -52,11 +53,14 @@ int notEmptyColumn(vector<int> column);
 
 bool checkConstraints(vector<int> &lpiece,
                       Solution &sol, int destiny,
-                      int pieceType);
+                      int pieceType, 
+                      vector<int> &rlength);
 
 void addPiece(vector<int> & targetIndex, Solution &son,
               int udiff, vector<int> &rlength, 
               vector<int> &lpiece, int pieceType);
+
+Solution opt(Solution a, Solution b);
 
 
 

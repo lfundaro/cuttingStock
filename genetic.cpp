@@ -16,12 +16,13 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   int minimum;
   for(int i = 0; i < n; i++) {
     while (true) {
-      
+      cout << "origin RandomSol " << endl;
       origin = (int) round(random()) % new_solution.size;
       npieces = new_solution.cgs[origin][origin];
       take = (MOVE_PERCENTAGE*npieces) / 100;
       if (take) { // Hay suficientes piezas para mover
         while (true) {
+          cout << "destiny RandomSol" << endl;
           destiny = (int) round(random()) % new_solution.size;
           if (destiny != origin) { 
             if (rlength[new_solution.rollType[destiny]] 
@@ -30,7 +31,7 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
             space = take*lpiece[origin];
             // Verificación de RO y Diferencia entre piezas
             if (checkConstraints(lpiece,new_solution,
-                                 destiny,i)) {
+                                 destiny,i,rlength)) {
               new_solution.cgs[origin][origin] -= take;
               new_solution.update(origin,lpiece,rlength);
               new_solution.cgs[destiny][origin]  += take;
@@ -190,10 +191,10 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       int destiny;
       penalty += dpiece[i];
       while (true) {
-        cout << "No piece found" << endl;
+        cout << "Nopiecefound FIXSOL" << endl;
         destiny = (int) round(random()) % son.size;
         if (notEmptyColumn(son.cgs[destiny]) && 
-            checkConstraints(lpiece, son, destiny,i)) {
+            checkConstraints(lpiece, son, destiny,i,rlength)) {
           son.cgs[destiny][i] += dpiece[i];
           newConfig = FFD(rlength[son.rollType[destiny]],
                           lpiece, son.cgs[destiny]);
@@ -220,7 +221,7 @@ int notEmptyColumn(vector<int> column) {
   
 bool checkConstraints(vector<int> &lpiece,
                       Solution &sol, int destiny,
-                      int pieceType) 
+                      int pieceType, vector<int> &rlength) 
 {
   // Verificación de RO y Diferencia entre piezas
   vector<int> tmp = sol.cgs[destiny];
@@ -228,11 +229,11 @@ bool checkConstraints(vector<int> &lpiece,
   int ro_count = 0;
   for(int i = 0; i < tmp.size(); i++) {
     if (tmp[i]) 
-      ro_count += 1;
+      ro_count++;
     else { 
       // Esta es la pieza que iría en el cutting group
       if (i == pieceType) 
-        ro_count += 1; 
+        ro_count++;
     }
   }
   minimum = MAX_INT;
@@ -256,7 +257,8 @@ bool checkConstraints(vector<int> &lpiece,
       }
     }
   }
-  if (ro_count <= RO && minimum >= DIFF) 
+  if (ro_count <= RO && minimum >= DIFF && 
+      rlength[sol.rollType[destiny]] >= lpiece[pieceType]) 
     return true;   // Cumple los contraints.
   else 
     return false;  // No cumple constraints.
@@ -285,6 +287,7 @@ void replace(vector<Solution> &people,
   double control = MIN_DOUBLE;
   for(int i = 0; i < people.size(); i++) {
     control = max(control,people[i].fitness);
+    //    control = max(control,(double)people[i].penalty);
     if (control != maximum.first) {
       maximum.first = control;
       maximum.second = i;
@@ -313,7 +316,9 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
                           vector<int> &dpiece,
                           vector<int> &lpiece,
                           int genNum) {
-  Solution bestFound; 
+  Solution optimum = Solution(rlength, lpiece, dpiece);
+  int mutAmount = 0;
+  Solution bestFound;
   // Generación de la población inicial
   vector<Solution> people = genPeople(tam, rlength, lpiece,
                                       dpiece);
@@ -339,6 +344,7 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
       fixSolution(children.second, dpiece, rlength,lpiece);
       mutationFactor = (double) random() / RAND_MAX;
       if (mutationFactor <= MUTATION_FACT) {
+        mutAmount++;
         toMutate = (int) random() % 2;
         if (toMutate) 
           mutate(children.second, rlength, lpiece);
@@ -350,9 +356,22 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
       replace(people, children.second);
     }
     bestFound = get_best(people);
+    optimum = opt(optimum,bestFound);
     z++;
   }
-  return bestFound;
+  cout << "Mutate amount = " <<  mutAmount << endl;
+  return optimum;
+}
+
+Solution opt(Solution a, Solution b) {
+  if (a.fitness < b.fitness) { 
+    cout << b.fitness << " --> " << a.fitness << endl; 
+    return a; 
+  }
+  else { 
+    cout << a.fitness << " --> " << b.fitness << endl; 
+    return b; 
+  }
 }
 
 void mutate(Solution &child, vector<int> &rlength,
@@ -363,6 +382,7 @@ void mutate(Solution &child, vector<int> &rlength,
   int space;
   int M = child.size;
   while (true) {
+    cout << "mutati originpiecedestiny" << endl;
     origin = (int) round(random()) % M;
     piece = (int) round(random()) % M;
     destiny = (int) round(random()) % M;
@@ -370,7 +390,7 @@ void mutate(Solution &child, vector<int> &rlength,
     if (child.cgs[origin][piece]) {
       if (destiny != origin && rlength[child.rollType[destiny]] >= lpiece[piece]) {
         space = lpiece[piece];
-        if (checkConstraints(lpiece, child, destiny,piece)) {
+        if (checkConstraints(lpiece, child, destiny,piece,rlength)) {
           // Se puede hacer movimiento de pieza
           child.cgs[origin][piece]--;
           child.update(origin,lpiece,rlength);
@@ -397,7 +417,7 @@ pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &pro
     probSelect.push_back(make_pair(i, prob[i]));
   sort(probSelect.begin(), probSelect.end(), comparePairDouble);
   int mother = ((int) round(random()) % (people.size()-1)) + 1;
-  pair<Solution,Solution> result = make_pair(people[probSelect[0].first], people[probSelect[1].first]);
+  pair<Solution,Solution> result = make_pair(people[probSelect[0].first], people[probSelect[mother].first]);
   return result;
 }
 
@@ -407,7 +427,7 @@ void addPiece(vector<int> & targetIndex, Solution &son,
   int candidate;
   pair<int,int> newConfig;
   while (true) {
-    cout << "pieceType " << pieceType << endl;
+    cout << "candidate addPiece" << endl;
     candidate = (int) round(random()) % targetIndex.size();
     if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
       son.cgs[targetIndex[candidate]][pieceType] += udiff;

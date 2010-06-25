@@ -1,5 +1,5 @@
 CXX	:= g++-4.4
-CXXFLAGS := -g
+CXXFLAGS := -O3 -g
 OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o genetic.o
 
 all: cuttingStock

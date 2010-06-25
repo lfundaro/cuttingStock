@@ -124,18 +124,10 @@ void Solution::fitnessEval() {
   fitness = x + y;
 }
 
-// void Solution::printSolution() {
-//   vector<vector<int> >::iterator it;
-//   vector<int>::iterator eit;
-//   int i = 0;
-//   for(it = cgs.begin(); it != cgs.end(); it++) {
-//     cout << "C.Group" << endl;
-//     cout << i << endl;
-//     for(eit = (*it).begin(); eit != (*it).end(); eit++) {
-//       if (*eit != 0) 
-//         cout << *eit << endl;
-//     }
-//     i++;
-//     cout << "============" << endl;
+// int Solution::isValid() {
+//   vector<vector<int> >::iterator val;
+//   int decision = 1;
+//   for(val = cgs.begin(); val != cgs.end(); val++) {
+    
 //   }
 // }
