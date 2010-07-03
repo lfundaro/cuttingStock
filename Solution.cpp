@@ -51,6 +51,12 @@ Solution::Solution(vector<int> &rlength,
     sum += leftover[i];
   fitness = (LEFTOVER * sum) / 100;
   penalty = 0;
+
+  // Cálculo de variety
+  variety = calcVariety(cgs);
+  // Cálculo de diversidad
+  diversity = calcDiversity(rlength.size(), cgs, rollType,
+                            used_rolls);
 }
 
 Solution::~Solution() {}
@@ -64,13 +70,16 @@ Solution::Solution(const Solution& a, int M) {
   cgs = a.cgs;
   fitness = a.fitness;
   penalty = a.penalty;
+  variety = a.variety;
+  diversity = a.diversity;
 }
 
 Solution::Solution(vector<int> left, 
                    vector<int> urolls,
                    vector<int> rType, 
                    vector<vector<int> > p, double fitn,
-                   int sz, int penal) {
+                   int sz, int penal, vector<int> variet,
+                   vector<vector<int> > divers) {
   leftover = left;
   used_rolls = urolls;
   rollType = rType;
@@ -78,6 +87,8 @@ Solution::Solution(vector<int> left,
   size = sz;
   fitness = fitn;
   penalty = penal;
+  variety = variet;
+  diversity = divers;
 }
 
 Solution::Solution() {};
@@ -140,3 +151,73 @@ void Solution::fitnessEval() {
   double y = (LEFTOVER * sum) / 100;
   fitness = x + y;
 }
+
+void Solution::printAsPaper(vector<int> &rlength,
+                            vector<int> &lpiece) {
+  int sum;
+  int totalLO = 0;
+  for(int i = 0; i < cgs.size(); i++) {
+    totalLO += leftover[i];
+  }
+  
+
+  vector<int> pieceSet;
+  int totalRollLength = 0;
+  int minLG;
+  int minRollType;
+  for(int i = 0; i < cgs.size(); i++) {
+    if (notEmptyColumn(cgs[i])) {
+      pieceSet = cgs[i];
+      
+      int* bestCut;
+      bestCut = bestCutting(pieceSet, rlength, lpiece);
+      
+        minLG = bestCut[1];
+        minRollType = bestCut[2];
+        
+        delete [] bestCut;
+        
+        totalRollLength += minLG*rlength[minRollType];
+    }
+  }
+  
+  cout << "Trim loss = " << (100.0*(double)totalLO)/(double)totalRollLength << endl;
+}
+
+
+// void Solution::calcVariety() {
+//   vector<int>::iterator itset;
+//   int count;
+//   for(int i = 0; i < cgs.size(); i++) {
+//     count = 0;
+//     for(itset = cgs[i].begin(); itset < cgs[i].end(); itset++) {
+//       if (*itset) {
+//         count++;
+//       }
+//     }
+//     // Actualización de variety
+//     variety[i] = count;
+//   }
+// }
+
+// void Solution::calcDiversity(int rolltypes) {
+//   int cgsize = used_rolls.size();
+//   // Por cada tipo de roll se busca que 
+//   // cutting group lo está usando actualmente.
+//   for(int i = 0; i < rolltypes; i++) {
+//     // Se busca si hay un cutting group que use el roll i
+//     for(int j = 0; j < cgsize; j++) {
+//       // Se verifica que el cutting group j use al menos 
+//       // un roll.
+//       if (used_rolls[j]) {
+//         // Si el roll i coincide con el del cgroup actual
+//         if (rollType[j] == i) {
+//           for(int k = 0; k < cgsize; k++) {
+//             if (cgs[j][k]) diversity[i][k] += cgs[j][k];
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+

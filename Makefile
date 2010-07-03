@@ -1,6 +1,6 @@
 CXX	:= g++-4.4
-CXXFLAGS := -O3 -g
-OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o genetic.o
+CXXFLAGS := -g
+OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o genetic.o scatterSearch.o
 
 all: cuttingStock
 
@@ -9,7 +9,10 @@ cuttingStock: $(OBJECTS)
 	#rm -rf *.o *.out semantic.cache *.gch *~ *.tex.backup
 
 cuttinggStock.o: cuttingStock.cpp
-	$(CXX) $(CXXFLAGS) -c cuttingStock.cpp		
+	$(CXX) $(CXXFLAGS) -c cuttingStock.cpp
+
+scatterSearch.o: scatterSearch.cpp
+	$(CXX) $(CXXFLAGS) -c scatterSearch.cpp
 
 FFD.o: FFD.cpp
 	$(CXX) $(CXXFLAGS) -c FFD.cpp		

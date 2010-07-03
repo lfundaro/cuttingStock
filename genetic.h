@@ -50,7 +50,7 @@ vector<double> roulette(vector<Solution> &people);
 void mutate(Solution &child,vector<int> &rlength,
             vector<int> &lpiece);
 
-int notEmptyColumn(vector<int> column);
+
 
 bool checkConstraints(vector<int> &lpiece,
                       Solution &sol, int destiny,

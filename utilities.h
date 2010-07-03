@@ -22,4 +22,19 @@ vector<vector<int>*> genInitSol(vector<int> &,
                                 vector<int> &);
 
 
+int* bestCutting(vector<int>& pieceSet, 
+                 vector<int>& rlength,
+                 vector<int>& lpiece);
+
+int notEmptyColumn(vector<int> column);
+
+vector<int> calcVariety(vector<vector<int> > &cgs);
+
+  vector<vector<int> > calcDiversity(int rolltypes, 
+                                     vector<vector<int> > &cgs,
+                                     vector<int> &rollType,
+                                     vector<int> &used_rolls);
+
+
+
 #endif

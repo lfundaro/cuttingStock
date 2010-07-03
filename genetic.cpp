@@ -155,8 +155,10 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
     brollType.push_back(*vit);
   }
   pair<Solution,Solution> result;
-  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0);
-  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0);
+  vector<vector<int> > diversity;
+  vector<int> variety;
+  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0,variety,diversity);
+  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0,variety, diversity);
   result.first = a;
   result.second = b;
   return result;
@@ -228,14 +230,6 @@ void fixSolution(Solution &son, vector<int> &dpiece,
   son.fitnessEval();
 }
 
-// Chequea si un grupo de corte está vacío.
-int notEmptyColumn(vector<int> column) {
-  int decision = 0;
-  for(int i = 0; i < column.size(); i++) {
-    decision |= column[i];
-  }
-  return decision;
-}
 
 // Chequea que se cumplan las restricciones de 
 // Open Stacks y mínima diferencia de longitud 

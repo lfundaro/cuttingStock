@@ -120,3 +120,97 @@ void free_vector(vector<vector<int>*> &a) {
   for(it = a.begin(); it != a.end(); it++) 
     delete (*it);
 }
+
+// Chequea si un grupo de corte está vacío.
+int notEmptyColumn(vector<int> column) {
+  int decision = 0;
+  for(int i = 0; i < column.size(); i++) {
+    decision |= column[i];
+  }
+  return decision;
+}
+
+
+int* bestCutting(vector<int>& pieceSet, 
+                 vector<int>& rlength,
+                 vector<int>& lpiece){
+  int i;
+  int j;
+  int nrolls = rlength.size();
+  int npieces = lpiece.size();
+  bool safe_move;
+  pair<int,int> temp_result;
+  int* result = new int[3];
+  result[0] = MAX_INT;
+
+  //Recorro los rolls posibles
+  for(j=0; j<nrolls; ++j){
+    safe_move = true;
+    //Recorro las piezas del pieceSet
+    for(i=0; i<npieces; i++){
+      if (pieceSet[i] > 0)//Si hay piezas
+        if (lpiece[i] > rlength[j]){//Si el largo de esa pieza es muy grande
+          safe_move = false;
+          break;
+        }
+    }
+    if (safe_move){
+      temp_result = FFD(rlength[j],lpiece,pieceSet);
+      if (result[0] > temp_result.second){
+        result[0] = temp_result.second; //leftover
+        result[1] = temp_result.first; //rollos
+        result[2] = j; //tipo de rollo
+      }
+    }
+  }
+
+  return result;
+}
+
+vector<int> calcVariety(vector<vector<int> > &cgs) {
+  vector<int>::iterator itset;
+  vector<int> variety(cgs.size(), 0);
+  int count;
+  for(int i = 0; i < cgs.size(); i++) {
+    count = 0;
+    for(itset = cgs[i].begin(); itset < cgs[i].end(); itset++) {
+      if (*itset) {
+        count++;
+      }
+    }
+    // Actualización de variety
+    variety[i] = count;
+  }
+}
+
+
+vector<vector<int> > calcDiversity(int rolltypes, 
+                                   vector<vector<int> > &cgs,
+                                   vector<int> &rollType,
+                                   vector<int> &used_rolls) 
+{
+  vector<vector<int> > diversity;
+  int M = cgs.size();
+  for(int i = 0; i < M; i++) 
+    diversity.push_back(vector<int>(M,0));
+  int cgsize = used_rolls.size();
+  // Por cada tipo de roll se busca que 
+  // cutting group lo está usando actualmente.
+  for(int i = 0; i < rolltypes; i++) {
+    // Se busca si hay un cutting group que use el roll i
+    for(int j = 0; j < cgsize; j++) {
+      // Se verifica que el cutting group j use al menos 
+      // un roll.
+      if (used_rolls[j]) {
+        // Si el roll i coincide con el del cgroup actual
+        if (rollType[j] == i) {
+          for(int k = 0; k < cgsize; k++) {
+            if (cgs[j][k]) diversity[i][k] += cgs[j][k];
+          }
+        }
+      }
+    }
+  }
+}
+
+
