@@ -96,6 +96,43 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
   return cgroups;
 }
 
+int* bestCutting(vector<int>& pieceSet, vector<int>& rlength,
+                 vector<int>& lpiece){
+  int i;
+  int j;
+  int nrolls = rlength.size();
+  int npieces = lpiece.size();
+  bool safe_move;
+  pair<int,int> temp_result;
+  int* result = new int[3];
+  //result[0]: leftover
+  //result[1]: rollos
+  //result[2]: tipo de rollo
+  result[0] = MAX_INT;
+
+  //Recorro los rolls posibles
+  for(j=0; j<nrolls; ++j){
+    safe_move = true;
+    //Recorro las piezas del pieceSet
+    for(i=0; i<npieces; i++){
+      if (pieceSet[i] > 0)//Si hay piezas
+        if (lpiece[i] > rlength[j]){//Si el largo de esa pieza es muy grande
+          safe_move = false;
+          break;
+        }
+    }
+    if (safe_move){
+      temp_result = FFD(rlength[j],lpiece,pieceSet);
+      if (result[0] > temp_result.second){
+        result[0] = temp_result.second; //leftover
+        result[1] = temp_result.first;  //rollos
+        result[2] = j; //tipo de rollo
+      }
+    }
+  }
+
+  return result;
+}
 
 // Función que Calcula mínimo
 inline int min(int a, int b) {

@@ -34,8 +34,6 @@ class Solution {
               vector<int> &rlength);
 
   void fitnessEval();
-  //  void printSolution() {
-
 };
 
 #endif

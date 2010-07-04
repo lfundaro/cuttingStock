@@ -1,7 +1,7 @@
 #ifndef LOCALSEARCHBB
 #define LOCALSEARCHBB
 #include <vector>
-#define LSBB_MAXIT 10000 // Criterio de parada
+#include "tunning.h"
 
 using namespace std;
 
