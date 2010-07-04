@@ -64,6 +64,7 @@ int main(int argc, char *argv[]) {
                                   lpiece, MAX_IT);
     
     a.printSolution();
+    a.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
   }

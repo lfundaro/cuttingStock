@@ -1,1 +1,14 @@
 Paper Tube Cutting Stock Problem
+
+¿Cómo ejecutar?
+
+$ ./cuttingStock <Ruta de la instancia>
+
+Las instancias se encuentra en la carpeta tube. 
+Se probaron las siguientes instancias: r1, r3, r14 y f1.
+El resultado que arrojan las instancias es 
+la distribución de piezas por cada grupo de corte, 
+el desperdicio total (Total leftover), el porcentaje 
+de desperdicio (trim loss), total de piezas de la instancia 
+(total pieces), penalidad (penalty), fitness (fitness) y por 
+último el tiempo que tardó la instancia. 
