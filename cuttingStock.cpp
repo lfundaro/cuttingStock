@@ -7,9 +7,14 @@
 #include "genetic.h"
 #include "scatterSearch.h"
 #include "Solution.h"
+
+#include <sys/time.h>
+#include <sys/resource.h>
 using namespace std;
 
 int main(int argc, char *argv[]) {
+  cout << RLIMIT_STACK << "\n";
+  
   char * line = (char *) malloc(sizeof(char)*60);
   ifstream instance(argv[1]);
   int i;
@@ -57,8 +62,14 @@ int main(int argc, char *argv[]) {
     vector<int> variety(ntpieces,1);
     
     srand(time(NULL));
+    
+    // Solution initial = Solution(rlength,lpiece,dpiece);
+    // Solution a = randomSol(initial,lpiece,rlength);
+    // a.printSolution();
+    // cout << "\n";
+    // localSearchBB(a,rlength,lot_s,lpiece,dpiece);
 
-    int ntpiecesD = (double) ntpieces;
+    // int ntpiecesD = (double) ntpieces;
     //    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
     // Solution a = geneticAlgorithm(tamPoblacion,
     //                               rlength,dpiece,
@@ -68,6 +79,10 @@ int main(int argc, char *argv[]) {
     // a.printAsPaper(rlength,lpiece);
     // for(int i = 0; i < 10; i++) 
     //   a[i].printSolution();
+    // Solution a = Solution(rlength,lpiece,dpiece);
+    // Solution ram = randomSol(a,lpiece,rlength);
+    // a.printSolution();
+    // a.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
   }

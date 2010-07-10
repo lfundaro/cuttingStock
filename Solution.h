@@ -27,7 +27,7 @@ class Solution {
 
   Solution(vector<int> leftover, vector<int> used_rolls,
            vector<int> rollType, vector<vector<int> > cgs,
-           double fitn,int size, int penalty,
+           double fitn, int size, int penalty,
            vector<int> variet, vector<vector<int> > divers);
 
   Solution();

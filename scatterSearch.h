@@ -3,7 +3,9 @@
 #include "utilities.h"
 #include "Solution.h"
 #include "genetic.h"
-#include "algorithm"
+#include "tunning.h"
+#include <math.h>
+#include <algorithm>
 #include "localSearchBB.h"
 using namespace std;
 
@@ -19,4 +21,9 @@ vector<Solution> genPset(vector<int> &rlength,
                          int P_size, 
                          vector<int> &lot_s);
 
+int diff(Solution&,Solution&);
+
+int diversity(Solution,Solution,int);
+
+bool compareDivs(pair<int,int>,pair<int,int>);
 #endif

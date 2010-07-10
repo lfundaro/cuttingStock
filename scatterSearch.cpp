@@ -15,23 +15,30 @@ int diff(Solution& sol1, Solution& sol2){
   return diff;
 }
 
-// vector<int> diversity(vector< Solution >& refSet,
-// 		      vector< Solution >& sols){
-//   int nsols = sols.size();
-//   int refSet = refSet.size();
-//   int div = 0;
-//   vector<int> divs = vector(nsols);
+bool compareDivs(pair<int,int> a, pair<int,int> b){
+  return (a.second > b.second);
+}
 
-//   for (int i = 0; i<nsols; ++i){
-//     for (int j = 0; j<nrefSet; ++j){
-//       div += diff(sols[i],sols[j]);
-//     }
-//     divs[i] = div;
-//     div = 0;
-//   }
+vector< pair<int,int> > diversity(vector< Solution >& refSet,
+				  vector< Solution >& sols){
+  int nsols = sols.size();
+  int nRefSet = refSet.size();
+  int div = 0;
+  vector< pair<int,int> > divs(nRefSet,pair<int,int>());
 
-//   return divs;
-// }
+  for (int i = 0; i<nRefSet; ++i){
+    for (int j = 0; j<nsols; ++j){
+      div += diff(sols[j],refSet[i]);
+    }
+    divs[i].first = i;
+    divs[i].second = div;
+    div = 0;
+  }
+
+  sort(divs.begin(),divs.end(),compareDivs);
+
+  return divs;
+}
 
 Solution scatterSearch(int P_size, int b, 
                        vector<int> &rlength,
@@ -92,7 +99,3 @@ vector<Solution> genPset(vector<int> &rlength,
   }
   return Pset;
 }
-
-
-
-

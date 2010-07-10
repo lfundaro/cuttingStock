@@ -225,6 +225,3 @@ int linSearch(vector<pair<int,double> > control,
 
   return -1;  // En caso de no estar el elemento
 }
-
-
-

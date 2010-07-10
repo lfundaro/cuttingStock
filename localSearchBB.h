@@ -6,12 +6,8 @@
 #include <math.h>
 using namespace std;
 
-
-void localSearchBB(Solution &sol, 
-                   vector<int> &rlenght, 
-                   vector<int> &lot_s,
-                   vector<int> &lpiece, 
-                   vector<int> &dpiece);
-
+void localSearchBB(Solution & , 
+                   vector<int> & ,vector<int> & , 
+                   vector<int> & ,vector<int> & );
 #endif
 
