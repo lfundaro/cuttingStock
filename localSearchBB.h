@@ -2,14 +2,16 @@
 #define LOCALSEARCHBB
 #include <vector>
 #include "tunning.h"
-
+#include "Solution.h"
+#include <math.h>
 using namespace std;
 
-void localSearchBB(vector<vector<int>*> &, 
-                   vector<int> &, vector<int> &,
-                   vector<int> &, vector<int> &,
-                   vector<int> &, vector<int> &,
-		   vector<int> &);
+
+void localSearchBB(Solution &sol, 
+                   vector<int> &rlenght, 
+                   vector<int> &lot_s,
+                   vector<int> &lpiece, 
+                   vector<int> &dpiece);
 
 #endif
 

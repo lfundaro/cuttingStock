@@ -7,7 +7,8 @@ using namespace std;
 // Algoritmo de búsqueda local mejor mejor.
 void localSearchBB(Solution &sol, 
                    vector<int> &rlenght, vector<int> &lot_s,
-                   vector<int> &lpiece, vector<int> &dpiece){
+                   vector<int> &lpiece, vector<int> &dpiece)
+{
 
   vector< vector<int> >* cgroups = &(sol.cgs);
   vector<int>* leftover   = &(sol.leftover);
