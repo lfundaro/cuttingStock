@@ -3,6 +3,7 @@
 #include "utilities.h"
 #include "Solution.h"
 #include "genetic.h"
+#include "algorithm"
 #include "localSearchBB.h"
 using namespace std;
 

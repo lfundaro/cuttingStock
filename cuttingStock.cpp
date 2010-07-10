@@ -5,6 +5,7 @@
 #include "utilities.h"
 #include "localSearchBB.h"
 #include "genetic.h"
+#include "scatterSearch.h"
 #include "Solution.h"
 using namespace std;
 
@@ -58,13 +59,16 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     int ntpiecesD = (double) ntpieces;
-    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
-    Solution a = geneticAlgorithm(tamPoblacion,
-                                  rlength,dpiece,
-                                  lpiece, MAX_IT);
+    //    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
+    // Solution a = geneticAlgorithm(tamPoblacion,
+    //                               rlength,dpiece,
+    //                               lpiece, MAX_IT);
+    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
     
-    a.printSolution();
-    a.printAsPaper(rlength,lpiece);
+    // Solution a = Solution(rlength,lpiece,dpiece);
+    // Solution ram = randomSol(a,lpiece,rlength);
+    // a.printSolution();
+    // a.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
   }

@@ -39,7 +39,7 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
             space = take*lpiece[origin];
             // Verificación de RO y Diferencia entre piezas
             if (checkConstraints(lpiece,new_solution,
-                                 destiny,i,rlength)) {
+                                 destiny,origin,rlength)) {
               new_solution.cgs[origin][origin] -= take;
               new_solution.update(origin,lpiece,rlength);
               new_solution.cgs[destiny][origin]  += take;

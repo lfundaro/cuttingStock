@@ -23,7 +23,7 @@ class Solution {
   Solution(vector<int> &rlength, vector<int> &lpiece,
            vector<int> &dpiece);
   
-  Solution(const Solution& a, int M);
+  Solution(const Solution& a);
 
   Solution(vector<int> leftover, vector<int> used_rolls,
            vector<int> rollType, vector<vector<int> > cgs,

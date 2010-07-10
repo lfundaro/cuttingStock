@@ -181,6 +181,7 @@ vector<int> calcVariety(vector<vector<int> > &cgs) {
     // Actualización de variety
     variety[i] = count;
   }
+  return variety;
 }
 
 
@@ -211,6 +212,7 @@ vector<vector<int> > calcDiversity(int rolltypes,
       }
     }
   }
+  return diversity;
 }
 
 // Búsqueda lineal sobre una estructura compuesta 

@@ -59,10 +59,8 @@ Solution::Solution(vector<int> &rlength,
                             used_rolls);
 }
 
-Solution::~Solution() {}
-
 // Constructor por copia
-Solution::Solution(const Solution& a, int M) {
+Solution::Solution(const Solution& a) {
   leftover = a.leftover;
   used_rolls = a.used_rolls;
   rollType = a.rollType;
@@ -90,6 +88,8 @@ Solution::Solution(vector<int> left,
   variety = variet;
   diversity = divers;
 }
+
+Solution::~Solution() {};
 
 Solution::Solution() {};
 
