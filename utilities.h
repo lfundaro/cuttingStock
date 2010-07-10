@@ -37,6 +37,7 @@ vector<int> calcVariety(vector<vector<int> > &cgs);
                                      vector<int> &rollType,
                                      vector<int> &used_rolls);
 
-
+int linSearch(vector<pair<int,double> > control, 
+              double target);
 
 #endif

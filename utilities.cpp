@@ -181,6 +181,7 @@ vector<int> calcVariety(vector<vector<int> > &cgs) {
     // Actualización de variety
     variety[i] = count;
   }
+  return variety;
 }
 
 
@@ -211,4 +212,16 @@ vector<vector<int> > calcDiversity(int rolltypes,
       }
     }
   }
+  return diversity;
+}
+
+// Búsqueda lineal sobre una estructura compuesta 
+// de pares (int,double)
+int linSearch(vector<pair<int,double> > control, 
+              double target) {
+  vector<pair<int,double> >::iterator it;
+  for(it = control.begin(); it < control.end(); it++) 
+    if ((*it).second == target) return (*it).first;
+
+  return -1;  // En caso de no estar el elemento
 }
