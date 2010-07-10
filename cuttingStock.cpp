@@ -65,10 +65,9 @@ int main(int argc, char *argv[]) {
     //                               lpiece, MAX_IT);
     vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
     
-    // Solution a = Solution(rlength,lpiece,dpiece);
-    // Solution ram = randomSol(a,lpiece,rlength);
-    // a.printSolution();
     // a.printAsPaper(rlength,lpiece);
+    // for(int i = 0; i < 10; i++) 
+    //   a[i].printSolution();
     free(line);
     instance.close();
   }
@@ -76,3 +75,28 @@ int main(int argc, char *argv[]) {
     cout << "Error leyendo instancia" << endl;
 
 }
+
+    // Solution a = Solution(rlength,lpiece,dpiece);
+    // vector<Solution> pool;
+    // Solution ramdSol;
+    // vector<pair<int,double> > control;   
+    // Solution initial = Solution(rlength, lpiece, dpiece);
+    // for(int i = 0; i < 10; i++) {
+    //   ramdSol = randomSol(initial, lpiece, rlength);
+    //   ramdSol.fitnessEval();
+      
+    //   pool.push_back(ramdSol);
+    // }
+
+
+    // Solution ram = randomSol(a,lpiece,rlength);
+    // ram.fitnessEval();
+    // Solution ram2 = randomSol(a,lpiece,rlength);
+    // ram2.fitnessEval();
+    // Solution ram3 = randomSol(a,lpiece,rlength);
+    // ram3.fitnessEval();
+    // ram.printSolution();
+    // cout << "===========" << endl;
+    // ram2.printSolution();
+    // cout << "===========" << endl;
+    // ram3.printSolution();

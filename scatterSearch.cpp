@@ -53,30 +53,44 @@ vector<Solution> genPset(vector<int> &rlength,
   vector<pair<int,double> > control;
   Pset.reserve((size_t) P_size);
   int index;
+  int cycle = MAX_CYCLE;
   for(int i = 0; i < P_size; i++) {
     ramdSol = randomSol(initial, lpiece, rlength);
-    //    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
+    ramdSol.fitnessEval();
+    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
+    ramdSol.fitnessEval();
     index = linSearch(control, ramdSol.fitness);
     if (index == -1) {
       // Se agrega solución ya que no está en conjunto P
       Pset.push_back(ramdSol);
+      ramdSol.printSolution();
       control.push_back(make_pair(i,ramdSol.fitness));
       sort(control.begin(), control.end(), comparePairDouble);
+      cycle--;
     }
     else { // Hay un elemento que tiene el mismo fitness 
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      if (diff(ramdSol, Pset[index]) == 0)
-        // Si true entonces se descarta la solución 
-        i--;
-      else {  // No son iguales => se agrega ramdSol a Pset
-        Pset.push_back(ramdSol);
-        control.push_back(make_pair(i,ramdSol.fitness));
-        sort(control.begin(), control.end(), comparePairDouble);
-      }
+      int u = diff(ramdSol, Pset[index]);
+      // if (diff(ramdSol, Pset[index]) < 0) {
+      //   // Si true entonces se descarta la solución 
+      //   i--;
+      //   cout << "diff" << endl;
+      // }
+      // else {  // No son iguales => se agrega ramdSol a Pset
+      //   //        ramdSol.fitnessEval();
+      //   Pset.push_back(ramdSol);
+      //   ramdSol.printSolution();
+      //   control.push_back(make_pair(i,ramdSol.fitness));
+      //   sort(control.begin(), control.end(), comparePairDouble);
+      // }
+
+      if (cycle < 0) {cycle = MAX_CYCLE; i++;}
+      else i--;
     }
   }
+  return Pset;
 }
 
 

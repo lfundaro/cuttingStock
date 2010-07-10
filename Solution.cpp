@@ -102,10 +102,10 @@ void Solution::printSolution() {
   for(it = cgs.begin(); it != cgs.end() ; it++) {
     cout << "Cutting group " << i << endl;
     for(iv = (*it).begin(); iv != (*it).end(); iv++) {
-      if ((*iv) != 0) {
+      //      if ((*iv) != 0) {
         cout << (*iv) << endl;
         totalpieces += (*iv);
-      }
+        //      }
     }
     cout << "===========" << endl;
     i++;

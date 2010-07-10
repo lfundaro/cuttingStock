@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <limits>
-#define NUM_PERTURBATIONS 15  // No poner mas de diez !
+#define NUM_PERTURBATIONS 100  // No poner mas de diez !
+#define MAX_CYCLE 10000
 #define MOVE_PERCENTAGE 30
 #define DIFF 1
 #define RO 100
