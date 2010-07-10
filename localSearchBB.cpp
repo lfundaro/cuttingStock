@@ -18,6 +18,7 @@ void localSearchBB(Solution &sol,
   vector<double*> origScores(lpiece.size());
   vector<double*> dstScores(lpiece.size());
   vector<int> status(2,0);
+
   int maxIt = LSBB_MAXIT;
   int *info; // arreglo con información sobre el
                // el cambio de vecindad.

@@ -3,6 +3,9 @@
 #include "utilities.h"
 #include "Solution.h"
 #include "genetic.h"
+#include "tunning.h"
+#include <math.h>
+#include <algorithm>
 using namespace std;
 
 Solution scatterSearch(int P_size, int b, vector<int> &rlength,
@@ -14,4 +17,9 @@ vector<Solution> genPset(vector<int> &rlength,
                          vector<int> &dpiece,
                          int P_size);
 
+int diff(Solution&,Solution&);
+
+int diversity(Solution,Solution,int);
+
+bool compareDivs(pair<int,int>,pair<int,int>);
 #endif

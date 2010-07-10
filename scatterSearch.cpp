@@ -9,7 +9,7 @@ Solution scatterSearch(int P_size, int b,
 }
 
 int diff(Solution& sol1, Solution& sol2){
-  int ngroups = sol1.diversity.size();
+
   int diff = 0;
   int ngroups = min(sol1.cgs.size(),sol2.cgs.size());
   int npieces = sol1.cgs[0].size();
@@ -23,20 +23,23 @@ int diff(Solution& sol1, Solution& sol2){
   return diff;
 }
 
-vector<int> diversity(vector< Solution >& refSet,
-		      vector< Solution >& sols){
+vector< pair<int,int> > diversity(vector< Solution >& refSet,
+				  vector< Solution >& sols){
   int nsols = sols.size();
-  int refSet = refSet.size();
+  int nRefSet = refSet.size();
   int div = 0;
-  vector<int> divs = vector(nsols);
+  vector< pair<int,int> > divs(nRefSet,pair<int,int>());
 
-  for (int i = 0; i<nsols; ++i){
-    for (int j = 0; j<nrefSet; ++j){
-      div += diff(sols[i],sols[j]);
+  for (int i = 0; i<nRefSet; ++i){
+    for (int j = 0; j<nsols; ++j){
+      div += diff(sols[j],refSet[i]);
     }
-    divs[i] = div;
+    divs[i].first = i;
+    divs[i].second = div;
     div = 0;
   }
+
+  sort(divs.begin(),divs.end(),compareDivs);
 
   return divs;
 }
@@ -51,8 +54,9 @@ vector<Solution> genPset(vector<int> &rlength,
   Pset.reserve((size_t) P_size);
   for(int i = 0; i < P_size; i++) {
     ramdSol = randomSol(initial, lpiece, rlength);
-    
   }
 }
 
-
+bool compareDivs(pair<int,int> a, pair<int,int> b){
+  return (a.second > b.second);
+}

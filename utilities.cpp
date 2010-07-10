@@ -212,5 +212,3 @@ vector<vector<int> > calcDiversity(int rolltypes,
     }
   }
 }
-
-

@@ -6,9 +6,14 @@
 #include "localSearchBB.h"
 #include "genetic.h"
 #include "Solution.h"
+
+#include <sys/time.h>
+#include <sys/resource.h>
 using namespace std;
 
 int main(int argc, char *argv[]) {
+  cout << RLIMIT_STACK << "\n";
+  
   char * line = (char *) malloc(sizeof(char)*60);
   ifstream instance(argv[1]);
   int i;
@@ -56,12 +61,10 @@ int main(int argc, char *argv[]) {
     vector<int> variety(ntpieces,1);
     
     srand(time(NULL));
-
-    int ntpiecesD = (double) ntpieces;
-    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
-    Solution a = geneticAlgorithm(tamPoblacion,
-                                  rlength,dpiece,
-                                  lpiece, MAX_IT);
+    
+    Solution initial = Solution(rlength,lpiece,dpiece);
+    Solution a = randomSol(initial,lpiece,rlength);
+    localSearchBB(a,rlength,lot_s,lpiece,dpiece);
     
     a.printSolution();
     a.printAsPaper(rlength,lpiece);
