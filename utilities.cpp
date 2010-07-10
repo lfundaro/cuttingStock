@@ -19,6 +19,12 @@ bool comparePairDouble(pair<int,double> a, pair<int,double> b) {
 // desperdicios generados.
 bool group_quality(int * info, vector<int> &leftover,
                    vector<int> &used_rolls) {
+  if (info[0] == -1)
+    return false; //No se consiguio un movimiento
+                  //valido o se acabaron los origenes
+                  //y destinos (lo ultimo no se deberia
+                  //detectar aca)
+
   if (info[4] < leftover[info[1]])
     return true;
   else {
