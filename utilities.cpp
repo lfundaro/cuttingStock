@@ -284,7 +284,7 @@ double variance(vector<int>& v) {
     mean_sum += (double)v[i];
   }
 
-  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+  //cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
   return hope_sum-pow(mean_sum/n,2.0);
 }
 
@@ -300,7 +300,7 @@ double variance(vector<double>& v) {
     mean_sum += v[i];
   }
 
-  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+  //cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
 
   return hope_sum-pow(mean_sum/n,2.0);
 }
