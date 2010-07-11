@@ -57,6 +57,7 @@ Solution::Solution(vector<int> &rlength,
   // Cálculo de diversidad
   diversity = calcDiversity(rlength.size(), cgs, rollType,
                             used_rolls);
+  label = false;
 }
 
 // Constructor por copia
@@ -70,6 +71,7 @@ Solution::Solution(const Solution& a) {
   penalty = a.penalty;
   variety = a.variety;
   diversity = a.diversity;
+  label = a.label;
 }
 
 Solution::Solution(vector<int> left, 
@@ -77,7 +79,8 @@ Solution::Solution(vector<int> left,
                    vector<int> rType, 
                    vector<vector<int> > p, double fitn,
                    int sz, int penal, vector<int> variet,
-                   vector<vector<int> > divers) {
+                   vector<vector<int> > divers,
+                   bool labl) {
   leftover = left;
   used_rolls = urolls;
   rollType = rType;
@@ -87,6 +90,7 @@ Solution::Solution(vector<int> left,
   penalty = penal;
   variety = variet;
   diversity = divers;
+  label = labl;
 }
 
 Solution::~Solution() {};
@@ -102,10 +106,10 @@ void Solution::printSolution() {
   for(it = cgs.begin(); it != cgs.end() ; it++) {
     cout << "Cutting group " << i << endl;
     for(iv = (*it).begin(); iv != (*it).end(); iv++) {
-      if ((*iv) != 0) {
+      //      if ((*iv) != 0) {
         cout << (*iv) << endl;
         totalpieces += (*iv);
-      }
+        //      }
     }
     cout << "===========" << endl;
     i++;
@@ -183,6 +187,8 @@ void Solution::printAsPaper(vector<int> &rlength,
   
   cout << "Trim loss = " << (100.0*(double)totalLO)/(double)totalRollLength << endl;
 }
+
+
 
 
 // void Solution::calcVariety() {

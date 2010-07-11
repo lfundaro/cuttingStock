@@ -1,9 +1,10 @@
-#ifndef SCATTERSEARCH
-#define SCATTERSEARCH
+#ifndef scatterSearch
+#define SCATTERSEARCH_H
 #include "utilities.h"
 #include "Solution.h"
 #include "genetic.h"
 #include "tunning.h"
+#include <utility>
 #include <math.h>
 #include <algorithm>
 #include "localSearchBB.h"
@@ -23,10 +24,14 @@ vector<Solution> genPset(vector<int> &rlength,
 
 double diff(Solution&,Solution&);
 
-void diversity(vector<Solution>,vector<Solution>,
-	      vector< pair<int,int> >,int);
+void diversity(vector<Solution>&,vector<Solution>&,
+	      vector< pair<int,int> >&);
 
-bool compareDivs(pair<int,int>,
-		 pair<int,int>,
-		 vector< pair<int,int> >&);
+bool compareDivs(pair<int,int>,pair<int,int>);
+
+bool compareFitness(Solution,Solution);
+
+bool compareFitnessReverse(Solution,Solution);
+
+bool find(Solution t, vector<Solution> set);
 #endif

@@ -1,5 +1,5 @@
-#ifndef utilities
-#define utilities
+#ifndef UTILITIES_H
+#define UTILITIES_H
 #include <utility>
 #include <vector>
 #include <limits>
@@ -13,12 +13,6 @@ using namespace std;
 bool comparePair(pair<int,int>, pair<int,int>);
 
 bool comparePairDouble(pair<int,double>,pair<int,double>);
-
-bool compareFitness(Solution &, Solution &);
-
-bool compareFitnessReverse(Solution &, Solution &);
-
-bool compareDivs(pair<int,int>,pair<int,int>);
 
 bool group_quality(int *, vector<int> &,
                    vector<int> &);
@@ -41,17 +35,22 @@ int notEmptyColumn(vector<int> column);
 
 vector<int> calcVariety(vector<vector<int> > &cgs);
 
-  vector<vector<int> > calcDiversity(int rolltypes, 
-                                     vector<vector<int> > &cgs,
-                                     vector<int> &rollType,
-                                     vector<int> &used_rolls);
+vector<vector<int> > calcDiversity(int rolltypes, 
+                                   vector<vector<int> > &cgs,
+                                   vector<int> &rollType,
+                                   vector<int> &used_rolls);
 
 int linSearch(vector<pair<int,double> > control, 
               double target);
 
+int* twoOnN(int[],int[],int);
+
+
+
 double variance(vector<int>&);
 
-double cg_variace(vector< vector<int> >&);
+double cg_variace(vector< vector<int> > &);
 
-void printCG(vector< vector<int> >&);
+void printCG(vector< vector<int> > &);
+
 #endif

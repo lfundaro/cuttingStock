@@ -52,7 +52,7 @@ vector<Solution> makeRefSet(vector< Solution >& P, int b){
   diversity(P,refSet,divs); //Busco los b/2 mas variados
 
   for (int i = b/2; i < b; ++i){
-    int sol = P[divs[i-b/2].first];
+    int sol = divs[i-b/2].first;
     refSet.push_back(P[sol]);
   }
 
@@ -83,8 +83,47 @@ Solution scatterSearch(int P_size, int b,
                        vector<int> &lpiece, 
                        vector<int> &dpiece,
                        vector<int> &lot_s) {
-  vector<Solution> P = genPset(rlength,lpiece,dpiece,P_size,
-                               lot_s);
+  vector<Solution> P = genPset(rlength,lpiece,dpiece,
+                               P_size,lot_s);
+
+  int M = lpiece.size();
+  vector<Solution> refSet(M,Solution());
+  int* pair;
+  int candidates[M];
+  for(int i = 0; i < M; i++) candidates[i] = i;
+  int next_swap[2] = {0,2};
+  pair = twoOnN(candidates,next_swap,M);
+  std::pair<Solution,Solution> children;
+  int index0 = pair[0];
+  int index1 = pair[1];
+  Solution theOne;
+  bool newSolution = false;
+  while (pair != NULL) {
+    if (!refSet[index0].label || !refSet[index1].label) {
+      // Conjuntos sin examinar
+      refSet[index0].label = true;
+      refSet[index1].label = true;
+      children = Cross(&refSet[index0],&refSet[index1]);
+      fixSolution(children.first, dpiece, rlength,lpiece);
+      fixSolution(children.second, dpiece, rlength,lpiece);
+      // Se toma la mejor solución resultante del cruce
+      if (children.first.fitness < children.second.fitness) 
+        theOne = children.first;
+      else 
+        theOne = children.second;
+      
+      localSearchBB(theOne,rlength, lot_s, lpiece, dpiece);
+      if (theOne.fitness < refSet.back().fitness) { // &&
+          // !find(theOne,refSet)) {
+        refSet.pop_back();
+        refSet.push_back(theOne);
+        sort(refSet.begin(), refSet.end(), compareFitness);
+        newSolution = true;
+      }
+    }
+    free(pair);
+    pair = twoOnN(candidates,next_swap,M);
+  }
 }
 
 vector<Solution> genPset(vector<int> &rlength,
@@ -98,28 +137,67 @@ vector<Solution> genPset(vector<int> &rlength,
   vector<pair<int,double> > control;
   Pset.reserve((size_t) P_size);
   int index;
+  int cycle = 1000;
   for(int i = 0; i < P_size; i++) {
     ramdSol = randomSol(initial, lpiece, rlength);
-    //    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
+    ramdSol.fitnessEval();
+    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
+    ramdSol.fitnessEval();
     index = linSearch(control, ramdSol.fitness);
     if (index == -1) {
       // Se agrega solución ya que no está en conjunto P
       Pset.push_back(ramdSol);
+      ramdSol.printSolution();
       control.push_back(make_pair(i,ramdSol.fitness));
       sort(control.begin(), control.end(), comparePairDouble);
+      cycle--;
     }
     else { // Hay un elemento que tiene el mismo fitness 
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      if (diff(ramdSol, Pset[index]) == 0)
-        // Si true entonces se descarta la solución 
-        i--;
-      else {  // No son iguales => se agrega ramdSol a Pset
-        Pset.push_back(ramdSol);
-        control.push_back(make_pair(i,ramdSol.fitness));
-        sort(control.begin(), control.end(), comparePairDouble);
-      }
+      int u = diff(ramdSol, Pset[index]);
+      //      cout << "diff" << endl;
+      // if (diff(ramdSol, Pset[index]) < 0) {
+      //   // Si true entonces se descarta la solución 
+      //   i--;
+      //   cout << "diff" << endl;
+      // }
+      // else {  // No son iguales => se agrega ramdSol a Pset
+      //   //        ramdSol.fitnessEval();
+      //   Pset.push_back(ramdSol);
+      //   ramdSol.printSolution();
+      //   control.push_back(make_pair(i,ramdSol.fitness));
+      //   sort(control.begin(), control.end(), comparePairDouble);
+      // }
+
+      if (cycle < 0) {cycle = MAX_CYCLE; i++;}
+      else i--;
     }
   }
+  return Pset;
 }
+
+bool find(Solution t, vector<Solution> set) {
+  vector<Solution>::iterator it;
+  for(it = set.begin(); it < set.end(); it++) {
+    if (t.fitness == (*it).fitness) 
+      if (diff(t,*it) == 0) return true;
+  }
+  return false;
+}
+
+
+// Comparación de pares de la forma p(id_pieza, longitud).
+bool compareFitness(Solution a, Solution b) {
+  return (a.fitness < b.fitness);
+}
+
+bool compareFitnessReverse(Solution a, Solution b) {
+  return (a.fitness > b.fitness);
+}
+
+bool compareDivs(pair<int,int> a, pair<int,int> b){
+  return (a.second > b.second);
+}
+

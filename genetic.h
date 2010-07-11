@@ -7,10 +7,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <limits>
-#define NUM_PERTURBATIONS 15  // No poner mas de diez !
+#define NUM_PERTURBATIONS 100  // No poner mas de diez !
+#define MAX_CYCLE 10000
 #define MOVE_PERCENTAGE 30
-#define DIFF 1
-#define RO 100
+#define DIFF 100
+#define RO 1
 #define MAX_INT numeric_limits<int>::max()
 #define MAX_DOUBLE numeric_limits<double>::max()
 #define MIN_DOUBLE numeric_limits<double>::min()
@@ -18,6 +19,7 @@
 #define MUTATION_FACT 0.1   // Factor de mutación
 #define FRACC 1.0
 #define MAX_IT 30000
+
 using namespace std;
 
 Solution randomSol(Solution &initial, vector<int> &lpiece,
@@ -49,7 +51,6 @@ vector<double> roulette(vector<Solution> &people);
 
 void mutate(Solution &child,vector<int> &rlength,
             vector<int> &lpiece);
-
 
 
 bool checkConstraints(vector<int> &lpiece,

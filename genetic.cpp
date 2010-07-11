@@ -14,7 +14,7 @@ using namespace std;
 Solution randomSol(Solution &initial, vector<int> &lpiece,
                    vector<int> &rlength) {
   Solution new_solution = Solution(initial);
-  int n = NUM_PERTURBATIONS;
+  int n = (int) round(random()) % 50;
   int origin;
   int destiny;
   int npieces;
@@ -24,18 +24,23 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
   int rep=0;
   int ro_count;
   int minimum;
+  int cycle = MAX_CYCLE;
+  int move_percentage;
   for(int i = 0; i < n; i++) {
+    move_percentage = (int) round(random()) % 100;
     while (true) {
-      origin = (int) round(random()) % new_solution.size;
+      if (cycle < 0) {cycle = MAX_CYCLE; break;}
+      origin = (int) round(random()) % initial.cgs.size();
       npieces = new_solution.cgs[origin][origin];
-      take = (MOVE_PERCENTAGE*npieces) / 100;
+      take = (move_percentage*npieces) / 100;
       if (take) { // Hay suficientes piezas para mover
         while (true) {
+          if (cycle < 0) {break;}
           destiny = (int) round(random()) % new_solution.size;
           if (destiny != origin) { 
             if (rlength[new_solution.rollType[destiny]] 
                 < lpiece[origin]) 
-              continue;  // La pieza no cabe en el roll
+              {cycle--; continue;}  // La pieza no cabe en el roll
             space = take*lpiece[origin];
             // Verificación de RO y Diferencia entre piezas
             if (checkConstraints(lpiece,new_solution,
@@ -44,14 +49,15 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
               new_solution.update(origin,lpiece,rlength);
               new_solution.cgs[destiny][origin]  += take;
               new_solution.update(destiny,lpiece,rlength);
+              cycle--;
               break;
             }
           }
-          else continue; // Origen igual a destino
+          else {cycle--; continue;} // Origen igual a destino
         }
         break; // Se logro hacer perturbación
       }
-      else continue; //No hay suficientes piezas para mover
+      else {cycle--; continue;} //No hay suficientes piezas para mover
     }
   }
   new_solution.penalty = 0;
@@ -162,8 +168,8 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   pair<Solution,Solution> result;
   vector<vector<int> > diversity;
   vector<int> variety;
-  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0,variety,diversity);
-  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0,variety, diversity);
+  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0,variety,diversity,false);
+  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0,variety, diversity,false);
   result.first = a;
   result.second = b;
   return result;
@@ -233,6 +239,10 @@ void fixSolution(Solution &son, vector<int> &dpiece,
   }
   son.penalty = penalty;
   son.fitnessEval();
+  son.diversity = calcDiversity(rlength.size(),son.cgs,
+                                son.rollType,
+                                son.used_rolls);
+  son.variety = calcVariety(son.cgs);
 }
 
 
@@ -387,6 +397,7 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
     }
     bestFound = get_best(people);
     optimum = opt(optimum,bestFound);
+    cout << optimum.fitness << endl;
     z++;
   }
   return optimum;
