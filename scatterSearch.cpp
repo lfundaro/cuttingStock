@@ -45,8 +45,47 @@ Solution scatterSearch(int P_size, int b,
                        vector<int> &lpiece, 
                        vector<int> &dpiece,
                        vector<int> &lot_s) {
-  vector<Solution> P = genPset(rlength,lpiece,dpiece,P_size,
-                               lot_s);
+  vector<Solution> P = genPset(rlength,lpiece,dpiece,
+                               P_size,lot_s);
+
+  int M = lpiece.size();
+  vector<Solution> refSet(M,Solution());
+  int* pair;
+  int candidates[M];
+  for(int i = 0; i < M; i++) candidates[i] = i;
+  int next_swap[2] = {0,2};
+  pair = twoOnN(candidates,next_swap,M);
+  std::pair<Solution,Solution> children;
+  int index0 = pair[0];
+  int index1 = pair[1];
+  Solution theOne;
+  bool newSolution = false;
+  while (pair != NULL) {
+    if (!refSet[index0].label || !refSet[index1].label) {
+      // Conjuntos sin examinar
+      refSet[index0].label = true;
+      refSet[index1].label = true;
+      children = Cross(&refSet[index0],&refSet[index1]);
+      fixSolution(children.first, dpiece, rlength,lpiece);
+      fixSolution(children.second, dpiece, rlength,lpiece);
+      // Se toma la mejor solución resultante del cruce
+      if (children.first.fitness < children.second.fitness) 
+        theOne = children.first;
+      else 
+        theOne = children.second;
+      
+      localSearchBB(theOne,rlength, lot_s, lpiece, dpiece);
+      if (theOne.fitness < refSet.back().fitness &&
+          !find(theOne,refSet)) {
+        refSet.pop_back();
+        refSet.push_back(theOne);
+        sort(refSet.begin(), refSet.end(), solComp);
+        newSolution = true;
+      }
+    }
+    free(pair);
+    pair = twoOnN(candidates,next_swap,M);
+  }
 }
 
 vector<Solution> genPset(vector<int> &rlength,
@@ -60,7 +99,7 @@ vector<Solution> genPset(vector<int> &rlength,
   vector<pair<int,double> > control;
   Pset.reserve((size_t) P_size);
   int index;
-  int cycle = MAX_CYCLE;
+  int cycle = 1000;
   for(int i = 0; i < P_size; i++) {
     ramdSol = randomSol(initial, lpiece, rlength);
     ramdSol.fitnessEval();
@@ -80,6 +119,7 @@ vector<Solution> genPset(vector<int> &rlength,
            // Por lo que verificamos si son verdaderamente
            // iguales.
       int u = diff(ramdSol, Pset[index]);
+      //      cout << "diff" << endl;
       // if (diff(ramdSol, Pset[index]) < 0) {
       //   // Si true entonces se descarta la solución 
       //   i--;

@@ -6,7 +6,7 @@ using namespace std;
 
 // Algoritmo de búsqueda local mejor mejor.
 void localSearchBB(Solution &sol, 
-                   vector<int> &rlenght, vector<int> &lot_s,
+                   vector<int> &rlength, vector<int> &lot_s,
                    vector<int> &lpiece, vector<int> &dpiece)
 {
 
@@ -32,7 +32,7 @@ void localSearchBB(Solution &sol,
 		  &origScores, &dstScores);
   while (maxIt > 0 && status[0] < lpiece.size()) {
     info = next_move(&status, lpiece.size(), cgroups, variety, rollType,
-     		     &lpiece, &rlenght, &lot_s ,&dstScores, &origScores);
+     		     &lpiece, &rlength, &lot_s ,&dstScores, &origScores);
     if (group_quality(info, *leftover, *used_rolls)) {
       // Se ejecuta el movimiento
       // Se actualiza leftover origen
@@ -71,6 +71,9 @@ void localSearchBB(Solution &sol,
     maxIt--;
     delete [] info;
     sol.fitnessEval();
+    sol.diversity = calcDiversity(rlength.size(),sol.cgs,
+                                  sol.rollType,
+                                  sol.used_rolls);
   }
   // int i;
   // int j;

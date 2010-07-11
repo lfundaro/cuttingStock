@@ -4,6 +4,8 @@
 #include <vector>
 #include <limits>
 #include "tunning.h"
+#include "Solution.h"
+#include "scatterSearch.h"
 #define MAX_INT numeric_limits<int>::max()
 using namespace std;
 
@@ -39,5 +41,9 @@ vector<int> calcVariety(vector<vector<int> > &cgs);
 
 int linSearch(vector<pair<int,double> > control, 
               double target);
+
+int* twoOnN(int[],int[],int);
+
+bool find(Solution t, vector<Solution> set);
 
 #endif

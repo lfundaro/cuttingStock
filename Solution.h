@@ -19,6 +19,7 @@ class Solution {
   int size;
   int penalty;
   double fitness;
+  bool label;
 
   Solution(vector<int> &rlength, vector<int> &lpiece,
            vector<int> &dpiece);
@@ -28,7 +29,8 @@ class Solution {
   Solution(vector<int> leftover, vector<int> used_rolls,
            vector<int> rollType, vector<vector<int> > cgs,
            double fitn, int size, int penalty,
-           vector<int> variet, vector<vector<int> > divers);
+           vector<int> variet, vector<vector<int> > divers,
+           bool labl);
 
   Solution();
 

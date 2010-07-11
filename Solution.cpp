@@ -57,6 +57,7 @@ Solution::Solution(vector<int> &rlength,
   // Cálculo de diversidad
   diversity = calcDiversity(rlength.size(), cgs, rollType,
                             used_rolls);
+  label = false;
 }
 
 // Constructor por copia
@@ -70,6 +71,7 @@ Solution::Solution(const Solution& a) {
   penalty = a.penalty;
   variety = a.variety;
   diversity = a.diversity;
+  label = a.label;
 }
 
 Solution::Solution(vector<int> left, 
@@ -77,7 +79,8 @@ Solution::Solution(vector<int> left,
                    vector<int> rType, 
                    vector<vector<int> > p, double fitn,
                    int sz, int penal, vector<int> variet,
-                   vector<vector<int> > divers) {
+                   vector<vector<int> > divers,
+                   bool labl) {
   leftover = left;
   used_rolls = urolls;
   rollType = rType;
@@ -87,6 +90,7 @@ Solution::Solution(vector<int> left,
   penalty = penal;
   variety = variet;
   diversity = divers;
+  label = labl;
 }
 
 Solution::~Solution() {};

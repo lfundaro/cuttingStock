@@ -70,16 +70,26 @@ int main(int argc, char *argv[]) {
     // localSearchBB(a,rlength,lot_s,lpiece,dpiece);
 
     // int ntpiecesD = (double) ntpieces;
-    //    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
+    // int tamPoblacion = round(ntpieces + FRACC*ntpieces);
     // Solution a = geneticAlgorithm(tamPoblacion,
     //                               rlength,dpiece,
     //                               lpiece, MAX_IT);
-    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
-    
-    // a.printAsPaper(rlength,lpiece);
+    //    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
+    int* pair;
+    int candidates[10];
+    for(int i = 0; i < 10; i++) candidates[i] = i;
+    int next_swap[2] = {0,2};
+    pair = twoOnN(candidates,next_swap,10);
+    while(pair != NULL) {
+      cout << pair[0] << " " << pair[1] << endl;
+      free(pair);
+      pair = twoOnN(candidates,next_swap,10);
+    }
+    //    a.printSolution();
+    //    a.printAsPaper(rlength,lpiece);
     // for(int i = 0; i < 10; i++) 
     //   a[i].printSolution();
-    // Solution a = Solution(rlength,lpiece,dpiece);
+    //    Solution a = Solution(rlength,lpiece,dpiece);
     // Solution ram = randomSol(a,lpiece,rlength);
     // a.printSolution();
     // a.printAsPaper(rlength,lpiece);

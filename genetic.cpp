@@ -163,8 +163,8 @@ pair<Solution,Solution> Cross(Solution* mother, Solution* father) {
   pair<Solution,Solution> result;
   vector<vector<int> > diversity;
   vector<int> variety;
-  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0,variety,diversity);
-  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0,variety, diversity);
+  Solution a(aleftover, aused_rolls, arollType, acgs, 0.0, mother->size,0,variety,diversity,false);
+  Solution b(bleftover, bused_rolls, brollType, bcgs,0.0, mother->size,0,variety, diversity,false);
   result.first = a;
   result.second = b;
   return result;
@@ -234,6 +234,10 @@ void fixSolution(Solution &son, vector<int> &dpiece,
   }
   son.penalty = penalty;
   son.fitnessEval();
+  son.diversity = calcDiversity(rlength.size(),son.cgs,
+                                son.rollType,
+                                son.used_rolls);
+  son.variety = calcVariety(son.cgs);
 }
 
 
@@ -388,6 +392,7 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
     }
     bestFound = get_best(people);
     optimum = opt(optimum,bestFound);
+    cout << optimum.fitness << endl;
     z++;
   }
   return optimum;
