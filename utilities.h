@@ -5,12 +5,16 @@
 #include <limits>
 #include <math.h>
 #include "tunning.h"
+#include "FFD.h"
+#include "Solution.h"
 #define MAX_INT numeric_limits<int>::max()
 using namespace std;
 
 bool comparePair(pair<int,int>, pair<int,int>);
 
 bool comparePairDouble(pair<int,double> a, pair<int,double> b);
+
+bool compareFitness(Solution&,Solution&);
 
 bool group_quality(int *, vector<int> &,
                    vector<int> &);

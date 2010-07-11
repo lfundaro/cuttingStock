@@ -1,5 +1,4 @@
 #include "utilities.h"
-#include "FFD.h"
 using namespace std;
 
 
@@ -11,6 +10,11 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 // Ordena de manera decreciente.
 bool comparePairDouble(pair<int,double> a, pair<int,double> b) {
   return (a.second < b.second);
+}
+
+// Comparación de pares de la forma p(id_pieza, longitud).
+bool compareFitness(Solution& a, Solution& b) {
+  return (a.fitness < b.fitness);
 }
 
 // Dado un movimiento evaluado por la función 
