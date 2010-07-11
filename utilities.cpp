@@ -285,35 +285,28 @@ double variance(vector<int>& v) {
   }
 
   //cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
-  return hope_sum-pow(mean_sum/n,2.0);
+  return sqrt(hope_sum-pow(mean_sum/n,2.0));
 }
 
-double variance(vector<double>& v) {
-  double n = (double)v.size();
+double cg_standarDev(vector< vector<int> >& cg) {
+  int ngroups = cg.size();
+  int npieces = cg[0].size();
+  double n = (double)(ngroups*npieces);
   
   double p = 1.0/n;
   double hope_sum = 0;
   double mean_sum = 0;
   
-  for (int i = 0; i<n; i++){
-    hope_sum += pow(v[i],2.0) * p;
-    mean_sum += v[i];
+  for (int i = 0; i<ngroups; i++){
+    for (int j = 0; j<npieces; j++){
+      hope_sum += pow(cg[i][j],2.0) * p;
+      mean_sum += cg[i][j];
+    }
   }
 
   //cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
 
-  return hope_sum-pow(mean_sum/n,2.0);
-}
-
-double cg_variace(vector< vector<int> >& cg) {
-  int ngroups = cg.size();
-  vector<double> vars(ngroups);
-
-  for (int i = 0; i<ngroups; ++i){
-    vars[i] = variance(cg[i]);
-  }
-
-  return variance(vars);
+  return sqrt(hope_sum-pow(mean_sum/n,2.0));
 }
 
 void printCG(vector< vector<int> > &cg) {

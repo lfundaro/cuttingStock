@@ -49,7 +49,7 @@ int* twoOnN(int[],int[],int);
 
 double variance(vector<int>&);
 
-double cg_variace(vector< vector<int> > &);
+double cg_standarDev(vector< vector<int> > &);
 
 void printCG(vector< vector<int> > &);
 
