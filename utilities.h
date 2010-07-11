@@ -12,9 +12,7 @@ using namespace std;
 
 bool comparePair(pair<int,int>, pair<int,int>);
 
-bool comparePairDouble(pair<int,double> a, pair<int,double> b);
-
-
+bool comparePairDouble(pair<int,double>,pair<int,double>);
 
 bool group_quality(int *, vector<int> &,
                    vector<int> &);

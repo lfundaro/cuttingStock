@@ -34,20 +34,41 @@ double diff(Solution& sol1, Solution& sol2){
   return DIFF_VAR*variance_diff + DIFF_DISTR*((double)piece_distr_diff);
 }
 
-bool compareDivs(pair<int,int> a, pair<int,int> b){
-  return (a.second > b.second);
+vector<Solution> makeRefSet(vector< Solution >& P, int b){
+  int Psize = P.size();
+
+  vector< pair<int,int> > divs(Psize-(b/2),pair<int,int>());
+  vector<Solution> refSet(0);
+  refSet.reserve(b);
+
+  //Busco los b/2 primeros
+  sort(P.begin(),P.end(),compareFitnessReverse);
+  for (int i = 0; i < b/2; ++i){
+    refSet.push_back(P[Psize-1-i]);
+  }
+
+  //Busco los b/2 mas variados
+  P.resize(Psize-(b/2));    //Elimino los b/2 mejoes
+  diversity(P,refSet,divs); //Busco los b/2 mas variados
+
+  for (int i = b/2; i < b; ++i){
+    int sol = divs[i-b/2].first;
+    refSet.push_back(P[sol]);
+  }
+
+  return refSet;
 }
 
-vector< pair<int,int> > diversity(vector< Solution >& refSet,
-				  vector< Solution >& sols){
+void diversity(vector< Solution >& P,
+	       vector< Solution >& sols,
+	       vector< pair<int,int> >& divs){
   int nsols = sols.size();
-  int nRefSet = refSet.size();
+  int nP = P.size();
   int div = 0;
-  vector< pair<int,int> > divs(nRefSet,pair<int,int>());
 
-  for (int i = 0; i<nRefSet; ++i){
+  for (int i = 0; i<nP; ++i){
     for (int j = 0; j<nsols; ++j){
-      div += diff(sols[j],refSet[i]);
+      div += diff(sols[j],P[i]);
     }
     divs[i].first = i;
     divs[i].second = div;
@@ -55,8 +76,6 @@ vector< pair<int,int> > diversity(vector< Solution >& refSet,
   }
 
   sort(divs.begin(),divs.end(),compareDivs);
-
-  return divs;
 }
 
 Solution scatterSearch(int P_size, int b, 
@@ -170,5 +189,13 @@ bool find(Solution t, vector<Solution> set) {
 // Comparación de pares de la forma p(id_pieza, longitud).
 bool compareFitness(Solution a, Solution b) {
   return (a.fitness < b.fitness);
+}
+
+bool compareFitnessReverse(Solution a, Solution b) {
+  return (a.fitness > b.fitness);
+}
+
+bool compareDivs(pair<int,int> a, pair<int,int> b){
+  return (a.second > b.second);
 }
 

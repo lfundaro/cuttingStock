@@ -24,13 +24,14 @@ vector<Solution> genPset(vector<int> &rlength,
 
 double diff(Solution&,Solution&);
 
-int diversity(Solution,Solution,int);
+void diversity(vector<Solution>&,vector<Solution>&,
+	      vector< pair<int,int> >&);
 
 bool compareDivs(pair<int,int>,pair<int,int>);
 
-bool compareFitness(Solution a ,Solution b);
+bool compareFitness(Solution,Solution);
+
+bool compareFitnessReverse(Solution,Solution);
 
 bool find(Solution t, vector<Solution> set);
-
-
 #endif
