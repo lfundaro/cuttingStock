@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     
     srand(time(NULL));
 
-    vector<Solution> a = genPset(rlength,lpiece,dpiece,100,lot_s);
+    vector<Solution> a = genPset(rlength,lpiece,dpiece,20,lot_s);
     cout << "==============\n";
     vector<Solution> b = makeRefSet(a,10);
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     // Solution a = geneticAlgorithm(tamPoblacion,
     //                               rlength,dpiece,
     //                               lpiece, MAX_IT);
-    vector<Solution> a = genPset(rlength,lpiece,dpiece,30,lot_s);
+    // vector<Solution> a = genPset(rlength,lpiece,dpiece,30,lot_s);
     // int* pair;
     // int candidates[10];
     // for(int i = 0; i < 10; i++) candidates[i] = i;

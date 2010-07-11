@@ -142,7 +142,7 @@ vector<Solution> genPset(vector<int> &rlength,
     ramdSol = randomSol(initial, lpiece, rlength);
     ramdSol.fitnessEval();
     localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
-    ramdSol.fitnessEval();
+    //    ramdSol.fitnessEval();
     index = linSearch(control, ramdSol.fitness);
     if (index == -1) {
       // Se agrega solución ya que no está en conjunto P
@@ -163,7 +163,7 @@ vector<Solution> genPset(vector<int> &rlength,
       }
       else {  // No son iguales => se agrega ramdSol a Pset
         Pset.push_back(ramdSol);
-        ramdSol.printSolution();
+        //        ramdSol.printSolution();
         control.push_back(make_pair(i,ramdSol.fitness));
         sort(control.begin(), control.end(), comparePairDouble);
         cycle--;
