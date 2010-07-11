@@ -4,10 +4,6 @@
 //cuttingStock main
 #define METAHEURISTIC SCATTER
 
-//SCATTER
-#define DIFF_VAR 1
-#define DIFF_DISTR 1
-
 //Local Search
 #define LSBB_MAXIT 4000 // Cantidad maxima de iteraciones de local search
 
