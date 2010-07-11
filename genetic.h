@@ -10,8 +10,8 @@
 #define NUM_PERTURBATIONS 100  // No poner mas de diez !
 #define MAX_CYCLE 10000
 #define MOVE_PERCENTAGE 30
-#define DIFF 100
-#define RO 1
+#define DIFF 1
+#define RO 100
 #define MAX_INT numeric_limits<int>::max()
 #define MAX_DOUBLE numeric_limits<double>::max()
 #define MIN_DOUBLE numeric_limits<double>::min()

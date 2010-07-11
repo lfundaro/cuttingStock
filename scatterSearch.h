@@ -27,6 +27,8 @@ double diff(Solution&,Solution&);
 void diversity(vector<Solution>&,vector<Solution>&,
 	      vector< pair<int,int> >&);
 
+vector<Solution> makeRefSet(vector< Solution >&,int);
+
 bool compareDivs(pair<int,int>,pair<int,int>);
 
 bool compareFitness(Solution,Solution);
