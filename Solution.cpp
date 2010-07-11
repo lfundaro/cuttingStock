@@ -189,6 +189,8 @@ void Solution::printAsPaper(vector<int> &rlength,
 }
 
 
+
+
 // void Solution::calcVariety() {
 //   vector<int>::iterator itset;
 //   int count;

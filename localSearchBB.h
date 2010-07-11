@@ -6,7 +6,7 @@
 #include <math.h>
 using namespace std;
 
-void localSearchBB(Solution & , 
+void localSearchBB(Solution &, 
                    vector<int> & ,vector<int> & , 
                    vector<int> & ,vector<int> & );
 #endif

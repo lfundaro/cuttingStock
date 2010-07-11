@@ -1,5 +1,5 @@
-#ifndef SOLUTION
-#define SOLUTION
+#ifndef SOLUTION_H
+#define SOLUTION_H
 #include <vector>
 #include <list>
 #include "utilities.h"
@@ -53,10 +53,10 @@ class Solution {
 
 vector<int> calcVariety(vector<vector<int> > &cgs);
 
-  vector<vector<int> > calcDiversity(int rolltypes, 
-                                     vector<vector<int> > &cgs,
-                                     vector<int> &rollType,
-                                     vector<int> &used_rolls);
+vector<vector<int> > calcDiversity(int rolltypes,
+                                   vector<vector<int> > &cgs,
+                                   vector<int> &rollType,
+                                   vector<int> &used_rolls) ;
 
 
 #endif

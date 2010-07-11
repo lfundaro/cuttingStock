@@ -67,6 +67,14 @@ int main(int argc, char *argv[]) {
     // Solution a = randomSol(initial,lpiece,rlength);
     // a.printSolution();
     // cout << "\n";
+    // Solution initial = Solution(rlength,lpiece,dpiece);
+    // Solution a = randomSol(initial,lpiece,rlength);
+    // Solution b = randomSol(initial,lpiece,rlength);
+    // printCG(initial.cgs);
+    // cout << "==============\n";
+    // printCG(b.cgs);
+    // cout << (double)diff(initial,b);
+
     // localSearchBB(a,rlength,lot_s,lpiece,dpiece);
 
     // int ntpiecesD = (double) ntpieces;
@@ -75,16 +83,16 @@ int main(int argc, char *argv[]) {
     //                               rlength,dpiece,
     //                               lpiece, MAX_IT);
     //    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
-    int* pair;
-    int candidates[10];
-    for(int i = 0; i < 10; i++) candidates[i] = i;
-    int next_swap[2] = {0,2};
-    pair = twoOnN(candidates,next_swap,10);
-    while(pair != NULL) {
-      cout << pair[0] << " " << pair[1] << endl;
-      free(pair);
-      pair = twoOnN(candidates,next_swap,10);
-    }
+    // int* pair;
+    // int candidates[10];
+    // for(int i = 0; i < 10; i++) candidates[i] = i;
+    // int next_swap[2] = {0,2};
+    // pair = twoOnN(candidates,next_swap,10);
+    // while(pair != NULL) {
+    //   cout << pair[0] << " " << pair[1] << endl;
+    //   free(pair);
+    //   pair = twoOnN(candidates,next_swap,10);
+    // }
     //    a.printSolution();
     //    a.printAsPaper(rlength,lpiece);
     // for(int i = 0; i < 10; i++) 

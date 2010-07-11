@@ -19,6 +19,7 @@
 #define MUTATION_FACT 0.1   // Factor de mutación
 #define FRACC 1.0
 #define MAX_IT 30000
+
 using namespace std;
 
 Solution randomSol(Solution &initial, vector<int> &lpiece,
@@ -50,7 +51,6 @@ vector<double> roulette(vector<Solution> &people);
 
 void mutate(Solution &child,vector<int> &rlength,
             vector<int> &lpiece);
-
 
 
 bool checkConstraints(vector<int> &lpiece,

@@ -1,5 +1,4 @@
 #include "utilities.h"
-#include "FFD.h"
 using namespace std;
 
 
@@ -12,6 +11,7 @@ bool comparePair(pair<int,int> a, pair<int,int> b) {
 bool comparePairDouble(pair<int,double> a, pair<int,double> b) {
   return (a.second < b.second);
 }
+
 
 // Dado un movimiento evaluado por la función 
 // shiftNeighbourhood, esta función decide si el
@@ -103,7 +103,7 @@ vector<vector<int>*> genInitSol(vector<int> &rlenght,
 }
 
 int* bestCutting(vector<int>& pieceSet, vector<int>& rlength,
-                 vector<int>& lpiece){
+                 vector<int>& lpiece) {
   int i;
   int j;
   int nrolls = rlength.size();
@@ -232,7 +232,6 @@ int linSearch(vector<pair<int,double> > control,
   return -1;  // En caso de no estar el elemento
 }
 
-
 /*array: Arreglo al cual se le estan calculando
          las combinaciones de 2
   next_swap: estructura de control para poder dar
@@ -241,7 +240,7 @@ int linSearch(vector<pair<int,double> > control,
 	     Debe comenzar en [0,2]. 
   N: tamano del arreglo (por eficiencia)
 */         
-int* twoOnN(int array[],int next_swap[],int N){
+int* twoOnN(int array[],int next_swap[],int N) {
   int head = next_swap[0];
   int tail = next_swap[1];
   int* pair;
@@ -273,11 +272,57 @@ int* twoOnN(int array[],int next_swap[],int N){
   return pair;
 }
 
-bool find(Solution t, vector<Solution> set) {
-  vector<Solution>::iterator it;
-  for(it = set.begin(); it < set.end(); it++) {
-    if (t.fitness == (*it).fitness) 
-      if (diff(t,*it) == 0) return true;
+
+double variance(vector<int>& v) {
+  double n = (double)v.size();
+  
+  double p = 1.0/(double)n;
+  double hope_sum = 0;
+  double mean_sum = 0;
+  
+  for (int i = 0; i<n; i++){
+    hope_sum += pow((double)v[i],2.0) * p;
+    mean_sum += (double)v[i];
   }
-  return false;
+
+  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+  return hope_sum-pow(mean_sum/n,2.0);
+}
+
+double variance(vector<double>& v) {
+  double n = (double)v.size();
+  
+  double p = 1.0/n;
+  double hope_sum = 0;
+  double mean_sum = 0;
+  
+  for (int i = 0; i<n; i++){
+    hope_sum += pow(v[i],2.0) * p;
+    mean_sum += v[i];
+  }
+
+  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+
+  return hope_sum-pow(mean_sum/n,2.0);
+}
+
+double cg_variace(vector< vector<int> >& cg) {
+  int ngroups = cg.size();
+  vector<double> vars(ngroups);
+
+  for (int i = 0; i<ngroups; ++i){
+    vars[i] = variance(cg[i]);
+  }
+
+  return variance(vars);
+}
+
+void printCG(vector< vector<int> > &cg) {
+  for (int i=0; i<cg.size(); ++i){
+    cout << "cg "<< i << ":";
+      for (int j=0; j<cg[i].size(); ++j){
+      cout << cg[i][j] <<" ";
+    }
+    cout << "\n";
+  }
 }

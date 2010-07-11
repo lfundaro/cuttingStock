@@ -1,5 +1,5 @@
-#ifndef SCATTERSEARCH
-#define SCATTERSEARCH
+#ifndef scatterSearch
+#define SCATTERSEARCH_H
 #include "utilities.h"
 #include "Solution.h"
 #include "genetic.h"
@@ -22,9 +22,15 @@ vector<Solution> genPset(vector<int> &rlength,
                          int P_size, 
                          vector<int> &lot_s);
 
-int diff(Solution&,Solution&);
+double diff(Solution&,Solution&);
 
 int diversity(Solution,Solution,int);
 
 bool compareDivs(pair<int,int>,pair<int,int>);
+
+bool compareFitness(Solution a ,Solution b);
+
+bool find(Solution t, vector<Solution> set);
+
+
 #endif
