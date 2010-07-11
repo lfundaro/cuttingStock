@@ -9,6 +9,7 @@ test.o
 test
 test.h
 a.out
+cuttingStock
 *.aux
 *.log
 *.pdf
