@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     // Solution a = geneticAlgorithm(tamPoblacion,
     //                               rlength,dpiece,
     //                               lpiece, MAX_IT);
-    //    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
+    vector<Solution> a = genPset(rlength,lpiece,dpiece,10,lot_s);
     // int* pair;
     // int candidates[10];
     // for(int i = 0; i < 10; i++) candidates[i] = i;
