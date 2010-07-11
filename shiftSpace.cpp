@@ -158,7 +158,7 @@ int* next_move(vector<int>* status, int npieces,
   int dst;
   int piece;
 
-  int* move = new int[7];
+  int* move = new int[9];
 
   //Paro cuando se terminen los origenes
   while (origPos < ngroups &&
@@ -201,7 +201,7 @@ int* next_move(vector<int>* status, int npieces,
 	bestCut = bestCutting(*pieceSet,*rlenght,*lpiece);
 	move[4] = bestCut[0]; //leftover
 	move[6] = bestCut[1]; //rollos usados
-	(*rollType)[dst] = bestCut[2];
+	move[8] = bestCut[2]; //tipo de rollo
 	delete [] bestCut;
 
 	(*pieceSet)[piece] -= items_to_move;
@@ -213,7 +213,7 @@ int* next_move(vector<int>* status, int npieces,
 	bestCut = bestCutting(*pieceSet,*rlenght,*lpiece);
 	move[3] = bestCut[0]; //leftover
 	move[5] = bestCut[1]; //rollos usados
-	(*rollType)[orig] = bestCut[2];
+	move[7] = bestCut[2]; //tipo de rollo
 	delete [] bestCut;
 
 	(*pieceSet)[piece] += items_to_move;

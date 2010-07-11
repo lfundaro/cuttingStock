@@ -45,6 +45,11 @@ void localSearchBB(Solution &sol,
       // Se actualiza used_rolls destino
       (*used_rolls)[info[1]] = info[6];
 
+      // Se actualiza el rollType en el origen
+      (*rollType)[info[0]] = info[7];
+      // Se actualiza el rollType en el destino
+      (*rollType)[info[1]] = info[8];
+	
       int nitems_orig = (*cgroups)[info[0]][info[2]];
       // Se actualiza estructura variety para destino
       if (((*cgroups)[info[1]])[info[2]] == 0)
