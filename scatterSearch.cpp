@@ -163,14 +163,13 @@ vector<Solution> genPset(vector<int> &rlength,
       }
       else {  // No son iguales => se agrega ramdSol a Pset
         Pset.push_back(ramdSol);
-        //        ramdSol.printSolution();
+        ramdSol.printSolution();
         control.push_back(make_pair(i,ramdSol.fitness));
         sort(control.begin(), control.end(), comparePairDouble);
         cycle--;
       }
       
-      if (cycle < 0) {cycle = MAX_CYCLE; i++;}
-      else i--;
+      //      if (cycle < 0) {cycle = MAX_CYCLE; i++;}
     }
   }
   return Pset;
