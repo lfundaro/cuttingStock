@@ -59,9 +59,8 @@ void localSearchBB(Solution &sol,
       if (((*cgroups)[info[0]])[info[2]] == 0) 
 	(*variety)[info[0]]--; 
 
-      // origScores.clear();
+
       // origScores.resize(lpiece.size());
-      // dstScores.clear();
       // dstScores.resize(lpiece.size());
       status[0]=0;
       status[1]=0;
@@ -90,5 +89,8 @@ void localSearchBB(Solution &sol,
   //     cout << "------------" << endl;
   //     }
   // }
+
+  origScores.clear();
+  dstScores.clear();  
 }
               

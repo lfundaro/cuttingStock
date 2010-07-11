@@ -10,8 +10,8 @@
 #define NUM_PERTURBATIONS 100  // No poner mas de diez !
 #define MAX_CYCLE 10000
 #define MOVE_PERCENTAGE 30
-#define DIFF 1
-#define RO 100
+#define DIFF 50
+#define RO 4
 #define MAX_INT numeric_limits<int>::max()
 #define MAX_DOUBLE numeric_limits<double>::max()
 #define MIN_DOUBLE numeric_limits<double>::min()
@@ -58,7 +58,7 @@ bool checkConstraints(vector<int> &lpiece,
                       int pieceType, 
                       vector<int> &rlength);
 
-void addPiece(vector<int> & targetIndex, Solution &son,
+void addPiece(vector<int>  targetIndex, Solution &son,
               int udiff, vector<int> &rlength, 
               vector<int> &lpiece, int pieceType);
 

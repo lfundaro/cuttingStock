@@ -188,7 +188,24 @@ void Solution::printAsPaper(vector<int> &rlength,
   cout << "Trim loss = " << (100.0*(double)totalLO)/(double)totalRollLength << endl;
 }
 
-
+bool Solution::checkRolls(vector<int> &rlength,
+                          vector<int> &lpiece) {
+  for(int i = 0; i < cgs.size(); i++) {
+    for(int j = 0; j < cgs.size(); j++) {
+      if (cgs[i][j]) {
+        if (rlength[rollType[i]] < lpiece[j]) {
+          cout << "error: pieza " << j << " en " <<
+            "CG " << i <<  endl;
+          cout << "Rolltype = " << rlength[rollType[i]] 
+               << endl;
+          cout << "PieceSize = " << lpiece[j] << endl;
+          return true;
+        }
+      }
+    }
+  }
+    return false;
+}
 
 
 // void Solution::calcVariety() {

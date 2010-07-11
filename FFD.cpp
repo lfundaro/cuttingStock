@@ -55,14 +55,23 @@ pair <int, int>  FFD(int rollSize, vector<int> lpiece,
       while(v > 0) {
         k++;
         if (k >= nroll) { 
+          // cout << "lpiece" << endl;
+          // cout << lpiece[tl[i].first] << endl;
+          // cout << "rollSize " << rollSize << endl;
+          
           nroll++;
           output.push_back(new vector<int>(M, 0)); // Nuevo roll
         }
         int sum = 0; // Sumatoria acumulada
         for(i = 0; i <= r - 1; i++) {
           sum += output[k]->at(tl[i].first) * lpiece[tl[i].first];
+          //          cout << "sum " << sum << endl;
         }
-        allocation = (rollSize - sum)/lpiece[tl[i].first];
+        allocation = (rollSize - sum)/lpiece[tl[r].first];
+        // cout << "lpiece" << endl;
+        // cout << lpiece[tl[i].first] << endl;
+        // cout << "rollSize " << rollSize << endl;
+        // cout << "sum " << sum << endl;
         if (v <= allocation) 
           output[k]->at(tl[r].first) = v;
         else
