@@ -147,7 +147,7 @@ vector<Solution> genPset(vector<int> &rlength,
     if (index == -1) {
       // Se agrega solución ya que no está en conjunto P
       Pset.push_back(ramdSol);
-      ramdSol.printSolution();
+      //ramdSol.printSolution();
       control.push_back(make_pair(i,ramdSol.fitness));
       sort(control.begin(), control.end(), comparePairDouble);
       cycle--;
