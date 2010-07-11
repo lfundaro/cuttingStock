@@ -36,7 +36,7 @@ vector<Solution> makeRefSet(vector< Solution >& P, int b){
   }
 
   //Busco los b/2 mas variados
-  P.resize(Psize-(b/2));    //Elimino los b/2 mejoes
+  P.resize(Psize-(b/2));    //Elimino los b/2 mejores
   diversity(P,refSet,divs); //Busco los b/2 mas variados
 
   for (int i = b/2; i < b; ++i){
