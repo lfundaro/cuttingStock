@@ -23,7 +23,10 @@ vector<Solution> genPset(vector<int> &rlength,
 
 double diff(Solution&,Solution&);
 
-int diversity(Solution,Solution,int);
+void diversity(vector<Solution>,vector<Solution>,
+	      vector< pair<int,int> >,int);
 
-bool compareDivs(pair<int,int>,pair<int,int>);
+bool compareDivs(pair<int,int>,
+		 pair<int,int>,
+		 vector< pair<int,int> >&);
 #endif

@@ -12,9 +12,16 @@ bool comparePairDouble(pair<int,double> a, pair<int,double> b) {
   return (a.second < b.second);
 }
 
-// Comparación de pares de la forma p(id_pieza, longitud).
 bool compareFitness(Solution& a, Solution& b) {
   return (a.fitness < b.fitness);
+}
+
+bool compareFitnessReverse(Solution& a, Solution& b) {
+  return (a.fitness > b.fitness);
+}
+
+bool compareDivs(pair<int,int> a, pair<int,int> b){
+  return (a.second > b.second);
 }
 
 // Dado un movimiento evaluado por la función 
