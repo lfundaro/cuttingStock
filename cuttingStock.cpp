@@ -65,9 +65,13 @@ int main(int argc, char *argv[]) {
     
     Solution initial = Solution(rlength,lpiece,dpiece);
     Solution a = randomSol(initial,lpiece,rlength);
-    a.printSolution();
-    cout << "\n";
-    localSearchBB(a,rlength,lot_s,lpiece,dpiece);
+    Solution b = randomSol(initial,lpiece,rlength);
+    printCG(initial.cgs);
+    cout << "==============\n";
+    printCG(b.cgs);
+    cout << (double)diff(initial,b);
+
+    // localSearchBB(a,rlength,lot_s,lpiece,dpiece);
 
     // int ntpiecesD = (double) ntpieces;
     //    int tamPoblacion = round(ntpieces + FRACC*ntpieces);
@@ -78,8 +82,8 @@ int main(int argc, char *argv[]) {
     
     // Solution a = Solution(rlength,lpiece,dpiece);
     // Solution ram = randomSol(a,lpiece,rlength);
-    a.printSolution();
-    a.printAsPaper(rlength,lpiece);
+    // a.printSolution();
+    // a.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
   }

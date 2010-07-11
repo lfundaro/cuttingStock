@@ -1,18 +1,37 @@
 #include "scatterSearch.h"
 using namespace std;
 
-int diff(Solution& sol1, Solution& sol2){
-  int diff = 0;
+/*Funcion que calcula que tan diferentes son un par
+  de soluciones.
+  Primero contrasta que cantidad de cada tipo de piezas
+  hay en cada tipo de roll
+  Segundo, resta las varianzas de la distribucion de
+  las piezas dentro de cada cutting group de cada solucion.
+  Suma estos dos valores luego de aplicarles
+  dos modificadores
+ */
+double diff(Solution& sol1, Solution& sol2){
   int ngroups = min(sol1.cgs.size(),sol2.cgs.size());
   int npieces = sol1.cgs[0].size();
 
-  for (int i = 0; i<ngroups; ++i){
-    for (int j = 0; j<npieces; ++j){
-      diff += abs(sol1.diversity[i][j]-sol2.diversity[i][j]);
+  int piece_distr_diff = 0;
+  double variance_diff;
+  double diff;
+
+  if(sol1.diversity.size()>1 &&
+     sol2.diversity.size()>1){//Si hay mas de un roll
+    for (int i = 0; i<ngroups; ++i){
+      for (int j = 0; j<npieces; ++j){
+	piece_distr_diff += abs(sol1.diversity[i][j]-sol2.diversity[i][j]);
+      }
     }
   }
+  else
+    piece_distr_diff = 0;
 
-  return diff;
+  variance_diff = fabs(cg_variace(sol1.cgs)-cg_variace(sol2.cgs));
+    
+  return DIFF_VAR*variance_diff + DIFF_DISTR*((double)piece_distr_diff);
 }
 
 bool compareDivs(pair<int,int> a, pair<int,int> b){

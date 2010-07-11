@@ -231,3 +231,57 @@ int linSearch(vector<pair<int,double> > control,
 
   return -1;  // En caso de no estar el elemento
 }
+
+double variance(vector<int>& v){
+  double n = (double)v.size();
+  
+  double p = 1.0/(double)n;
+  double hope_sum = 0;
+  double mean_sum = 0;
+  
+  for (int i = 0; i<n; i++){
+    hope_sum += pow((double)v[i],2.0) * p;
+    mean_sum += (double)v[i];
+  }
+
+  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+  return hope_sum-pow(mean_sum/n,2.0);
+}
+
+double variance(vector<double>& v){
+  double n = (double)v.size();
+  
+  double p = 1.0/n;
+  double hope_sum = 0;
+  double mean_sum = 0;
+  
+  for (int i = 0; i<n; i++){
+    hope_sum += pow(v[i],2.0) * p;
+    mean_sum += v[i];
+  }
+
+  cout << hope_sum-pow(mean_sum/n,2.0) <<"\n";
+
+  return hope_sum-pow(mean_sum/n,2.0);
+}
+
+double cg_variace(vector< vector<int> >& cg){
+  int ngroups = cg.size();
+  vector<double> vars(ngroups);
+
+  for (int i = 0; i<ngroups; ++i){
+    vars[i] = variance(cg[i]);
+  }
+
+  return variance(vars);
+}
+
+void printCG(vector< vector<int> > &cg){
+  for (int i=0; i<cg.size(); ++i){
+    cout << "cg "<< i << ":";
+      for (int j=0; j<cg[i].size(); ++j){
+      cout << cg[i][j] <<" ";
+    }
+    cout << "\n";
+  }
+}

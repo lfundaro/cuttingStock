@@ -21,7 +21,7 @@ vector<Solution> genPset(vector<int> &rlength,
                          int P_size, 
                          vector<int> &lot_s);
 
-int diff(Solution&,Solution&);
+double diff(Solution&,Solution&);
 
 int diversity(Solution,Solution,int);
 

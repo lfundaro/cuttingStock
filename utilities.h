@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 #include <limits>
+#include <math.h>
 #include "tunning.h"
 #define MAX_INT numeric_limits<int>::max()
 using namespace std;
@@ -40,4 +41,9 @@ vector<int> calcVariety(vector<vector<int> > &cgs);
 int linSearch(vector<pair<int,double> > control, 
               double target);
 
+double variance(vector<int>&);
+
+double cg_variace(vector< vector<int> >&);
+
+void printCG(vector< vector<int> >&);
 #endif
