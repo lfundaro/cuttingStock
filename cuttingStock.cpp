@@ -63,14 +63,14 @@ int main(int argc, char *argv[]) {
     
     srand(time(NULL));
 
-    vector<Solution> a = genPset(rlength,lpiece,dpiece,20,lot_s);
-    cout << "==============\n";
-    vector<Solution> b = makeRefSet(a,10);
+    // vector<Solution> a = genPset(rlength,lpiece,dpiece,20,lot_s);
+    // cout << "==============\n";
+    // vector<Solution> b = makeRefSet(a,10);
 
-    for (int i = 0; i<10; ++i){
-      printCG(b[i].cgs);
-      cout << "==============\n";
-    }
+    // for (int i = 0; i<10; ++i){
+    //   printCG(b[i].cgs);
+    //   cout << "==============\n";
+    // }
 
     // Solution initial = Solution(rlength,lpiece,dpiece);
     // Solution a = randomSol(initial,lpiece,rlength);

@@ -156,7 +156,7 @@ vector<Solution> genPset(vector<int> &rlength,
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      if (diff(ramdSol, Pset[index]) == 0.0) {
+      if (diff(ramdSol, Pset[index]) < 0.9) {
         // Si true entonces se descarta la solución 
         i--;
         //        cout << "diff" << endl;
