@@ -73,45 +73,93 @@ Solution scatterSearch(int P_size, int b,
                        vector<int> &lot_s) {
   vector<Solution> P = genPset(rlength,lpiece,dpiece,
                                P_size,lot_s);
-
-  int M = lpiece.size();
-  vector<Solution> refSet(M,Solution());
+  //  cout << "jjj" << endl;
+  vector<Solution> refSet = makeRefSet(P,b);
+  int M = refSet.size();
   int* pair;
   int candidates[M];
   for(int i = 0; i < M; i++) candidates[i] = i;
-  int next_swap[2] = {0,2};
-  pair = twoOnN(candidates,next_swap,M);
   std::pair<Solution,Solution> children;
-  int index0 = pair[0];
-  int index1 = pair[1];
+  int index0;
+  int index1;
   Solution theOne;
-  bool newSolution = false;
-  while (pair != NULL) {
-    if (!refSet[index0].label || !refSet[index1].label) {
-      // Conjuntos sin examinar
-      refSet[index0].label = true;
-      refSet[index1].label = true;
-      children = Cross(&refSet[index0],&refSet[index1]);
-      fixSolution(children.first, dpiece, rlength,lpiece);
-      fixSolution(children.second, dpiece, rlength,lpiece);
-      // Se toma la mejor solución resultante del cruce
-      if (children.first.fitness < children.second.fitness) 
-        theOne = children.first;
-      else 
-        theOne = children.second;
+  bool newSolution = true;
+  int next_swap[2];
+  int h = 0;
+  vector<std::pair<int,int> > divs(P_size,std::pair<int,int>());
+  int recons = 0;
+  while(newSolution) {
+    next_swap[0] = 0;
+    next_swap[1] = 2;
+    pair = twoOnN(candidates,next_swap,M);
+    newSolution = false;
+    while (pair != NULL) {
+      index0 = pair[0];
+      index1 = pair[1];
+      cout << h << endl;
+      h++;
+      if (!refSet[index0].label || !refSet[index1].label) {
+        // Conjuntos sin examinar
+        refSet[index0].label = true;
+        refSet[index1].label = true;
+        children = Cross(&refSet[index0],&refSet[index1]);
+        if (children.first.checkRolls(rlength, lpiece)) {
+          cout << "scatterSearch " << "107" << endl;
+          exit(-1);
+        }
+        if (children.second.checkRolls(rlength, lpiece)) {
+          cout << "scatterSearch " << "111" << endl;
+          exit(-1);
+        }
+        fixSolution(children.first, dpiece, rlength,lpiece);
+        fixSolution(children.second, dpiece, rlength,lpiece);
+        if (children.first.checkRolls(rlength, lpiece)) {
+          cout << "scatterSearch " << "117" << endl;
+          exit(-1);
+        }
+        if (children.second.checkRolls(rlength, lpiece)) {
+          cout << "scatterSearch " << "121" << endl;
+          exit(-1);
+        }
+        // Se toma la mejor solución resultante del cruce
+        if (children.first.fitness < children.second.fitness) 
+          theOne = children.first;
+        else 
+          theOne = children.second;
       
-      localSearchBB(theOne,rlength, lot_s, lpiece, dpiece);
-      if (theOne.fitness < refSet.back().fitness &&
-          !find(theOne,refSet)) {
-        refSet.pop_back();
-        refSet.push_back(theOne);
-        sort(refSet.begin(), refSet.end(), compareFitness);
-        newSolution = true;
+        //localSearchBB(theOne,rlength, lot_s, lpiece, dpiece);
+        if (theOne.checkRolls(rlength, lpiece)) {
+          cout << "scatterSearch " << "132" << endl;
+          exit(-1);
+        }
+        if (theOne.fitness < refSet.back().fitness &&
+            !find(theOne,refSet)) {
+          refSet.pop_back();
+          refSet.push_back(theOne);
+          sort(refSet.begin(), refSet.end(), compareFitness);
+          //          cout << refSet.front().fitness << endl;
+          newSolution = true;
+        }
+      }
+      free(pair);
+      pair = twoOnN(candidates,next_swap,M);
+    }
+    if (!newSolution) { // Regenero P
+      if (recons > 3)   return refSet.front();
+      recons++;
+      newSolution = true;
+      P = genPset(rlength,lpiece,dpiece,
+                  P_size,lot_s);
+      refSet.resize(b/2);
+      diversity(P,refSet,divs);
+      int sol;
+      for(int q = b/2; q < b; q++) {
+        sol = divs[q-b/2].first;
+        refSet.push_back(P[sol]);
       }
     }
-    free(pair);
-    pair = twoOnN(candidates,next_swap,M);
   }
+
 }
 
 vector<Solution> genPset(vector<int> &rlength,
@@ -121,21 +169,33 @@ vector<Solution> genPset(vector<int> &rlength,
                          vector<int> &lot_s) {
   vector<Solution> Pset;
   Solution initial = Solution(rlength, lpiece, dpiece);
+  if (initial.checkRolls(rlength, lpiece)) {
+    cout << "scatterSearch " << "170" << endl;
+    exit(-1);
+  }
   Solution ramdSol;
-  vector<pair<int,double> > control;
+  vector<std::pair<int,double> > control;
   Pset.reserve((size_t) P_size);
   int index;
   int cycle = 1000;
   for(int i = 0; i < P_size; i++) {
     ramdSol = randomSol(initial, lpiece, rlength);
     ramdSol.fitnessEval();
-    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
-    //    ramdSol.fitnessEval();
+    if (ramdSol.checkRolls(rlength, lpiece)) {
+      cout << "scatterSearch " << "166" << endl;
+      exit(-1);
+    }
+    //    localSearchBB(ramdSol, rlength, lot_s, lpiece, dpiece);
+    if (ramdSol.checkRolls(rlength, lpiece)) {
+      cout << "scatterSearch " << "171" << endl;
+      exit(-1);
+    }
     index = linSearch(control, ramdSol.fitness);
     if (index == -1) {
       // Se agrega solución ya que no está en conjunto P
       Pset.push_back(ramdSol);
-      //ramdSol.printSolution();
+      cout << i << endl;
+      //      ramdSol.printSolution();
       control.push_back(make_pair(i,ramdSol.fitness));
       sort(control.begin(), control.end(), comparePairDouble);
       cycle--;
@@ -144,14 +204,15 @@ vector<Solution> genPset(vector<int> &rlength,
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      if (diff(ramdSol, Pset[index]) == 0.0) {
+      if (diff(ramdSol, Pset[index]) < 0.2) {
         // Si true entonces se descarta la solución 
         i--;
         //        cout << "diff" << endl;
       }
       else {  // No son iguales => se agrega ramdSol a Pset
         Pset.push_back(ramdSol);
-        //        ramdSol.printSolution();
+        cout << i << endl;
+        // ramdSol.printSolution();
         control.push_back(make_pair(i,ramdSol.fitness));
         sort(control.begin(), control.end(), comparePairDouble);
         cycle--;

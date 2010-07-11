@@ -223,9 +223,12 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       int destiny;
       penalty += dpiece[i];
       while (true) {
+        cout << "pegao" << endl;
         destiny = (int) round(random()) % son.size;
-        if (notEmptyColumn(son.cgs[destiny]) && 
-            checkConstraints(lpiece, son, destiny,i,rlength)) {
+        if (//notEmptyColumn(son.cgs[destiny]) && 
+            checkConstraints(lpiece, son, destiny,i,rlength)
+            && rlength[son.rollType[destiny]] >= 
+            lpiece[i]) {
           son.cgs[destiny][i] += dpiece[i];
           newConfig = FFD(rlength[son.rollType[destiny]],
                           lpiece, son.cgs[destiny]);
@@ -470,14 +473,18 @@ pair<Solution,Solution> getParents(vector<Solution> &people, vector<double> &pro
 }
 
 // Agrega o quita un pieza a un grupo de corte
-void addPiece(vector<int> & targetIndex, Solution &son,
+void addPiece(vector<int>  targetIndex, Solution &son,
               int udiff, vector<int> &rlength, 
               vector<int> &lpiece, int pieceType) {
   int candidate;
   pair<int,int> newConfig;
   while (true) {
+    cout << "addPiece" << endl;
     candidate = (int) round(random()) % targetIndex.size();
-    if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) {
+    if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) { 
+      // Safe FFD
+      if (rlength[son.rollType[targetIndex[candidate]]] < lpiece[pieceType]) continue;
+
       son.cgs[targetIndex[candidate]][pieceType] += udiff;
       // Se elimina el candidato si la columna se queda 
       // sin piezas del tipo
@@ -485,6 +492,7 @@ void addPiece(vector<int> & targetIndex, Solution &son,
         targetIndex.erase(targetIndex.begin() + candidate);
       // Se ejecuta FFD con nuevo estado de piezas 
       int index = targetIndex[candidate];
+      //      cout << "rlength "<< rlength[son.rollType[index]] << endl;
       newConfig = FFD(rlength[son.rollType[index]],lpiece,son.cgs[index]);
       son.used_rolls[index] = newConfig.first;
       son.leftover[index] = newConfig.second;
@@ -498,3 +506,5 @@ void addPiece(vector<int> & targetIndex, Solution &son,
   }
   return;
 }
+
+

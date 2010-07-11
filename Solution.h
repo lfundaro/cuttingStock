@@ -45,6 +45,11 @@ class Solution {
   void update(int where, vector<int> &lpiece,
               vector<int> &rlength);
 
+
+  bool checkRolls(vector<int> &rlength,
+                  vector<int> &lpiece);
+  
+
   void fitnessEval();
 
   void printAsPaper(vector<int> &rlength,

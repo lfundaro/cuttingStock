@@ -121,12 +121,15 @@ int main(int argc, char *argv[]) {
     // Solution ram = randomSol(a,lpiece,rlength);
     // a.printSolution();
     // a.printAsPaper(rlength,lpiece);
+    Solution f = scatterSearch(20,10, rlength,lpiece,
+                               dpiece,lot_s);
+    f.printSolution();
+    f.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
   }
-  else 
+    else 
     cout << "Error leyendo instancia" << endl;
-
 }
 
     // Solution a = Solution(rlength,lpiece,dpiece);
