@@ -94,8 +94,8 @@ Solution scatterSearch(int P_size, int b,
         theOne = children.second;
       
       localSearchBB(theOne,rlength, lot_s, lpiece, dpiece);
-      if (theOne.fitness < refSet.back().fitness) { // &&
-          // !find(theOne,refSet)) {
+      if (theOne.fitness < refSet.back().fitness &&
+          !find(theOne,refSet)) {
         refSet.pop_back();
         refSet.push_back(theOne);
         sort(refSet.begin(), refSet.end(), compareFitness);
@@ -137,21 +137,19 @@ vector<Solution> genPset(vector<int> &rlength,
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      int u = diff(ramdSol, Pset[index]);
-      //      cout << "diff" << endl;
-      // if (diff(ramdSol, Pset[index]) < 0) {
-      //   // Si true entonces se descarta la solución 
-      //   i--;
-      //   cout << "diff" << endl;
-      // }
-      // else {  // No son iguales => se agrega ramdSol a Pset
-      //   //        ramdSol.fitnessEval();
-      //   Pset.push_back(ramdSol);
-      //   ramdSol.printSolution();
-      //   control.push_back(make_pair(i,ramdSol.fitness));
-      //   sort(control.begin(), control.end(), comparePairDouble);
-      // }
-
+      if (diff(ramdSol, Pset[index]) == 0.0) {
+        // Si true entonces se descarta la solución 
+        i--;
+        //        cout << "diff" << endl;
+      }
+      else {  // No son iguales => se agrega ramdSol a Pset
+        Pset.push_back(ramdSol);
+        //        ramdSol.printSolution();
+        control.push_back(make_pair(i,ramdSol.fitness));
+        sort(control.begin(), control.end(), comparePairDouble);
+        cycle--;
+      }
+      
       if (cycle < 0) {cycle = MAX_CYCLE; i++;}
       else i--;
     }

@@ -61,11 +61,11 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
     }
   }
   new_solution.penalty = 0;
-  new_solution.diversity = calcDiversity(rlength.size(),
-					 new_solution.cgs,
-					 new_solution.rollType,
-					 new_solution.used_rolls);
-  new_solution.variety = calcVariety(new_solution.cgs);
+  // new_solution.diversity = calcDiversity(rlength.size(),
+  //                           new_solution.cgs,
+  //                           new_solution.rollType,
+  //                           new_solution.used_rolls);
+  //  new_solution.variety = calcVariety(new_solution.cgs);
   return new_solution;
 }
 
