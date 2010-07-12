@@ -61,11 +61,11 @@ Solution randomSol(Solution &initial, vector<int> &lpiece,
     }
   }
   new_solution.penalty = 0;
-  // new_solution.diversity = calcDiversity(rlength.size(),
-  //                           new_solution.cgs,
-  //                           new_solution.rollType,
-  //                           new_solution.used_rolls);
-  //  new_solution.variety = calcVariety(new_solution.cgs);
+  new_solution.diversity = calcDiversity(rlength.size(),
+                            new_solution.cgs,
+                            new_solution.rollType,
+                            new_solution.used_rolls);
+  new_solution.variety = calcVariety(new_solution.cgs);
   return new_solution;
 }
 
@@ -223,7 +223,6 @@ void fixSolution(Solution &son, vector<int> &dpiece,
       int destiny;
       penalty += dpiece[i];
       while (true) {
-        cout << "pegao" << endl;
         destiny = (int) round(random()) % son.size;
         if (//notEmptyColumn(son.cgs[destiny]) && 
             checkConstraints(lpiece, son, destiny,i,rlength)
@@ -409,11 +408,9 @@ Solution geneticAlgorithm(int tam, vector<int> &rlength,
 // Función que toma la mejor solución entre dos soluciones.
 Solution opt(Solution a, Solution b) {
   if (a.fitness < b.fitness) { 
-    //cout << b.fitness << " --> " << a.fitness << endl; 
     return a; 
   }
   else { 
-    //cout << a.fitness << " --> " << b.fitness << endl; 
     return b; 
   }
 }
@@ -479,7 +476,6 @@ void addPiece(vector<int>  targetIndex, Solution &son,
   int candidate;
   pair<int,int> newConfig;
   while (true) {
-    cout << "addPiece" << endl;
     candidate = (int) round(random()) % targetIndex.size();
     if (son.cgs[targetIndex[candidate]][pieceType] + udiff >= 0) { 
       // Safe FFD
@@ -492,7 +488,6 @@ void addPiece(vector<int>  targetIndex, Solution &son,
         targetIndex.erase(targetIndex.begin() + candidate);
       // Se ejecuta FFD con nuevo estado de piezas 
       int index = targetIndex[candidate];
-      //      cout << "rlength "<< rlength[son.rollType[index]] << endl;
       newConfig = FFD(rlength[son.rollType[index]],lpiece,son.cgs[index]);
       son.used_rolls[index] = newConfig.first;
       son.leftover[index] = newConfig.second;

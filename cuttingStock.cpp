@@ -7,14 +7,9 @@
 #include "genetic.h"
 #include "scatterSearch.h"
 #include "Solution.h"
-
-#include <sys/time.h>
-#include <sys/resource.h>
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  cout << RLIMIT_STACK << "\n";
-  
   char * line = (char *) malloc(sizeof(char)*60);
   ifstream instance(argv[1]);
   int i;
@@ -63,67 +58,8 @@ int main(int argc, char *argv[]) {
     
     srand(time(NULL));
 
-    // vector<Solution> a = genPset(rlength,lpiece,dpiece,20,lot_s);
-    // cout << "==============\n";
-    // vector<Solution> b = makeRefSet(a,10);
-
-    // for (int i = 0; i<10; ++i){
-    //   printCG(b[i].cgs);
-    //   cout << "==============\n";
-    // }
-
-    // Solution initial = Solution(rlength,lpiece,dpiece);
-    // Solution a = randomSol(initial,lpiece,rlength);
-    // a.printSolution();
-    // cout << "\n";
-    Solution initial = Solution(rlength,lpiece,dpiece);
-    Solution a = randomSol(initial,lpiece,rlength);
-    Solution b = randomSol(initial,lpiece,rlength);
-    Solution c = randomSol(initial,lpiece,rlength);
-    printCG(initial.cgs);
-    initial.printAsPaper(rlength,lpiece);
-    cout << "==============" <<endl;
-    printCG(a.cgs);
-    a.printAsPaper(rlength,lpiece);
-    cout << (double)diff(initial,a)<< ":var" <<endl;
-    cout << endl<<"=============="<<endl;
-    printCG(b.cgs);
-    b.printAsPaper(rlength,lpiece);
-    cout << (double)diff(initial,b)<< ":var" <<endl;
-    cout << "==============" <<endl;
-    printCG(c.cgs);
-    c.printAsPaper(rlength,lpiece);
-    cout << (double)diff(initial,c)<<":var"<<endl;
-
-    // localSearchBB(a,rlength,lot_s,lpiece,dpiece);
-
-    // int ntpiecesD = (double) ntpieces;
-    // int tamPoblacion = round(ntpieces + FRACC*ntpieces);
-    // Solution a = geneticAlgorithm(tamPoblacion,
-    //                               rlength,dpiece,
-    //                               lpiece, MAX_IT);
-    // vector<Solution> a = genPset(rlength,lpiece,dpiece,30,lot_s);
-    // int* pair;
-    // int candidates[10];
-    // for(int i = 0; i < 10; i++) candidates[i] = i;
-    // int next_swap[2] = {0,2};
-    // pair = twoOnN(candidates,next_swap,10);
-    // while(pair != NULL) {
-    //   cout << pair[0] << " " << pair[1] << endl;
-    //   free(pair);
-    //   pair = twoOnN(candidates,next_swap,10);
-    // }
-    //    a.printSolution();
-    //    a.printAsPaper(rlength,lpiece);
-    // for(int i = 0; i < 10; i++) 
-    //   a[i].printSolution();
-    //    Solution a = Solution(rlength,lpiece,dpiece);
-    // Solution ram = randomSol(a,lpiece,rlength);
-    // a.printSolution();
-    // a.printAsPaper(rlength,lpiece);
     Solution f = scatterSearch(20,10, rlength,lpiece,
                                dpiece,lot_s);
-    f.printSolution();
     f.printAsPaper(rlength,lpiece);
     free(line);
     instance.close();
@@ -131,28 +67,3 @@ int main(int argc, char *argv[]) {
     else 
     cout << "Error leyendo instancia" << endl;
 }
-
-    // Solution a = Solution(rlength,lpiece,dpiece);
-    // vector<Solution> pool;
-    // Solution ramdSol;
-    // vector<pair<int,double> > control;   
-    // Solution initial = Solution(rlength, lpiece, dpiece);
-    // for(int i = 0; i < 10; i++) {
-    //   ramdSol = randomSol(initial, lpiece, rlength);
-    //   ramdSol.fitnessEval();
-      
-    //   pool.push_back(ramdSol);
-    // }
-
-
-    // Solution ram = randomSol(a,lpiece,rlength);
-    // ram.fitnessEval();
-    // Solution ram2 = randomSol(a,lpiece,rlength);
-    // ram2.fitnessEval();
-    // Solution ram3 = randomSol(a,lpiece,rlength);
-    // ram3.fitnessEval();
-    // ram.printSolution();
-    // cout << "===========" << endl;
-    // ram2.printSolution();
-    // cout << "===========" << endl;
-    // ram3.printSolution();

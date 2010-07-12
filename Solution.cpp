@@ -158,6 +158,7 @@ void Solution::fitnessEval() {
 
 void Solution::printAsPaper(vector<int> &rlength,
                             vector<int> &lpiece) {
+  printCG(cgs);
   int sum;
   int totalLO = 0;
   for(int i = 0; i < cgs.size(); i++) {
@@ -186,7 +187,15 @@ void Solution::printAsPaper(vector<int> &rlength,
   }
   
   cout << "Trim loss = " << (100.0*(double)totalLO)/(double)totalRollLength << endl;
+  int totLeft = 0;
+  vector<int>::iterator itl;
+  for(itl = leftover.begin(); itl != leftover.end(); itl++)
+    totLeft += *itl;
+  cout << "Total leftover = " << totLeft << endl;
+  cout << "Penalty = " << penalty << endl;
+  cout << "Fitness = " << fitness << endl;
 }
+
 
 bool Solution::checkRolls(vector<int> &rlength,
                           vector<int> &lpiece) {
@@ -206,41 +215,4 @@ bool Solution::checkRolls(vector<int> &rlength,
   }
     return false;
 }
-
-
-// void Solution::calcVariety() {
-//   vector<int>::iterator itset;
-//   int count;
-//   for(int i = 0; i < cgs.size(); i++) {
-//     count = 0;
-//     for(itset = cgs[i].begin(); itset < cgs[i].end(); itset++) {
-//       if (*itset) {
-//         count++;
-//       }
-//     }
-//     // Actualización de variety
-//     variety[i] = count;
-//   }
-// }
-
-// void Solution::calcDiversity(int rolltypes) {
-//   int cgsize = used_rolls.size();
-//   // Por cada tipo de roll se busca que 
-//   // cutting group lo está usando actualmente.
-//   for(int i = 0; i < rolltypes; i++) {
-//     // Se busca si hay un cutting group que use el roll i
-//     for(int j = 0; j < cgsize; j++) {
-//       // Se verifica que el cutting group j use al menos 
-//       // un roll.
-//       if (used_rolls[j]) {
-//         // Si el roll i coincide con el del cgroup actual
-//         if (rollType[j] == i) {
-//           for(int k = 0; k < cgsize; k++) {
-//             if (cgs[j][k]) diversity[i][k] += cgs[j][k];
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
