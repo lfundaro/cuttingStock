@@ -99,7 +99,7 @@ Solution scatterSearch(int P_size, int b,
   int next_swap[2];
   int h = 0;
   vector<std::pair<int,int> > divs(P_size,std::pair<int,int>());
-  int recons = 0;
+  int recs = 1;
   while(newSolution) {
     cout << "Combinando soluciones" << endl;
     next_swap[0] = 0;
@@ -135,15 +135,15 @@ Solution scatterSearch(int P_size, int b,
       pair = twoOnN(candidates,next_swap,M);
     }
     if (!newSolution) { // Regenero P
-      if (recons > 3)   {
+      if (recs > recons)   {
         cout << "====================" << endl;
         cout << "Resultado" << endl;
         cout << "====================" << endl;
         return refSet.front();
       }
-      recons++;
+      recs++;
       cout << "====================" << endl;
-      cout << "Reconstrucción " << recons << " de conjunto P" 
+      cout << "Reconstrucción " << recs << " de conjunto P" 
            << endl;
       cout << "====================" << endl;
       newSolution = true;
@@ -199,7 +199,7 @@ vector<Solution> genPset(vector<int> &rlength,
            // que la solución generada aleatoriamente. 
            // Por lo que verificamos si son verdaderamente
            // iguales.
-      if (diff(ramdSol, Pset[index]) < 0.2) {
+      if (diff(ramdSol, Pset[index]) < min_diff_solutions) {
         // Si true entonces se descarta la solución 
         i--;
       }

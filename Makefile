@@ -1,6 +1,6 @@
 CXX	:= g++-4.4
-CXXFLAGS := 
-OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o genetic.o scatterSearch.o
+CXXFLAGS := -g
+OBJECTS := cuttingStock.o FFD.o utilities.o localSearchBB.o Solution.o genetic.o scatterSearch.o global_vars.o
 
 all: cuttingStock
 
@@ -28,6 +28,9 @@ Solution.o: Solution.cpp
 
 genetic.o: genetic.cpp
 	$(CXX) $(CXXFLAGS) -c genetic.cpp	
+
+global_vars.o: global_vars.cpp
+	$(CXX) $(CXXFLAGS) -c global_vars.cpp	
 
 clean:
 	rm -rf cuttingStock *.o *.out semantic.cache *.gch *~ *.tex.backup test

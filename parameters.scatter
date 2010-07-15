@@ -1,0 +1,14 @@
+Psize              20
+refSize            6
+recons             3
+min_diff_solutions 0.5
+max_open_stacks    100
+min_size_diff      1
+localSearchMaxIts  4000
+dst_lo_mod         1
+dst_frg_mod        1
+orig_lo_mod        1
+orig_frg_mod       1
+
+
+
