@@ -151,31 +151,14 @@ $CG\_LO$ es el leftover de ese cutting group y $Max\_LO$ denota el leftover m\'a
 un mal destino. Cuando un origen a sido probado contra todos los destinos, se prueban todos los destinos en el mismo orden con un origen peor.\\
 \indent La idea es que se retrase lo m\'as posible el momento donde se prueban malos origenes con malos destinos.
 
-\section{ILS}
-La funci\'on de perturbaci\'on es consiste en mover de manera aleatoria piezas de un entre los cutting groups manteniendo las restricciones.
-Es un cambio de vecindad aleatorio. La fuerza de la perturbaci\'on viene dada por la cantidad de cambios de vecindad que se hacen.\\
-\indent Adicionalmente, cuando se genera una soluci\'on peor, se acepta con usando la f\'ormula para la probabilidad de recocido simulado.
+\section{Scatter}
+\subsection{Conjunto P}
+El conjunto P se compone de soluciones completamente aleatorias, que luego de ser generadas
+son reparadas para que sean soluciones factibles que cumplen con los constrain que se exigen
 
-\section{GRASP}
-La construcci\'on de la soluci\'on inicial de GRASP se hace de manera muy simple. Dado un rollo actual que puede tener cortes ya asignados, 
-se buscan los \texttt{k} cortes que al ser introducidos al rollo minimizen el desperdicio y se elige uno al azar. En este caso \texttt{k} es el
-tama\~no de la lista RCL.\\
-\indent En caso de que no se pueda introducir el corte en ese rollo, se introduce en un nuevo rollo y ese rollo pasa a ser el rollo actual. En caso
-de que no se pueda introducir el corte manteniendo las restricciones sobre el cutting group, se abre un nuevo cutting group.
-
-\section{Instancias}
-Se usaron 6 instancias aleatorias generadas por una modificaci\'on de CUTGEN (Gau and Wascher, 1995).
-Estas instancias, junto con muchas otras, se encuentran en http://www-sys.ist.osaka-u.ac.jp/~umetani/index-e.html.
-
-\section{Valores iniciales}
-El valor inicial utilizado fu\'e todos los cortes de un mismo tipo en un cutting group separado.
-
-\section{Algoritmo genético}
-
-\subsection{Representación de la solución}
-La solución se codifica de la misma manera que se viene haciendo con las metaheurísticas anteriores. 
-Se tiene un vector que contiene los grupos de corte, y en cada grupo están las piezas que se piden 
-cortar. Un conjunto de piezas de un grupo de corte deben cumplir las restricciones del problema.
+\subsection{RefSet}
+En el conjunto de referencia, los primeros b/2 se generan en base a la
+funci\'on de fitness. Para los \'ultimos b/2 se us\'o un algoritmo que describiremos mas adelante.
 
 \subsection{Función de Fitness}
 La función de fitness se calcula en base a dos valores:
@@ -188,50 +171,47 @@ Ambos valores son sumados para obtener el valor de fitness. En esta suma, la var
 el desperdicio es una de las restricciones más importantes que queremos satisfacer, mientras que la variable penalidad aporta 
 un 40 porciento.
 
-\subsection{Función de Cruce}
+\subsection{Función de Variedad}
+Para evaluar que tan diferentes son dos soluciones, se usa calcula lo que llamamos la desviaci\'on est\'andar de las soluciones.
+La variable aleatoria es la cantidad de piezas de un tipo que hay un cutting group dado. Con esta representaci\'on, solo se deben
+sumar todos los elementos de una soluci\'on y todos los cuadrados de los elementos de la soluci\'on. Luego recordemos que la
+desviaci\'on est\'andar es la esperanza de la variable aleatoria al cuadrado menos la media; con estos datos podemos calcularla.
 
+\subsection{Función de Cruce}
 Se utiliza el método de cruce de un punto. El cruce produce en la mayoría de las veces soluciones que no son factibles, por 
 lo tanto se debe utilizar la función fixSolution para completar o quitar piezas de la solución.
 
-\subsection{Método de selección}
+\subsection{Mejoramiento}
+Se utiliza b\'usqueda local para mejorar las soluciones despu\'es del cruce. Es la misma b\'usqueda local de las heuristicas
+anteriores.
 
-El método de selección que se decidió utilizar es el de la ruleta. Para esto se tiene un vector con las probabilidades de 
-cada uno de los componentes de la población actual. Esta probabilidad se calcula de la forma función de fitness de elemento 
-en particular entre sumatoria de función de fitness de todos los elementos de la población.
+\section{Instancias}
+Se usaron 6 instancias aleatorias generadas por una modificaci\'on de CUTGEN (Gau and Wascher, 1995).
+Estas instancias, junto con muchas otras, se encuentran en http://www-sys.ist.osaka-u.ac.jp/~umetani/index-e.html.
 
-\subsection{Estrategia de reemplazo}
+\section{Algunas recomendaciones para la corrida}
 
-Se utilizó la estrategia estacionaria. Se eliminan los individuos que presentan el peor fitness. Dicho individuo 
-es reemplazado por uno de los hijos que se producen en el cruce. 
-
-\subsection{Tamaño de la población}
-
-El tamaño de la población varía según la constante FRAC que está en el archivo genetic.h. Sin embargo la cota es 
-2 veces la cantidad de tipos de piezas del problema.
-
-\subsection{Mutación}
-
-La mutación se lleva a cabo con una probabilidad por debajo del 10 porciento. Consiste en tomar aleatoriamente uno de los hijos 
-y de nuevo de manera aleatoria elegir una pieza, un origen y un destino para mover dicha pieza.
-
-\subsection{Algunas recomendaciones para la corrida}
-
-A continuación se definen las constantes que se pueden encontrar en genetic.h:
+A continuación se definen las constantes que se pueden encontrar en global_vars.h:
 
 \begin{itemize}
-\item NUM\_PERTURBATIONS: indica el número de perturbaciones que se le hará la solución inicial 
-para así obtener un solución aleatoria.
-\item MOVE\_PERCENTAGE: indica el porcentaje de piezas que se moverá de un grupo de corte a otro.
-\item DIFF: es la diferencia que debe existir entre cada pieza de un grupo de corte.
-\item RO: es la máxima cantidad de Open Stacks que puede haber en un momento dado.
-\item CROSS\_PROB: probabilidad de cruce. El valor 0,1 indica que hay un 90 porciento de probabilidad de cruce.
-\item MUTATION\_FACT: factor de mutación. 
-\item FRACC: indica la fracción de población que se va a utilizar para el tamaño de la población. Por defecto 
-este valor se encuentra en 1,0 por lo tanto se usa el doble de la población.
-\item MAX\_IT: número máximo de iteraciones o generaciones que se harán en el algoritmo genético. Por defecto se 
- encuentra en 30 mil.
+\item int Psize:
+\item int refSize:
+\item int recons: Numero de reconstrucciones del refSet
+\item float min_diff_solutions: La diferencia minima entre dos soluciones 
+  para que el algoritmo de generacion del conjunto P la acepte
+\item int max_open_stacks: Maxima cantidad de open stacks abiertos simultaneamente
+\item int min_size_diff:   Minima diferencia de tamano entre los cortes de un mismo cutting group
+\item int localSearchMaxIts: Cantidad maxima de iteraciones de local search
+\item int dst_lo_mod:    Modificador del valor del indice de leftover para el destino 
+\item int dst_frg_mod:   Modificador del valor del indice de fragmentacion para el destino
+\item int orig_lo_mod:   Modificador del valor del indice de leftover para el origen
+\item int orig_frg_mod:  Modificador del valor del indice de fragmentacion para el origen
 \end{itemize}
 
+Todas estas variables se definen en el archivo de configuraci\'on que se pasa como segundo 
+par\'ametro en la l\'inea de comandos. Se pasan en el mismo orden en el que fueron listadas
+anteriormente y precedidas por su nombre. El archivo parameters.scatter es un ejemplo.
+ 
 \subsection{Dificultades presentadas}
 
 El algoritmo es funcional cuando las restriccines de Open Stacks y mínima diferencia entre piezas se relajan. 
